@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Slayd Generatori</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- 1. TOP HEADER (Xuddi skrinshotdagidek profil va limit) -->
+    <header class="top-nav-bar">
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div class="user-meta">
+          <div class="user-name-row">
+            <span class="user-name" id="userName">Foydalanuvchi</span>
+            <span class="sparkle-icon">✨</span>
+          </div>
+          <div class="user-badge-coins">
+            <span class="gift-icon">🎁</span>
+            <span id="headerCoinsText">5 ta bepul taqdimot</span>
+          </div>
+        </div>
+      </div>
+      <div class="limit-badge-btn" id="openLimitTabBtn">
+        <span class="limit-title">Limit</span>
+        <span class="limit-count" id="headerLimitProgress">0 / 3 ta</span>
+        <span class="info-icon">ℹ️</span>
+      </div>
+    </header>
+
+    <!-- 2. MAIN TABS CONTENT (Xonalar) -->
+    <main class="tabs-container">
+
+      <!-- ========================================== -->
+      <!-- XONA 1: ✨ YARATISH (Step-by-step Wizard)  -->
+      <!-- ========================================== -->
+      <section id="tabCreate" class="tab-content active">
+        
+        <!-- Qadamlar ko'rsatkichi (Segmented Progress Bar) -->
+        <div class="step-progress-wrapper">
+          <div class="segmented-bar">
+            <div class="segment active" id="seg1"></div>
+            <div class="segment" id="seg2"></div>
+            <div class="segment" id="seg3"></div>
+            <div class="segment" id="seg4"></div>
+          </div>
+          <div class="step-labels">
+            <span class="step-counter" id="stepCounterText">Qadam 1 / 4</span>
+            <span class="step-name" id="stepNameText">Mavzu</span>
+          </div>
+        </div>
+
+        <form id="slideWizardForm">
+          
+          <!-- QADAM 1: MAVZU VA HUJJAT -->
+          <div class="wizard-step active" id="wizardStep1">
+            <h2 class="step-heading">1. Mavzu</h2>
+            <p class="step-subheading">Qanday mavzuda taqdimot kerak?</p>
+
+            <div class="textarea-box">
+              <textarea 
+                id="topicInput" 
+                rows="4" 
+                placeholder="Masalan: Neyron tarmoqlari va sun'iy intellekt kelajagi" 
+                required
+              ></textarea>
+            </div>
+
+            <!-- Tezkor mavzular (Pills) -->
+            <div class="quick-tags-grid">
+              <button type="button" class="tag-pill" data-topic="Sun'iy intellekt kelajagi">+ Sun'iy intellekt kelajagi</button>
+              <button type="button" class="tag-pill" data-topic="Kognitiv psixologiya">+ Kognitiv psixologiya</button>
+              <button type="button" class="tag-pill" data-topic="O'zbekiston tarixi">+ O'zbekiston tarixi</button>
+              <button type="button" class="tag-pill" data-topic="Marketing strategiyasi">+ Marketing strategiyasi</button>
+            </div>
+
+            <!-- Hujjat biriktirish tugmasi (PDF / DOCX) -->
+            <div class="doc-attach-container">
+              <input type="file" id="docFileInput" accept=".pdf,.docx,.doc,.txt" style="display: none;" />
+              <button type="button" class="attach-doc-btn" id="attachDocBtn">
+                <span class="paperclip-icon">📎</span>
+                <span id="attachedFileNameText">📎 Word yoki PDF ma'ruza biriktirish (Ixtiyoriy)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- QADAM 2: SOHA VA TASHKILOT -->
+          <div class="wizard-step" id="wizardStep2">
+            <h2 class="step-heading">2. Yo'nalish & Tashkilot</h2>
+            <p class="step-subheading">Taqdimot qaysi soha va muassasaga moslansin?</p>
+
+            <div class="categories-grid" id="categorySelectionGrid">
+              <div class="category-card active" data-cat="education">
+                <span class="cat-icon">🎓</span>
+                <span class="cat-title">Ta'lim & O'qituvchilar</span>
+              </div>
+              <div class="category-card" data-cat="economy">
+                <span class="cat-icon">💼</span>
+                <span class="cat-title">Iqtisodiyot & Moliya</span>
+              </div>
+              <div class="category-card" data-cat="medical">
+                <span class="cat-icon">🩺</span>
+                <span class="cat-title">Tibbiyot & Salomatlik</span>
+              </div>
+              <div class="category-card" data-cat="tech">
+                <span class="cat-icon">💻</span>
+                <span class="cat-title">IT & Dasturlash</span>
+              </div>
+              <div class="category-card" data-cat="nature">
+                <span class="cat-icon">🌿</span>
+                <span class="cat-title">Tabiat & Qishloq xo'jaligi</span>
+              </div>
+              <div class="category-card" data-cat="general">
+                <span class="cat-icon">🌟</span>
+                <span class="cat-title">Umumiy / Erkin uslub</span>
+              </div>
+            </div>
+
+            <div class="org-input-box" style="margin-top: 16px;">
+              <label for="orgInput" style="font-size: 13px; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 6px;">Tashkilot / Universitet nomi (Ixtiyoriy):</label>
+              <input type="text" id="orgInput" placeholder="Masalan: TATU, O'zMU yoki IT Park" class="custom-input" />
+            </div>
+          </div>
+
+          <!-- QADAM 3: SLAYDLAR SONI -->
+          <div class="wizard-step" id="wizardStep3">
+            <h2 class="step-heading">3. Slaydlar soni</h2>
+            <p class="step-subheading">Taqdimotingiz necha betdan iborat bo'lsin?</p>
+
+            <div class="counts-grid" id="countSelectionGrid">
+              <button type="button" class="count-pill-btn" data-count="5">5 ta</button>
+              <button type="button" class="count-pill-btn active" data-count="8">8 ta</button>
+              <button type="button" class="count-pill-btn" data-count="10">10 ta</button>
+              <button type="button" class="count-pill-btn" data-count="12">12 ta</button>
+              <button type="button" class="count-pill-btn" data-count="15">15 ta</button>
+              <button type="button" class="count-pill-btn" data-count="18">18 ta</button>
+              <button type="button" class="count-pill-btn" data-count="20">20 ta</button>
+              <button type="button" class="count-pill-btn" data-count="25">25 ta</button>
+            </div>
+          </div>
+
+          <!-- QADAM 4: DIZAYN VA FON -->
+          <div class="wizard-step" id="wizardStep4">
+            <h2 class="step-heading">4. Fon va Dizayn</h2>
+            <p class="step-subheading">Slaydlar qaysi rang va fon uslubida bo'lsin?</p>
+
+            <div class="themes-grid" id="themeSelectionGrid">
+              <div class="theme-option active" data-theme="ocean">
+                <div class="theme-preview-box ocean-gradient"></div>
+                <div class="theme-info">
+                  <span class="theme-name">🌊 Ocean Blue</span>
+                  <span class="theme-sub">Professional & Biznes</span>
+                </div>
+              </div>
+              <div class="theme-option" data-theme="dark">
+                <div class="theme-preview-box dark-gradient"></div>
+                <div class="theme-info">
+                  <span class="theme-name">🌙 Modern Dark</span>
+                  <span class="theme-sub">Texnologik & IT</span>
+                </div>
+              </div>
+              <div class="theme-option" data-theme="emerald">
+                <div class="theme-preview-box emerald-gradient"></div>
+                <div class="theme-info">
+                  <span class="theme-name">🌿 Emerald Nature</span>
+                  <span class="theme-sub">Tabiat & Tibbiyot</span>
+                </div>
+              </div>
+              <div class="theme-option" data-theme="sunset">
+                <div class="theme-preview-box sunset-gradient"></div>
+                <div class="theme-info">
+                  <span class="theme-name">🌅 Sunset Creative</span>
+                  <span class="theme-sub">Kreativ & Marketing</span>
+                </div>
+              </div>
+              <div class="theme-option" data-theme="minimal">
+                <div class="theme-preview-box minimal-gradient"></div>
+                <div class="theme-info">
+                  <span class="theme-name">📄 Clean Light</span>
+                  <span class="theme-sub">Klassik oq fon</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pastki harakat tugmalari (Next / Prev) -->
+          <div class="wizard-actions">
+            <button type="button" class="btn-prev hidden" id="btnPrevStep">← Orqaga</button>
+            <button type="button" class="btn-next" id="btnNextStep">Keyingi →</button>
+            <button type="submit" class="btn-submit hidden" id="btnGenerate">🚀 Taqdimot Yaratish</button>
+          </div>
+        </form>
+
+        <!-- Yuklanish holati (Loading) -->
+        <div id="loadingBox" class="loading-box hidden">
+          <div class="loader-spinner"></div>
+          <h3 class="loading-title">Sun'iy intellekt ishlamoqda...</h3>
+          <p class="loading-desc" id="loadingStatusText">Mavzu bo'yicha tahliliy reja tuzilmoqda...</p>
+        </div>
+
+        <!-- Natija ekrani (Result) -->
+        <div id="resultBox" class="result-box hidden">
+          <div class="success-icon">🎉</div>
+          <h2 class="result-title" id="resultTitle">Taqdimot tayyor!</h2>
+          <p class="result-sub" id="resultSubtitle">PowerPoint (.pptx) formati</p>
+
+          <div class="result-action-buttons">
+            <a href="#" id="downloadBtn" class="primary-btn">⬇️ Yuklab olish (.pptx)</a>
+            <button type="button" id="sendChatBtn" class="secondary-btn">📤 Telegram chatga yuborish</button>
+          </div>
+
+          <button type="button" id="createAgainBtn" class="link-btn">✨ Yangi taqdimot yaratish</button>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- XONA 2: 📚 SLAYDLARIM (Tarix va Ro'yxat)   -->
+      <!-- ========================================== -->
+      <section id="tabHistory" class="tab-content">
+        <div class="room-header">
+          <h2 class="room-title">📚 Mening Slaydlarim</h2>
+          <p class="room-sub">Siz yaratgan barcha taqdimotlar ro'yxati</p>
+        </div>
+
+        <div id="historyListContainer" class="history-list">
+          <div class="empty-state">
+            <span>📭</span>
+            <p>Hozircha yaratilgan taqdimotlar yo'q.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- XONA 3: 🪙 KOIN SOTIB OLISH VA LIMIT       -->
+      <!-- ========================================== -->
+      <section id="tabLimit" class="tab-content">
+        <div class="room-header">
+          <h2 class="room-title">🪙 Koin Sotib Olish</h2>
+          <p class="room-sub">To'g'ridan-to'g'ri to'lov ilovalari orqali xarid qiling</p>
+        </div>
+
+        <!-- Joriy balans kartochkasi -->
+        <div class="balance-card">
+          <div class="balance-card-header">
+            <span>🪙 Sizning joriy balansingiz</span>
+            <span class="balance-number" id="limitCoinsBig">5 ta</span>
+          </div>
+          <p class="balance-card-desc">Har 1 ta PowerPoint taqdimot yaratish uchun 1 ta koin sarflanadi.</p>
+        </div>
+
+        <!-- 1. Paket tanlash -->
+        <div class="packages-section">
+          <h3 class="section-subtitle">📦 Taqdimot paketini tanlang:</h3>
+          <div class="package-cards-grid">
+            <div class="pkg-card" data-coins="1" data-amount="5000">
+              <span class="pkg-badge">Start</span>
+              <span class="pkg-coins">1 ta koin</span>
+              <span class="pkg-price">5 000 so'm</span>
+            </div>
+            <div class="pkg-card" data-coins="3" data-amount="15000">
+              <span class="pkg-badge">Optimal</span>
+              <span class="pkg-coins">3 ta koin</span>
+              <span class="pkg-price">15 000 so'm</span>
+            </div>
+            <div class="pkg-card active" data-coins="5" data-amount="20000">
+              <span class="pkg-badge pop">Aksiya</span>
+              <span class="pkg-coins">5 ta koin</span>
+              <span class="pkg-price">20 000 so'm</span>
+              <span class="pkg-discount">-20% chegirma</span>
+            </div>
+            <div class="pkg-card" data-coins="10" data-amount="35000">
+              <span class="pkg-badge hot">Eng arzon</span>
+              <span class="pkg-coins">10 ta koin</span>
+              <span class="pkg-price">35 000 so'm</span>
+              <span class="pkg-discount">3 500 so'm/dona</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. To'lov ilovalari orqali 1-bosishda o'tish -->
+        <div class="pay-apps-section">
+          <h3 class="section-subtitle">📲 To'lov ilovasini tanlang:</h3>
+          <p class="pay-apps-note">Ilovani ochganda karta raqami va summa avtomatik joylanadi:</p>
+
+          <div class="pay-buttons-list">
+            <!-- Payme -->
+            <button type="button" class="pay-app-btn payme-btn" id="btnPayPayme">
+              <div class="app-btn-left">
+                <span class="app-icon">🟢</span>
+                <div class="app-text">
+                  <span class="app-title">Payme ilovasida to'lash</span>
+                  <span class="app-desc" id="paymeAmountText">20 000 so'm (5 ta koin)</span>
+                </div>
+              </div>
+              <span class="app-arrow">→</span>
+            </button>
+
+            <!-- Click -->
+            <button type="button" class="pay-app-btn click-btn" id="btnPayClick">
+              <div class="app-btn-left">
+                <span class="app-icon">🔵</span>
+                <div class="app-text">
+                  <span class="app-title">Click Up ilovasida to'lash</span>
+                  <span class="app-desc" id="clickAmountText">20 000 so'm (5 ta koin)</span>
+                </div>
+              </div>
+              <span class="app-arrow">→</span>
+            </button>
+
+            <!-- Uzum Bank -->
+            <button type="button" class="pay-app-btn uzum-btn" id="btnPayUzum">
+              <div class="app-btn-left">
+                <span class="app-icon">🟣</span>
+                <div class="app-text">
+                  <span class="app-title">Uzum Bank ilovasida to'lash</span>
+                  <span class="app-desc" id="uzumAmountText">20 000 so'm (5 ta koin)</span>
+                </div>
+              </div>
+              <span class="app-arrow">→</span>
+            </button>
+
+            <!-- Paynet -->
+            <button type="button" class="pay-app-btn paynet-btn" id="btnPayPaynet">
+              <div class="app-btn-left">
+                <span class="app-icon">🟠</span>
+                <div class="app-text">
+                  <span class="app-title">Paynet ilovasida to'lash</span>
+                  <span class="app-desc" id="paynetAmountText">20 000 so'm (5 ta koin)</span>
+                </div>
+              </div>
+              <span class="app-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Qo'lda o'tkazish uchun karta kartochkasi -->
+        <div class="card-display">
+          <div class="card-header-inner">
+            <span class="card-label">💳 Humo / Uzcard karta raqami:</span>
+            <span class="card-bank-badge">Akhrorov</span>
+          </div>
+          <div class="card-number-row">
+            <code id="cardNumberText">9860 1601 4253 0080</code>
+            <button type="button" id="copyCardBtn" class="copy-small-btn">📋 Nusxa olish</button>
+          </div>
+        </div>
+
+        <!-- 4. Mini App ichidan chek yuklash -->
+        <div class="inapp-receipt-box">
+          <h3 class="section-subtitle">📸 To'lov qildingizmi? Chekni yuklang:</h3>
+          <p class="receipt-note">To'lov chekining skrinshotini yuklang, admin tekshirib darhol koinlarni biriktiradi:</p>
+
+          <div class="receipt-upload-row">
+            <input type="file" id="inappReceiptInput" accept="image/*" class="hidden" />
+            <button type="button" class="upload-receipt-btn" id="btnTriggerReceiptUpload">
+              📷 Chek rasmini tanlash
+            </button>
+          </div>
+          <div id="receiptPreviewBox" class="receipt-preview-box hidden">
+            <img id="receiptPreviewImg" src="" alt="Chek" />
+            <button type="button" id="btnSubmitReceipt" class="primary-btn" style="margin-top: 8px;">
+              🚀 Adminga tekshiruvga yuborish
+            </button>
+          </div>
+          <p id="receiptStatusMsg" class="receipt-status-msg hidden"></p>
+        </div>
+
+        <!-- 5. 3 ta do'st taklif qilish (Referal) -->
+        <div class="referral-box">
+          <h3 class="ref-title">👥 Do'stlarni taklif qilish (Bepul koinlar)</h3>
+          <p class="ref-desc">Har <b>3 ta do'stingiz</b> botga qo'shilganda, hisobingizga <b>+1 ta bepul taqdimot</b> sovg'a qilinadi!</p>
+
+          <div class="ref-progress-bar">
+            <div class="ref-progress-fill" id="refProgressFill" style="width: 0%;"></div>
+          </div>
+          <div class="ref-progress-label">
+            <span>Joriy natija:</span>
+            <span id="refProgressLabelText">0 / 3 ta do'st</span>
+          </div>
+
+          <div class="ref-actions">
+            <button type="button" class="copy-ref-btn" id="copyRefLinkBtn">📋 Havoladan nusxa olish</button>
+            <button type="button" class="share-ref-btn" id="shareRefLinkBtn">📤 Do'stlarga ulashish</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- XONA 4: ❓ QO'LLANMA (FAQ)                  -->
+      <!-- ========================================== -->
+      <section id="tabHelp" class="tab-content">
+        <div class="room-header">
+          <h2 class="room-title">❓ Qo'llanma & Yordam</h2>
+          <p class="room-sub">Botdan maksimal samarali foydalanish sirlari</p>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <h4>💡 Qanday qilib yaxshi taqdimot olish mumkin?</h4>
+            <p>Mavzuni iloji boricha aniq yozing. Masalan: shunchaki "Iqtisod" emas, balki "O'zbekistonda yashil iqtisodiyot istiqbollari" deb yozing.</p>
+          </div>
+          <div class="faq-item">
+            <h4>📄 Referat yoki konspekt biriktirish qanday ishlaydi?</h4>
+            <p>1-qadamda "Word yoki PDF biriktirish" tugmasini bosib, konspektingizni tanlang. AI barcha sahifalarni o'qib, asosiy xulosalarni slaydga aylantiradi.</p>
+          </div>
+          <div class="faq-item">
+            <h4>🎙 Ovozli xabar orqali yaratish mumkinmi?</h4>
+            <p>Ha! Telegram bot chatiga kirib, mikrofon orqali mavzuni gapirib yuborsangiz, bot darhol tushunib slayd yasashni boshlaydi.</p>
+          </div>
+          <div class="faq-item">
+            <h4>🎁 Qanday qilib tekin coin olish mumkin?</h4>
+            <p>"Limit" bo'limiga o'ting va shaxsiy referal havolangizni do'stlaringizga ulashing. Har 3 ta do'stingiz uchun +1 ta bepul taqdimot beriladi!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- XONA 5: 👑 ADMIN PANEL (Faqat Admin uchun) -->
+      <!-- ========================================== -->
+      <section id="tabAdmin" class="tab-content">
+        <div class="room-header">
+          <h2 class="room-title">👑 Admin Boshqaruv Paneli</h2>
+          <p class="room-sub">Foydalanuvchilar hisoboti va coin boshqaruvi</p>
+        </div>
+
+        <div class="admin-stats-grid">
+          <div class="stat-card">
+            <span class="stat-num" id="adminTotalUsers">0</span>
+            <span class="stat-lbl">Foydalanuvchilar</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="adminTotalPres">0</span>
+            <span class="stat-lbl">Taqdimotlar</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="adminTotalCoins">0</span>
+            <span class="stat-lbl">Sarflangan coin</span>
+          </div>
+        </div>
+
+        <!-- Foydalanuvchiga coin berish -->
+        <div class="admin-give-box">
+          <h3 class="box-title">🎁 Foydalanuvchiga Coin Taqdim Qilish</h3>
+          <div class="give-row">
+            <input type="text" id="targetUserIdInput" placeholder="Foydalanuvchi Telegram ID" class="custom-input" />
+            <input type="number" id="giveAmountInput" value="5" min="1" max="100" class="custom-input" style="width: 80px;" />
+            <button type="button" id="submitGiveCoinsBtn" class="primary-btn" style="padding: 10px 14px;">Coin Berish</button>
+          </div>
+        </div>
+
+        <!-- Jonli taqdimotlar hisoboti -->
+        <div class="admin-logs-box">
+          <h3 class="box-title">📝 So'nggi Taqdimotlar Tarixi</h3>
+          <div id="adminPresLogsList" class="admin-logs-list">
+            <p style="color: #64748b; font-size: 13px;">Yuklanmoqda...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- To'lov ilovasiga o'tishdan oldin ruxsat so'rash (Confirmation Modal) -->
+      <div id="paymentModalOverlay" class="modal-overlay hidden">
+        <div class="modal-card">
+          <div class="modal-header-row">
+            <span class="modal-icon" id="modalAppIcon">🟢</span>
+            <h3 class="modal-title" id="modalAppTitle">Payme ilovasi ochilmoqda</h3>
+          </div>
+          <div class="modal-body-content">
+            <p class="modal-text">To'lov ilovasiga o'tib karta raqamini avtomatik kiritishga ruxsat berasizmi?</p>
+            <div class="modal-info-box">
+              <div class="info-row">
+                <span>💳 Karta:</span>
+                <b>9860 1601 4253 0080</b>
+              </div>
+              <div class="info-row">
+                <span>👤 Qabul qiluvchi:</span>
+                <b>Akhrorov</b>
+              </div>
+              <div class="info-row">
+                <span>💰 Summa:</span>
+                <b id="modalAppAmount" style="color: #38bdf8;">20 000 so'm</b>
+              </div>
+              <div class="info-row">
+                <span>🪙 Taqdimotlar:</span>
+                <b id="modalAppCoins">5 ta koin</b>
+              </div>
+            </div>
+            <p class="modal-tip">💡 O'tkazmani bajargach, chekni ushbu xonada yuklang — koinlar darhol biriktiriladi!</p>
+          </div>
+          <div class="modal-actions-row">
+            <button type="button" class="modal-cancel-btn" id="modalCancelBtn">Bekor qilish</button>
+            <button type="button" class="modal-confirm-btn" id="modalConfirmBtn">Ha, ochilsin →</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 3. BOTTOM NAVIGATION BAR (Skrinshotdagi 4 ta asosiy xona) -->
+    <nav class="bottom-nav-bar">
+      <button type="button" class="nav-tab active" data-tab="tabCreate">
+        <span class="nav-icon">✨</span>
+        <span class="nav-label">Yaratish</span>
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="tabHistory">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Slaydlarim</span>
+        <span class="nav-badge hidden" id="historyCountBadge">0</span>
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="tabLimit">
+        <span class="nav-icon">🪙</span>
+        <span class="nav-label">Koin Olish</span>
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="tabHelp">
+        <span class="nav-icon">❓</span>
+        <span class="nav-label">Qo'llanma</span>
+      </button>
+
+      <button type="button" class="nav-tab hidden" id="adminNavTab" data-tab="tabAdmin">
+        <span class="nav-icon">👑</span>
+        <span class="nav-label">Admin</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

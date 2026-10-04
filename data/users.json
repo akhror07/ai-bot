@@ -1,0 +1,74 @@
+{
+  "8388288136": {
+    "userId": "8388288136",
+    "username": "Akhrorov18",
+    "firstName": "Akhrorov",
+    "coins": 14,
+    "usedCoins": 1,
+    "referrerId": null,
+    "referralsCount": 0,
+    "referralProgress": 0,
+    "createdAt": "2026-10-04T16:56:20.751Z",
+    "lastActive": "2026-10-04T18:07:55.876Z"
+  },
+  "5768084654": {
+    "userId": "5768084654",
+    "username": "mamurjonov00",
+    "firstName": "Mamurjanov",
+    "coins": 16,
+    "usedCoins": 1,
+    "referrerId": null,
+    "referralsCount": 3,
+    "referralProgress": 0,
+    "createdAt": "2026-10-04T17:13:09.712Z",
+    "lastActive": "2026-10-04T17:20:40.639Z"
+  },
+  "6600344525": {
+    "userId": "6600344525",
+    "username": "akhrorov0",
+    "firstName": "Akhrorov",
+    "coins": 10,
+    "usedCoins": 0,
+    "referrerId": "5768084654",
+    "referralsCount": 0,
+    "referralProgress": 0,
+    "createdAt": "2026-10-04T17:18:43.962Z",
+    "lastActive": "2026-10-04T18:08:33.005Z"
+  },
+  "7569927187": {
+    "userId": "7569927187",
+    "username": "Akhrrv18",
+    "firstName": "Akhrorov",
+    "coins": 12,
+    "usedCoins": 0,
+    "referrerId": "5768084654",
+    "referralsCount": 0,
+    "referralProgress": 0,
+    "createdAt": "2026-10-04T17:19:38.713Z",
+    "lastActive": "2026-10-04T17:49:38.190Z"
+  },
+  "7862857511": {
+    "userId": "7862857511",
+    "username": "AkhrorovAi",
+    "firstName": "Akhrorov Ai test",
+    "coins": 10,
+    "usedCoins": 0,
+    "referrerId": "5768084654",
+    "referralsCount": 0,
+    "referralProgress": 0,
+    "createdAt": "2026-10-04T17:20:33.295Z",
+    "lastActive": "2026-10-04T17:20:33.295Z"
+  },
+  "8855934664": {
+    "userId": "8855934664",
+    "username": "",
+    "firstName": "firdavs",
+    "coins": 10,
+    "usedCoins": 0,
+    "referrerId": null,
+    "referralsCount": 0,
+    "referralProgress": 0,
+    "createdAt": "2026-10-04T17:29:23.021Z",
+    "lastActive": "2026-10-04T17:29:23.021Z"
+  }
+}
