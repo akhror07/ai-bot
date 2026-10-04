@@ -8,8 +8,8 @@ services:
     startCommand: node index.js
     envVars:
       - key: BOT_TOKEN
-        value: 8925416268:AAFhSrfU4zCMYQbT_VKxcJTkdUy-acb06qE
+        sync: false
       - key: GEMINI_API_KEY
-        value: AQ.Ab8RN6IizhgjzEFjdHxI9BJ4H7mfH_EUwlNyrZzTOtDLjeDA9A
+        sync: false
       - key: ADMIN_ID
-        value: "8388288136"
+        sync: false
