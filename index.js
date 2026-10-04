@@ -5,6 +5,14 @@ import { startTunnel as startUntun } from 'untun';
 import localtunnel from 'localtunnel';
 
 async function setupPublicTunnel() {
+  // Agar Render yoki boshqa bulutli serverda bo'lsa (doimiy HTTPS domen mavjud bo'lsa)
+  const cloudUrl = process.env.RENDER_EXTERNAL_URL || process.env.MINI_APP_URL;
+  if (cloudUrl && cloudUrl.startsWith('https://')) {
+    console.log(`🌍 Doimiy Bulutli HTTPS domen aniqlandi: ${cloudUrl}`);
+    config.miniAppUrl = cloudUrl;
+    return cloudUrl;
+  }
+
   // 1-urinish: Cloudflare Quick Tunnel (untun) - Hech qanday ogohlantirish oynasisiz to'g'ridan-to'g'ri ochiladi!
   try {
     console.log('🔗 Cloudflare Quick Tunnel (untun) ochilmoqda...');

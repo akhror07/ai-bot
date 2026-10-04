@@ -21,6 +21,7 @@ import {
   getPaymentById,
   CARD_NUMBER,
   PRICE_PER_SLIDE,
+  ADMIN_TELEGRAM_USERNAME,
 } from './db.js';
 import { extractTextFromDocument } from './docs.js';
 import { processVoiceMessage } from './voice.js';
@@ -495,8 +496,31 @@ bot.command('help', async (ctx) => {
 2. **Ovozli xabar:** Mikrofonni bosib mavzuni gapiring.
 3. **Hujjat yuborish:** PDF yoki Word faylingizni tashlang, AI konspekt tayyorlaydi.
 4. **Referal:** /balance orqali referal havolangizni oling, har 3 ta do'stingiz uchun +1 ta bepul taqdimot beriladi!
-5. **Balans to'ldirish:** /pay orqali to'lov qiling (1 ta taqdimot = 5 000 so'm).`,
+5. **Balans to'ldirish:** /pay orqali to'lov qiling (1 ta taqdimot = 5 000 so'm).
+6. **Taklif va talablar:** Adminga murojaat: @${ADMIN_TELEGRAM_USERNAME}`,
     { parse_mode: 'Markdown' }
+  );
+});
+
+// /taklif yoki /feedback buyrug'i
+bot.command(['taklif', 'talab', 'feedback'], async (ctx) => {
+  const keyboard = new InlineKeyboard();
+  if (config.miniAppUrl && config.miniAppUrl.startsWith('https://')) {
+    keyboard.webApp('💡 Mini App orqali taklif yuborish', config.miniAppUrl).row();
+  }
+  keyboard.url('✈️ Adminga to\'g\'ridan-to\'g\'ri yozish', `https://t.me/${ADMIN_TELEGRAM_USERNAME}`);
+
+  await ctx.reply(
+    `📬 *Adminga taklif va talablar:*
+
+Botni yaxshilash, yangi funksiyalar qo'shish yoki hamkorlik bo'yicha takliflaringiz bo'lsa, xursand bo'lamiz!
+
+👤 *Admin:* @${ADMIN_TELEGRAM_USERNAME}
+📱 _Mini App ichidagi "Taklif & Yordam" bo'limidan ham xabar yuborishingiz mumkin._`,
+    {
+      parse_mode: 'Markdown',
+      reply_markup: keyboard,
+    }
   );
 });
 

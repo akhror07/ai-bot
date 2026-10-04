@@ -395,14 +395,68 @@
       </section>
 
       <!-- ========================================== -->
-      <!-- XONA 4: ❓ QO'LLANMA (FAQ)                  -->
+      <!-- XONA 4: 💡 TAKLIF & YORDAM                 -->
       <!-- ========================================== -->
       <section id="tabHelp" class="tab-content">
         <div class="room-header">
-          <h2 class="room-title">❓ Qo'llanma & Yordam</h2>
-          <p class="room-sub">Botdan maksimal samarali foydalanish sirlari</p>
+          <h2 class="room-title">💡 Taklif, Talab & Yordam</h2>
+          <p class="room-sub">Fikr-mulohazalaringiz va botdan foydalanish bo'yicha ma'lumotlar</p>
         </div>
 
+        <!-- 1. ADMINGA TAKLIF VA TALABLAR KARTASI -->
+        <div class="feedback-card">
+          <div class="feedback-card-header">
+            <div class="feedback-icon-badge">📬</div>
+            <div class="feedback-title-meta">
+              <h3 class="feedback-heading">Adminga Taklif va Talablar</h3>
+              <p class="feedback-subtext">Ilovani yaxshilash yoki yangi imkoniyatlar bo'yicha taklifingiz bormi? Biz uni kutamiz!</p>
+            </div>
+          </div>
+
+          <!-- ADMIN BILAN TO'G'RIDAN-TO'G'RI TELEGRAM ALOQA -->
+          <div class="admin-contact-banner">
+            <div class="admin-contact-left">
+              <div class="admin-contact-avatar">👨‍💻</div>
+              <div class="admin-contact-text">
+                <span class="admin-contact-lbl">Admin bilan to'g'ridan-to'g'ri aloqa:</span>
+                <div class="admin-username-row">
+                  <span class="admin-username-badge" id="adminUsernameBadge">@akhrorov18</span>
+                  <span class="status-online-dot"></span>
+                </div>
+              </div>
+            </div>
+            <div class="admin-contact-btns">
+              <button type="button" class="admin-btn-action btn-copy-username" id="btnCopyAdminUsername" title="Username nusxalash">
+                <span class="btn-copy-icon">📋</span>
+                <span id="copyBtnLabel">Nusxa</span>
+              </button>
+              <a href="https://t.me/akhrorov18" target="_blank" rel="noopener noreferrer" class="admin-btn-action btn-open-telegram" id="btnOpenAdminTelegram">
+                <span>✈️ Yozish</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- MINI APP ICHIDAN TAKLIF YUBORISH FORMASI -->
+          <div class="feedback-form-box">
+            <label for="feedbackTextInput" class="feedback-form-label">
+              ✍️ Mini App orqali xabar qoldirish:
+            </label>
+            <div class="textarea-box" style="margin-bottom: 10px;">
+              <textarea 
+                id="feedbackTextInput" 
+                rows="3" 
+                placeholder="Taklif yoki talabingizni bu yerga yozing (masalan: yangi dizayn mavzusi, slaydlar formati yoki o'z fikringiz)..."
+              ></textarea>
+            </div>
+            <button type="button" id="btnSubmitFeedback" class="primary-btn feedback-send-btn">
+              <span>🚀 Adminga yuborish</span>
+            </button>
+            <div id="feedbackAlertBox" class="feedback-alert hidden"></div>
+          </div>
+        </div>
+
+        <!-- 2. TEZ-TEZ BERILADIGAN SAVOLLAR (FAQ) -->
+        <h3 class="section-subtitle" style="margin-top: 22px;">❓ Ko'p beriladigan savollar</h3>
         <div class="faq-list">
           <div class="faq-item">
             <h4>💡 Qanday qilib yaxshi taqdimot olish mumkin?</h4>
@@ -464,6 +518,14 @@
             <p style="color: #64748b; font-size: 13px;">Yuklanmoqda...</p>
           </div>
         </div>
+
+        <!-- Kelib tushgan taklif va talablar hisoboti -->
+        <div class="admin-logs-box" style="margin-top: 16px;">
+          <h3 class="box-title">📬 Kelib Tushgan Taklif va Talablar</h3>
+          <div id="adminFeedbackLogsList" class="admin-logs-list">
+            <p style="color: #64748b; font-size: 13px;">Hozircha xabarlar yo'q.</p>
+          </div>
+        </div>
       </section>
 
       <!-- To'lov ilovasiga o'tishdan oldin ruxsat so'rash (Confirmation Modal) -->
@@ -523,8 +585,8 @@
       </button>
 
       <button type="button" class="nav-tab" data-tab="tabHelp">
-        <span class="nav-icon">❓</span>
-        <span class="nav-label">Qo'llanma</span>
+        <span class="nav-icon">💡</span>
+        <span class="nav-label">Taklif & Yordam</span>
       </button>
 
       <button type="button" class="nav-tab hidden" id="adminNavTab" data-tab="tabAdmin">

@@ -720,6 +720,29 @@ async function loadAdminDashboard() {
       `;
       listContainer.appendChild(item);
     });
+
+    // Kelib tushgan taklif va talablar ro'yxati
+    const fbContainer = document.getElementById('adminFeedbackLogsList');
+    if (fbContainer) {
+      if (!data.feedbacks || !data.feedbacks.length) {
+        fbContainer.innerHTML = '<p style="color:#64748b; font-size:13px;">Hozircha taklif yoki talablar mavjud emas.</p>';
+      } else {
+        fbContainer.innerHTML = '';
+        data.feedbacks.forEach(fb => {
+          const item = document.createElement('div');
+          item.className = 'log-item feedback-log-item';
+          const timeStr = new Date(fb.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+          item.innerHTML = `
+            <div class="log-user" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>👤 <b>${fb.firstName}</b> ${fb.username ? `(@${fb.username})` : `[ID:${fb.userId}]`}</span>
+              <span style="font-size:11px; color:#94a3b8;">${timeStr}</span>
+            </div>
+            <div class="log-topic" style="color:#f8fafc; font-size:13px; font-weight:500; margin-top:6px; white-space:pre-wrap; background:rgba(255,255,255,0.03); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06);">💬 "${fb.message}"</div>
+          `;
+          fbContainer.appendChild(item);
+        });
+      }
+    }
   } catch (err) {
     console.error('Admin load error:', err);
   }
@@ -764,3 +787,111 @@ if (submitGiveCoinsBtn) {
     submitGiveCoinsBtn.textContent = 'Coin Berish';
   });
 }
+
+// 15. ADMINGA TAKLIF VA TALABLAR (FEEDBACK)
+const btnCopyAdminUsername = document.getElementById('btnCopyAdminUsername');
+const copyBtnLabel = document.getElementById('copyBtnLabel');
+const btnOpenAdminTelegram = document.getElementById('btnOpenAdminTelegram');
+const btnSubmitFeedback = document.getElementById('btnSubmitFeedback');
+const feedbackTextInput = document.getElementById('feedbackTextInput');
+const feedbackAlertBox = document.getElementById('feedbackAlertBox');
+
+const ADMIN_USERNAME = 'akhrorov18';
+
+// Username nusxa olish (@akhrorov18)
+if (btnCopyAdminUsername) {
+  btnCopyAdminUsername.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(`@${ADMIN_USERNAME}`);
+      if (copyBtnLabel) copyBtnLabel.textContent = 'Olingan!';
+      btnCopyAdminUsername.classList.add('copied');
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      setTimeout(() => {
+        if (copyBtnLabel) copyBtnLabel.textContent = 'Nusxa';
+        btnCopyAdminUsername.classList.remove('copied');
+      }, 2000);
+    } catch (_) {
+      const ta = document.createElement('textarea');
+      ta.value = `@${ADMIN_USERNAME}`;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copyBtnLabel) copyBtnLabel.textContent = 'Olingan!';
+      setTimeout(() => {
+        if (copyBtnLabel) copyBtnLabel.textContent = 'Nusxa';
+      }, 2000);
+    }
+  });
+}
+
+// Telegram orqali to'g'ridan-to'g'ri adminga yozish (@akhrorov18)
+if (btnOpenAdminTelegram) {
+  btnOpenAdminTelegram.addEventListener('click', (e) => {
+    if (tg?.openTelegramLink) {
+      e.preventDefault();
+      tg.openTelegramLink(`https://t.me/${ADMIN_USERNAME}`);
+    }
+  });
+}
+
+// Mini App ichidan taklif va talab yuborish
+if (btnSubmitFeedback) {
+  btnSubmitFeedback.addEventListener('click', async () => {
+    const text = feedbackTextInput ? feedbackTextInput.value.trim() : '';
+
+    if (!text) {
+      showFeedbackAlert('Iltimos, taklif yoki talabingizni yozing!', 'error');
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
+      return;
+    }
+
+    if (text.length < 3) {
+      showFeedbackAlert('Xabar juda qisqa. Batafsilroq yozing!', 'error');
+      return;
+    }
+
+    btnSubmitFeedback.disabled = true;
+    btnSubmitFeedback.innerHTML = '<span>⏳ Yuborilmoqda...</span>';
+
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUserId,
+          username: currentUsername,
+          firstName: currentFirstName,
+          message: text,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showFeedbackAlert('✅ ' + (data.message || 'Taklifingiz adminga yetkazildi! Rahmat!'), 'success');
+        if (feedbackTextInput) feedbackTextInput.value = '';
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      } else {
+        showFeedbackAlert('❌ ' + (data.error || 'Yuborishda xatolik yuz berdi.'), 'error');
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+      }
+    } catch (err) {
+      showFeedbackAlert('❌ Server bilan bog\'lanishda xatolik yuz berdi.', 'error');
+    } finally {
+      btnSubmitFeedback.disabled = false;
+      btnSubmitFeedback.innerHTML = '<span>🚀 Adminga yuborish</span>';
+    }
+  });
+}
+
+function showFeedbackAlert(msg, type = 'success') {
+  if (!feedbackAlertBox) return;
+  feedbackAlertBox.className = `feedback-alert ${type}`;
+  feedbackAlertBox.textContent = msg;
+  feedbackAlertBox.classList.remove('hidden');
+
+  setTimeout(() => {
+    feedbackAlertBox.classList.add('hidden');
+  }, 6000);
+}
+
