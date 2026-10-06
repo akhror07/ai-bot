@@ -2,82 +2,246 @@
  * Mavzuga 100% mos yuqori sifatli fotosuratlarni qidiradi va yuklaydi.
  * 1-bosqich: Unsplash Search (haqiqiy, professional, mavzuga to'liq mos 4K fotosuratlar).
  * 2-bosqich: Wikimedia Commons (ilmiy, texnik, tibbiy va ta'limiy fotosuratlar).
- * 3-bosqich: Pollinations AI (mavzuga mos generatsiya).
+ * 3-bosqich: Pollinations AI (mavzuga mos 4K generatsiya).
  * Hech qachon mavzuga aloqasiz tasodifiy rasm chiqarmaydi!
  */
 
-// Sohaviy inglizcha kalit so'zlar xaritasi
-const CATEGORY_KEYWORDS = {
-  education: 'education university students study classroom learning',
-  economy: 'business finance economy investment growth market',
-  medical: 'medical healthcare medicine doctor hospital science',
-  tech: 'technology software coding computer artificial intelligence',
-  nature: 'nature ecology agriculture environment green science',
-  general: 'modern professional presentation abstract concept',
-};
+// Kengaytirilgan o'zbekcha/ruscha so'zlarni professional inglizcha vizual kalit so'zlarga o'tkazish lug'ati
+const DICTIONARY = {
+  // Psixologiya va inson idroki
+  psixologiya: 'psychology human brain',
+  psixologik: 'psychological mental mind',
+  kognitiv: 'cognitive brain neuroscience',
+  xotira: 'memory brain recall',
+  xotirasi: 'memory brain mind',
+  inson: 'human mind',
+  ong: 'consciousness human brain',
+  miya: 'human brain neuroscience',
+  ruhiyat: 'psychology emotional mental',
+  emotsiya: 'emotion feeling expressive',
+  xulq: 'behavior psychological',
+  idrok: 'perception cognitive brain',
+  tafakkur: 'thinking reasoning intellect',
 
-// O'zbekcha atamalarni inglizchaga tarjima qilish xaritasi (qidiruv aniqligini oshirish uchun)
-const UZ_EN_DICTIONARY = {
-  psixologiya: 'psychology human mind',
-  kognitiv: 'cognitive brain memory',
-  iqtisod: 'economy finance',
-  moliya: 'finance banking investment',
-  tibbiyot: 'medicine healthcare doctor',
-  talim: 'education university classroom',
-  maktab: 'school learning students',
-  tarix: 'history historical museum',
-  texnologiya: 'technology computer innovation',
-  dasturlash: 'programming software coding',
+  // Sun'iy intellekt va Axborot texnologiyalari
   suniy: 'artificial intelligence robot',
-  intellekt: 'intelligence algorithm neural network',
-  qishloq: 'agriculture farming field',
-  xojaligi: 'farming agriculture harvest',
-  tabiat: 'nature environment ecology',
-  ekologiya: 'ecology green clean energy',
-  marketing: 'marketing business sales digital',
-  strategiya: 'strategy roadmap planning',
-  boshqaruv: 'management leadership team',
-  fizika: 'physics science research laboratory',
-  kimyo: 'chemistry laboratory experiment science',
-  matematika: 'mathematics data analytics formulas',
-  geografiya: 'geography world globe landscape',
-  huquq: 'law justice court legal',
-  madaniyat: 'culture art heritage museum',
+  intellekt: 'intelligence algorithm neural',
+  ai: 'artificial intelligence futuristic technology',
+  neyron: 'neural network deep learning',
+  tarmoq: 'network cyber digital',
+  tarmoqlari: 'neural network data',
+  robot: 'robot robotics automation',
+  robototexnika: 'robotics automation machine',
+  dasturlash: 'programming software coding developer',
+  dasturchi: 'software developer coding computer',
+  kompyuter: 'computer technology laptop modern',
+  kiber: 'cyber security technology code',
+  xavfsizlik: 'security technology protection shield',
+  malumotlar: 'data analytics server cloud',
+  baza: 'database analytics server',
+  bulutli: 'cloud computing digital data',
+  texnologiya: 'technology innovation modern tech',
+  texnologiyalar: 'technology digital innovation',
+  innovatsiya: 'innovation creative technology future',
+  algoritm: 'algorithm digital logic code',
+  veb: 'web technology digital modern',
+  mobil: 'mobile smartphone digital app',
+
+  // Iqtisodiyot, Biznes va Moliya
+  iqtisod: 'economy finance market business',
+  iqtisodiyot: 'economy finance industry business',
+  iqtisodiyoti: 'economy market business corporate',
+  moliya: 'finance banking investment currency',
+  moliyaviy: 'finance investment stock banking',
+  biznes: 'business corporate office teamwork',
+  tadbirkorlik: 'entrepreneurship startup office business',
+  investitsiya: 'investment financial growth capital',
+  investor: 'investor finance banking business',
+  bank: 'banking financial economy money',
+  bozor: 'market economy trade business',
+  savdo: 'trade commercial retail business',
+  eksport: 'export trade logistics transport',
+  import: 'import cargo shipping logistics',
+  daromad: 'revenue profit financial growth',
+  soliq: 'tax finance governance economy',
+  boshqaruv: 'management leadership corporate team',
+  menejment: 'management leadership business strategy',
+  marketing: 'marketing digital branding advertising',
+  strategiya: 'strategy business planning roadmap',
+  reja: 'planning strategy business roadmap',
+
+  // Tibbiyot va Salomatlik
+  tibbiyot: 'medicine doctor hospital healthcare',
+  tibbiy: 'medical clinic healthcare doctor',
+  shifokor: 'doctor hospital healthcare clinic',
+  hamshira: 'nurse hospital medical care',
+  salomatlik: 'healthcare wellness medical fitness',
+  kasallik: 'medical disease therapy laboratory',
+  davolash: 'treatment medical healthcare therapy',
+  dorilar: 'medicine pharmacy pharmaceutical pills',
+  farmatsevtika: 'pharmaceutical medicine research lab',
+  anatomiya: 'human anatomy medical science',
+  jarrohlik: 'surgery surgeon operating medical',
+  vaksina: 'vaccine medicine laboratory research',
+  virus: 'virus microbiology laboratory medical',
+
+  // Ta'lim va Fan
+  talim: 'education university classroom students',
+  maktab: 'school classroom students learning',
+  universitet: 'university campus college students',
+  institut: 'academic university library study',
+  talaba: 'student studying college university',
+  talabalar: 'students college campus studying',
+  oqituvchi: 'teacher classroom education professor',
+  pedagogika: 'pedagogy education teaching school',
+  dars: 'classroom lecture study learning',
+  kitob: 'books library literature study',
+  kitoblar: 'library books knowledge education',
+  tadqiqot: 'scientific research laboratory study',
+  ilmiy: 'science research academic laboratory',
+  fan: 'science research knowledge discovery',
+
+  // Adabiyot, Tarix va Madaniyat
+  navoiy: 'classic oriental poetry manuscript literature',
+  adabiyot: 'literature classic books library poetry',
+  sheriyat: 'poetry poem literature writing manuscript',
+  ijod: 'art literature writing creative work',
+  tarix: 'history ancient architecture heritage museum',
+  tarixiy: 'historical ancient architecture heritage',
+  madaniyat: 'culture tradition heritage architecture',
+  meros: 'cultural heritage historical architecture',
+  muzey: 'museum art historical artifacts gallery',
+  qadimiy: 'ancient historical architecture monument',
+  buxoro: 'ancient central asia architecture monuments',
+  samarqand: 'ancient central asia turquoise dome architecture',
+  temur: 'historical central asia empire architecture',
+
+  // Tabiat, Ekologiya va Qishloq xo'jaligi
+  tabiat: 'nature landscape green environment forest',
+  ekologiya: 'ecology green clean energy environment',
+  qishloq: 'agriculture farming field harvest rural',
+  xojaligi: 'farming agriculture harvest crops field',
+  hosil: 'harvest agriculture crops farm wheat',
+  paxta: 'cotton field agriculture harvest farm',
+  galla: 'wheat agriculture grain field harvest',
+  bogdorchilik: 'orchard fruit trees gardening nature',
+  fermer: 'farmer agriculture field crop tractor',
+  suv: 'water river clean environment nature',
+  energiya: 'clean green energy solar wind turbine',
+  quyosh: 'solar energy panels sunshine technology',
+  shamol: 'wind turbine clean energy nature',
+
+  // Huquq va Davlat
+  huquq: 'law justice courthouse legal courtroom',
+  qonun: 'law justice court judge legal hammer',
+  sud: 'courthouse courtroom judge justice legal',
+  adolat: 'justice scales of justice courthouse law',
+  konstitutsiya: 'constitution law legal document justice',
+  advokat: 'lawyer attorney courthouse legal business',
+
+  // Fizika, Kimyo va Muhandislik
+  fizika: 'physics science quantum research laboratory',
+  kimyo: 'chemistry laboratory experiment flask science',
+  laboratoriya: 'science laboratory research experiment tech',
+  muhandislik: 'engineering industrial technology machine',
+  qurilish: 'construction architecture building modern',
+  arxitektura: 'architecture modern building exterior facade',
+  zavod: 'factory industrial manufacturing production',
+  sanoat: 'industry modern factory manufacturing machinery',
+  avtomobil: 'automotive car modern vehicle technology',
+  aviatsiya: 'aviation airplane flight aerospace modern',
+  transport: 'transport logistics freight modern transit',
+
+  // Sport va San'at
+  sport: 'sports athletics athlete fitness stadium',
+  futbol: 'football soccer stadium athlete sports',
+  fitnes: 'fitness workout athlete gymnasium health',
+  sanat: 'art painting gallery exhibition artist',
+  musiqa: 'music musical instruments sound concert',
+  teatr: 'theatre stage performance drama hall',
+  kino: 'cinema film camera movie production',
 };
 
-function cleanAndTranslateQuery(rawQuery) {
+// Tashlab yuboriladigan to'ldiruvchi so'zlar (stopwords)
+const STOP_WORDS = new Set([
+  'va', 'bilan', 'uchun', 'haqida', 'dagi', 'ning', 'dan', 'ga', 'ham', 'bu', 'u', 'bir',
+  'mavzusi', 'tahlili', 'bosqichlari', 'omillari', 'asosiy', 'kirish', 'xulosalar',
+  'tavsiyalar', 'keyslar', 'istiqbollari', 'muammolari', 'yechimlari', 'tamoyillari',
+  'tuzilishi', 'tizimi', 'korsatkichlari', 'boyicha', 'orqali', 'amaliyoti', 'nazariyasi',
+  'ozbekiston', 'ozbekistonda', 'respublikasi', 'davlat', 'hududiy'
+]);
+
+/**
+ * Xom qidiruv so'zini tozalab, sof inglizcha vizual kalit so'zlarga aylantiradi.
+ */
+export function extractCleanKeywords(rawQuery) {
   if (!rawQuery || typeof rawQuery !== 'string') return 'modern technology presentation';
 
-  let clean = rawQuery.toLowerCase()
+  // Lotin harflariga keltirish, belgilarni tozalash
+  const cleaned = rawQuery.toLowerCase()
     .replace(/['`ʻ’]/g, '')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 
-  // Agar so'zlar o'zbekcha bo'lsa, inglizcha ekvivalentini qo'shish
-  const tokens = clean.split(' ');
-  const translated = [];
-  for (const t of tokens) {
-    if (UZ_EN_DICTIONARY[t]) {
-      translated.push(UZ_EN_DICTIONARY[t]);
-    } else if (t.length > 2) {
-      translated.push(t);
+  const words = cleaned.split(' ');
+  const englishTerms = [];
+
+  const SUFFIXES = ['larida', 'laridan', 'dagi', 'lari', 'lar', 'dan', 'da', 'ga', 'ning', 'ni', 'si', 'isi', 'lik', 'ligi', 'yoti', 'yot'];
+
+  for (let w of words) {
+    if (STOP_WORDS.has(w)) continue;
+
+    let matched = DICTIONARY[w];
+    if (!matched) {
+      // O'zbekcha qo'shimchalarni ajratib tekshirish
+      for (const suf of SUFFIXES) {
+        if (w.endsWith(suf) && w.length > suf.length + 3) {
+          const stem = w.slice(0, -suf.length);
+          if (DICTIONARY[stem]) {
+            matched = DICTIONARY[stem];
+            break;
+          }
+        }
+      }
+    }
+
+    if (matched) {
+      englishTerms.push(matched);
+    } else if (w.length >= 3 && /^[a-z]+$/.test(w)) {
+      englishTerms.push(w);
     }
   }
 
-  const finalQuery = translated.join(' ').slice(0, 70);
-  return finalQuery || 'professional presentation visual';
+  // Agar lug'atdan mosliklar topilgan bo'lsa, birlashtiramiz va takrorlarini olib tashlaymiz
+  if (englishTerms.length > 0) {
+    const combined = englishTerms.join(' ').split(' ');
+    const unique = [...new Set(combined)].filter(x => x.length > 2);
+    // Unsplash uchun eng muhim 3-4 ta kalit so'z
+    return unique.slice(0, 4).join(' ');
+  }
+
+  // Agar sof inglizcha so'zlar bo'lsa
+  const cleanEnglishOnly = words.filter(w => !STOP_WORDS.has(w) && w.length > 2).slice(0, 3).join(' ');
+  if (cleanEnglishOnly) {
+    return cleanEnglishOnly;
+  }
+
+  return 'modern scientific presentation concept';
 }
 
-export async function fetchContextualImage(promptText, width = 800, height = 600) {
-  const searchQuery = cleanAndTranslateQuery(promptText);
-  console.log(`[Image Search] So'rov: "${searchQuery}" (asl prompt: "${promptText?.slice(0, 40)}")`);
+/**
+ * Mavzuga 100% mos rasmni topadi va Base64 Data URL sifatida qaytaradi.
+ */
+export async function fetchContextualImage(promptText, width = 1000, height = 700) {
+  const searchQuery = extractCleanKeywords(promptText);
+  console.log(`[Image Search] Aniq so'rov: "${searchQuery}" (asl prompt: "${promptText?.slice(0, 45)}")`);
 
-  // 1-URINISH: Unsplash Search (Mavzuga 100% mos haqiqiy fotosuratlar)
+  // 1-URINISH: Unsplash Search (Mavzuga 100% mos eng yuqori sifatli fotosurat)
   try {
-    const unsplashUrl = `https://unsplash.com/napi/search/photos?query=${encodeURIComponent(searchQuery)}&per_page=5`;
+    const unsplashUrl = `https://unsplash.com/napi/search/photos?query=${encodeURIComponent(searchQuery)}&per_page=4`;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
+    const timeout = setTimeout(() => controller.abort(), 4500);
 
     const res = await fetch(unsplashUrl, { signal: controller.signal });
     clearTimeout(timeout);
@@ -85,29 +249,29 @@ export async function fetchContextualImage(promptText, width = 800, height = 600
     if (res.ok) {
       const data = await res.json();
       if (data.results && data.results.length > 0) {
-        // Natijalardan mosini tanlash
-        const picked = data.results[Math.floor(Math.random() * Math.min(data.results.length, 4))];
+        // Eng birinchi eng mos keluvchi fotosuratni olamiz (#0 yoki #1)
+        const picked = data.results[0] || data.results[1];
         const directUrl = picked?.urls?.regular || picked?.urls?.small;
 
         if (directUrl) {
           const imgRes = await fetch(directUrl);
           if (imgRes.ok) {
             const buf = Buffer.from(await imgRes.arrayBuffer());
-            if (buf.byteLength > 5000) {
-              console.log(`[Image] Unsplash dan muvaffaqiyatli yuklandi (${(buf.byteLength / 1024).toFixed(0)} KB)`);
+            if (buf.byteLength > 6000) {
+              console.log(`[Image] Unsplash dan 100% mos foto yuklandi (${(buf.byteLength / 1024).toFixed(0)} KB)`);
               return `data:image/jpeg;base64,${buf.toString('base64')}`;
             }
           }
         }
       }
     }
-  } catch (err) {
-    // Unsplash band bo'lsa yoki xatolik bersa, keyingi bosqichga o'tiladi
+  } catch (_) {
+    // Unsplash uzilsa keyingi bosqichga o'tiladi
   }
 
   // 2-URINISH: Wikimedia Commons (Ilmiy, tibbiy, tarixiy va ensiklopedik rasmlar)
   try {
-    const wikiUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=4&prop=imageinfo&iiprop=url&format=json`;
+    const wikiUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=3&prop=imageinfo&iiprop=url&format=json`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3500);
 
@@ -118,16 +282,15 @@ export async function fetchContextualImage(promptText, width = 800, height = 600
       const data = await res.json();
       const pages = data.query?.pages;
       if (pages) {
-        const pageKeys = Object.keys(pages);
-        for (const k of pageKeys) {
+        for (const k of Object.keys(pages)) {
           const imgInfo = pages[k]?.imageinfo?.[0];
           const imgUrl = imgInfo?.url;
           if (imgUrl && (imgUrl.endsWith('.jpg') || imgUrl.endsWith('.jpeg') || imgUrl.endsWith('.png'))) {
             const imgRes = await fetch(imgUrl);
             if (imgRes.ok) {
               const buf = Buffer.from(await imgRes.arrayBuffer());
-              if (buf.byteLength > 5000 && buf.byteLength < 5000000) {
-                console.log(`[Image] Wikimedia dan muvaffaqiyatli yuklandi (${(buf.byteLength / 1024).toFixed(0)} KB)`);
+              if (buf.byteLength > 6000 && buf.byteLength < 5000000) {
+                console.log(`[Image] Wikimedia dan yuklandi (${(buf.byteLength / 1024).toFixed(0)} KB)`);
                 return `data:image/jpeg;base64,${buf.toString('base64')}`;
               }
             }
@@ -139,13 +302,14 @@ export async function fetchContextualImage(promptText, width = 800, height = 600
     // Keyingi bosqich
   }
 
-  // 3-URINISH: Pollinations AI (mavzuga mos generatsiya)
+  // 3-URINISH: Pollinations AI (Mavzuga mos fotorealistik 4K generatsiya)
   try {
     const seed = Math.floor(Math.random() * 900000) + 10000;
-    const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(searchQuery + ' high quality 4k photography cinematic')}` +
-                  `?width=${width}&height=${height}&nologo=true&seed=${seed}`;
+    const aiPrompt = `${searchQuery} professional 4k high quality photography cinematic documentary`;
+    const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(aiPrompt)}?width=${width}&height=${height}&nologo=true&seed=${seed}`;
+    
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5500);
+    const timeout = setTimeout(() => controller.abort(), 12000); // 12 soniya yetarli
 
     const res = await fetch(aiUrl, { signal: controller.signal });
     clearTimeout(timeout);
@@ -161,6 +325,5 @@ export async function fetchContextualImage(promptText, width = 800, height = 600
     //
   }
 
-  // Hech qachon random picsum bermaymiz!
   return null;
 }

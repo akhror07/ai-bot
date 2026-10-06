@@ -48,17 +48,17 @@ const TEMP_DIR = path.resolve('temp');
 app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: Date.now() }));
 app.get('/api/health', (req, res) => res.json({ status: 'healthy', uptime: process.uptime() }));
 
-// Render Free Tier doim uyg'oq saqlash (Keep-Alive Heartbeat: har 8 daqiqada)
-const targetUrl = process.env.RENDER_EXTERNAL_URL || config.miniAppUrl;
+// Render Free Tier doim uyg'oq saqlash (Keep-Alive Heartbeat: har 4 daqiqada)
+const targetUrl = process.env.RENDER_EXTERNAL_URL || config.miniAppUrl || 'https://ahrori-ai-bot.onrender.com';
 if (targetUrl && typeof targetUrl === 'string' && targetUrl.startsWith('http') && !targetUrl.includes('localhost')) {
   const cleanPingUrl = `${targetUrl.replace(/\/$/, '')}/api/ping`;
-  console.log(`[Keep-Alive] Render uyg'otish xizmati ishga tushdi: ${cleanPingUrl}`);
+  console.log(`[Keep-Alive] Render uyg'otish xizmati faol: ${cleanPingUrl}`);
   setInterval(async () => {
     try {
       await fetch(cleanPingUrl);
       console.log(`[Keep-Alive] Render uyg'oq saqlandi (${new Date().toLocaleTimeString()})`);
     } catch (_) {}
-  }, 8 * 60 * 1000);
+  }, 4 * 60 * 1000);
 }
 
 // 0. API: Foydalanuvchi balansi va holatini olish

@@ -34,6 +34,15 @@ bot.catch((err) => {
   console.error(`[Grammy Error] Update ${ctx?.update?.update_id} da xatolik:`, err.error);
 });
 
+// Render Web serverini har qanday foydalanuvchi faolligida avtomatik uyg'otish / faol saqlash
+bot.use(async (ctx, next) => {
+  const pingUrl = process.env.RENDER_EXTERNAL_URL || config.miniAppUrl;
+  if (pingUrl && typeof pingUrl === 'string' && pingUrl.startsWith('https://')) {
+    fetch(`${pingUrl.replace(/\/$/, '')}/api/ping`).catch(() => {});
+  }
+  return next();
+});
+
 // Foydalanuvchilarning aktiv buyurtma jarayonlarini saqlash (Session)
 const sessions = new Map();
 

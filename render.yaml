@@ -13,3 +13,7 @@ services:
         sync: false
       - key: ADMIN_ID
         sync: false
+      - key: RENDER_EXTERNAL_URL
+        value: https://ahrori-ai-bot.onrender.com
+      - key: MINI_APP_URL
+        value: https://ahrori-ai-bot.onrender.com
