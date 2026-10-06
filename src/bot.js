@@ -126,13 +126,21 @@ function getThemeKeyboard() {
 export const CHANNEL_USERNAME = (config.channelUsername || 'ahroriAI').replace('@', '');
 export const CHANNEL_URL = `https://t.me/${CHANNEL_USERNAME}`;
 
+// Admin tekshiruvi (Telegram ID orqali)
+export function isAdmin(ctxOrId) {
+  const id = typeof ctxOrId === 'object'
+    ? String(ctxOrId?.from?.id || ctxOrId?.chat?.id || '')
+    : String(ctxOrId || '');
+  return id === String(config.adminId) || id === '8388288136';
+}
+
 // Foydalanuvchining kanalga a'zoligini tekshirish
 export async function isUserSubscribedToChannel(userId, forceCheck = false) {
   if (!userId) return false;
   const idStr = String(userId);
 
   // Admin doimo ruxsatga ega
-  if (idStr === String(config.adminId)) return true;
+  if (isAdmin(idStr)) return true;
 
   const existingUser = getUser(idStr);
   if (!forceCheck && existingUser && existingUser.isChannelSubscribed) {
@@ -707,7 +715,7 @@ Iltimos, kuting...`,
 
 // Admin to'lovni tasdiqlaganda (Callback query)
 bot.callbackQuery(/^pay_ok_(.+)_(.+)$/, async (ctx) => {
-  if (String(ctx.from.id) !== String(config.adminId)) {
+  if (!isAdmin(ctx)) {
     return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
   }
 
@@ -749,7 +757,7 @@ bot.callbackQuery(/^pay_ok_(.+)_(.+)$/, async (ctx) => {
 
 // Admin VIP obunani tasdiqlaganda (Callback query)
 bot.callbackQuery(/^pay_vip_(.+)_(.+)$/, async (ctx) => {
-  if (String(ctx.from.id) !== String(config.adminId)) {
+  if (!isAdmin(ctx)) {
     return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
   }
 
@@ -790,7 +798,7 @@ bot.callbackQuery(/^pay_vip_(.+)_(.+)$/, async (ctx) => {
 
 // Admin to'lovni rad etganda (Callback query)
 bot.callbackQuery(/^pay_no_(.+)$/, async (ctx) => {
-  if (String(ctx.from.id) !== String(config.adminId)) {
+  if (!isAdmin(ctx)) {
     return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
   }
 
@@ -1258,11 +1266,52 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
   }
 });
 
-// /promo buyrug'i (FAQAT ADMIN UCHUN - Promo-kod yaratish va boshqarish)
+// Admin uchun Promo-kodlar Boshqaruv Paneli
+async function showAdminPromoPanel(ctx, isEdit = false) {
+  const list = getAllPromoCodes();
+  let msg = `👑 *ADMIN PROMO-KODLAR BOSHQARUVI*\n\n`;
+
+  if (!list.length) {
+    msg += `_Hozircha hech qanday promo-kod mavjud emas._\n\n`;
+  } else {
+    msg += `📋 *Mavjud promo-kodlar:* (${list.length} ta)\n`;
+    list.forEach((p, i) => {
+      msg += `${i + 1}. 🎟 \`${p.code}\` — 🪙 *+${p.coins} ta koin* (Ishlatildi: ${p.usedCount}/${p.maxUses})\n`;
+    });
+    msg += `\n`;
+  }
+
+  msg += `➕ *Yangi promo-kod yaratish:*\n`;
+  msg += `Pastdagi «➕ Yangi kod yaratish» tugmasini bosing yoki buyruq yozing:\n`;
+  msg += `\`/promo <KOD> <KOIN_SONI> [LIMIT]\`\n`;
+  msg += `_Namunalar: \`/promo TALABA 5\` yoki \`/promo VIP2026 10 300\`_\n\n`;
+  msg += `🗑 *Promo-kodni bekor qilish:*\n`;
+  msg += `Ro'yxatdagi qizil tugmani bosing yoki yozing: \`/promo del <KOD>\``;
+
+  const kb = new InlineKeyboard();
+  list.forEach((p) => {
+    kb.text(`🗑 "${p.code}" ni bekor qilish`, `admin_del_${p.code}`).row();
+  });
+
+  kb.text('➕ Yangi kod yaratish', 'admin_promo_create')
+    .text('🔄 Yangilash', 'admin_promo_refresh');
+
+  if (isEdit) {
+    try {
+      await ctx.editMessageText(msg, { parse_mode: 'Markdown', reply_markup: kb });
+      return;
+    } catch (_) {}
+  }
+  await ctx.reply(msg, { parse_mode: 'Markdown', reply_markup: kb });
+}
+
+// /promo buyrug'i (Admin uchun boshqaruv paneli / Oddiy foydalanuvchilar uchun kiritish)
 bot.command('promo', async (ctx) => {
-  if (String(ctx.chat.id) !== String(config.adminId)) {
+  // Oddiy foydalanuvchilar promo-kod kiritishga yo'naltiriladi
+  if (!isAdmin(ctx)) {
+    sessions.set(ctx.chat.id, { step: 'AWAIT_PROMO_CODE' });
     return ctx.reply(
-      "❌ *Bu buyruq faqat bot admini uchun!*\n\nPromo-kodni kiritish uchun asosiy menyudagi **«🎟 Promo-kod»** tugmasidan foydalaning.",
+      `🎟 *Promo-kodni yozib yuboring:*\n\n(Namuna: \`SOVGA\` — 1 ta bepul koin beradi 🎁)\n\n_Promo-kodingiz bo'lsa uni shu yerga yozing yoki bekor qilish uchun /cancel bosing._`,
       { parse_mode: 'Markdown' }
     );
   }
@@ -1270,35 +1319,13 @@ bot.command('promo', async (ctx) => {
   const rawMatch = (ctx.match || '').trim();
   const parts = rawMatch.split(/\s+/).filter(Boolean);
 
-  // 1. Parametr kiritilmagan bo'lsa yoki "list" bo'lsa -> Mavjud promo-kodlar va qo'llanma
+  // 1. Parametr kiritilmagan bo'lsa yoki "list" bo'lsa -> Admin paneli
   if (!rawMatch || parts[0]?.toLowerCase() === 'list') {
-    const list = getAllPromoCodes();
-    let msg = `👑 *Admin Promo-kodlar Boshqaruvi:*\n\n`;
-
-    if (!list.length) {
-      msg += `_Hozircha hech qanday promo-kod mavjud emas._\n\n`;
-    } else {
-      msg += `📋 *Mavjud promo-kodlar:* (${list.length} ta)\n`;
-      list.forEach((p, i) => {
-        msg += `${i + 1}. \`${p.code}\` — 🪙 *+${p.coins} ta koin* (ishlatildi: ${p.usedCount}/${p.maxUses})\n`;
-      });
-      msg += `\n`;
-    }
-
-    msg += `➕ *Yangi promo-kod yaratish:*\n`;
-    msg += `\`/promo <KOD> <KOIN_SONI> [LIMIT]\`\n\n`;
-    msg += `*Namunalar:*\n`;
-    msg += `• \`/promo SOVGA 1\` — 1 ta koin beradi\n`;
-    msg += `• \`/promo TALABA 5\` — 5 ta koin beradi (limit: 1000 ta)\n`;
-    msg += `• \`/promo VIP2026 10 200\` — 10 ta koin, 200 ta odamga\n\n`;
-    msg += `🗑 *Promo-kodni o'chirish:*\n`;
-    msg += `\`/promo del <KOD>\` (masalan: \`/promo del TALABA\`)`;
-
-    return ctx.reply(msg, { parse_mode: 'Markdown' });
+    return showAdminPromoPanel(ctx);
   }
 
-  // 2. Promo-kodni o'chirish (del / delete / remove)
-  if (['del', 'delete', 'remove', 'ochir'].includes(parts[0].toLowerCase())) {
+  // 2. Promo-kodni bekor qilish (del / delete / remove / bekor / ochir)
+  if (['del', 'delete', 'remove', 'bekor', 'ochir'].includes(parts[0].toLowerCase())) {
     const codeToDelete = parts[1];
     if (!codeToDelete) {
       return ctx.reply("❌ O'chirish uchun promo-kod nomini yozing!\nMasalan: `/promo del TALABA`", { parse_mode: 'Markdown' });
@@ -1307,7 +1334,8 @@ bot.command('promo', async (ctx) => {
     if (!deleted) {
       return ctx.reply(`❌ \`${codeToDelete.toUpperCase()}\` nomli promo-kod topilmadi!`, { parse_mode: 'Markdown' });
     }
-    return ctx.reply(`🗑 *"${deleted.code}" promo-kodi muvaffaqiyatli o'chirildi!*`, { parse_mode: 'Markdown' });
+    await ctx.reply(`🗑 *"${deleted.code}" promo-kodi muvaffaqiyatli bekor qilindi (o'chirildi)!*`, { parse_mode: 'Markdown' });
+    return showAdminPromoPanel(ctx);
   }
 
   // 3. Yangi promo-kod yaratish: /promo <KOD> <KOIN_SONI> [LIMIT]
@@ -1325,9 +1353,47 @@ bot.command('promo', async (ctx) => {
   const created = createPromoCode(newCode, coinsAmount, isNaN(maxUses) ? 1000 : maxUses);
 
   await ctx.reply(
-    `✅ *Yangi promo-kod muvaffaqiyatli yaratildi!*\n\n🎟 *Kod:* \`${created.code}\`\n🪙 *Beriladigan koinlar:* **+${created.coins} ta**\n👥 *Maksimal limit:* **${created.maxUses} ta foydalanuvchi**\n\nFoydalanuvchilar ushbu kodni botdagi **«🎟 Promo-kod»** tugmasi orqali faollashtirishlari mumkin!`,
+    `✅ *Yangi promo-kod muvaffaqiyatli yaratildi!*\n\n🎟 *Kod:* \`${created.code}\`\n🪙 *Beriladigan koinlar:* **+${created.coins} ta**\n👥 *Maksimal limit:* **${created.maxUses} ta foydalanuvchi**`,
     { parse_mode: 'Markdown' }
   );
+  return showAdminPromoPanel(ctx);
+});
+
+// Admin panel: Yangilash
+bot.callbackQuery('admin_promo_refresh', async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
+  }
+  await ctx.answerCallbackQuery({ text: 'Yangilandi 🔄' });
+  await showAdminPromoPanel(ctx, true);
+});
+
+// Admin panel: Yangi promo-kod yaratish tugmasi
+bot.callbackQuery('admin_promo_create', async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
+  }
+  await ctx.answerCallbackQuery();
+  sessions.set(ctx.chat.id, { step: 'ADMIN_CREATE_PROMO' });
+  await ctx.reply(
+    `➕ *Yangi promo-kod yaratish:*\n\nPromo-kod nomi va unga biriktiriladigan koin miqdorini yozib yuboring.\n\n*Format:* \`<KOD> <KOIN_SONI> [LIMIT]\`\n*Namunalar:*\n• \`TALABA 5\` — 5 ta koin beradi (limit: 1000)\n• \`SOVGA 1\` — 1 ta koin beradi\n• \`VIP2026 10 300\` — 10 ta koin, 300 ta odamga\n\n_(Bekor qilish uchun /cancel deb yozing)_`,
+    { parse_mode: 'Markdown' }
+  );
+});
+
+// Admin panel: Promo-kodni bekor qilish / o'chirish tugmasi
+bot.callbackQuery(/^admin_del_(.+)$/, async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
+  }
+  const code = ctx.match[1];
+  const deleted = deletePromoCode(code);
+  if (deleted) {
+    await ctx.answerCallbackQuery({ text: `🗑 "${code}" bekor qilindi!` });
+  } else {
+    await ctx.answerCallbackQuery({ text: `⚠️ "${code}" topilmadi!`, show_alert: true });
+  }
+  await showAdminPromoPanel(ctx, true);
 });
 
 // Foydalanuvchilar uchun Promo-kod kiritish tugmasi (Asosiy menyudan)
@@ -1447,6 +1513,32 @@ bot.on('message:text', async (ctx) => {
     return;
   }
 
+  // 1.1 Admin tomonidan yangi promo-kod yaratish
+  if (session && session.step === 'ADMIN_CREATE_PROMO' && isAdmin(ctx)) {
+    const parts = text.split(/\s+/).filter(Boolean);
+    const newCode = parts[0]?.toUpperCase();
+    const coinsAmount = parseInt(parts[1], 10);
+    const maxUses = parts[2] ? parseInt(parts[2], 10) : 1000;
+
+    if (!newCode || isNaN(coinsAmount) || coinsAmount <= 0) {
+      await ctx.reply(
+        `⚠️ *Format noto'g'ri!*\n\nIltimos, qaytadan yozing:\nFormat: \`<KOD> <KOIN_SONI> [LIMIT]\`\nMasalan: \`TALABA 5\` yoki \`SOVGA 1\`\n\nBekor qilish uchun: /cancel`,
+        { parse_mode: 'Markdown' }
+      );
+      return;
+    }
+
+    sessions.delete(ctx.chat.id);
+    const created = createPromoCode(newCode, coinsAmount, isNaN(maxUses) ? 1000 : maxUses);
+
+    await ctx.reply(
+      `✅ *Promo-kod muvaffaqiyatli yaratildi!*\n\n🎟 *Kod:* \`${created.code}\`\n🪙 *Beriladigan koin:* **+${created.coins} ta**\n👥 *Limit:* **${created.maxUses} ta**`,
+      { parse_mode: 'Markdown' }
+    );
+    await showAdminPromoPanel(ctx);
+    return;
+  }
+
   // 2. Agar foydalanuvchi slayd sonini qo'lda raqam qilib yozgan bo'lsa
   if (session && session.step === 'ASK_COUNT') {
     const customCount = parseInt(text, 10);
@@ -1525,7 +1617,7 @@ bot.on('message:text', async (ctx) => {
 
 // /admin buyrug'i (Admin boshqaruv paneli)
 bot.command('admin', async (ctx) => {
-  if (String(ctx.chat.id) !== config.adminId) {
+  if (!isAdmin(ctx)) {
     return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
   }
 
@@ -1554,7 +1646,7 @@ bot.command('admin', async (ctx) => {
 
 // /give buyrug'i (Foydalanuvchiga coin taqdim qilish)
 bot.command('give', async (ctx) => {
-  if (String(ctx.chat.id) !== config.adminId) {
+  if (!isAdmin(ctx)) {
     return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
   }
 
