@@ -5,7 +5,7 @@ import fs from 'fs';
 import { InputFile, InlineKeyboard } from 'grammy';
 import { generatePresentationData } from './ai.js';
 import { createPptx } from './pptx.js';
-import { bot } from './bot.js';
+import { bot, isUserSubscribedToChannel } from './bot.js';
 import { config } from './config.js';
 import {
   getUser,
@@ -62,18 +62,23 @@ if (targetUrl && typeof targetUrl === 'string' && targetUrl.startsWith('http') &
 }
 
 // 0. API: Foydalanuvchi balansi va holatini olish
-app.get('/api/user/:userId', (req, res) => {
+app.get('/api/user/:userId', async (req, res) => {
   const { userId } = req.params;
   const userRecord = getOrCreateUser(userId);
   const myPresentations = getUserPresentations(userId);
+  const isSubscribed = await isUserSubscribedToChannel(userId);
+  const channelClean = (config.channelUsername || 'ahroriAI').replace('@', '');
+
   res.json({
     success: true,
     user: userRecord.user,
     presentationsCount: myPresentations.length,
     isAdmin: String(userId) === config.adminId,
     adminUsername: ADMIN_TELEGRAM_USERNAME,
+    isChannelSubscribed: isSubscribed,
     channelBonusClaimed: userRecord.user.channelBonusClaimed || false,
-    channelUsername: config.channelUsername || 'akhrorov18',
+    channelUsername: channelClean,
+    channelUrl: `https://t.me/${channelClean}`,
     cardNumber: CARD_NUMBER,
     pricePerSlide: PRICE_PER_SLIDE,
   });
@@ -95,9 +100,20 @@ app.post('/api/generate', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Mavzu kiritilishi shart' });
     }
 
-    // Agar Telegram chatId mavjud bo'lsa, coin tekshirish
+    // Agar Telegram chatId mavjud bo'lsa, majburiy kanal a'zoligi va coin tekshirish
     let remainingCoins = 10;
     if (chatId) {
+      const channelClean = (config.channelUsername || 'ahroriAI').replace('@', '');
+      const isSubscribed = await isUserSubscribedToChannel(chatId);
+      if (!isSubscribed) {
+        return res.status(403).json({
+          success: false,
+          error: 'CHANNEL_SUBSCRIPTION_REQUIRED',
+          message: `Taqdimot yaratish uchun rasmiy @${channelClean} kanalimizga a'zo bo'lishingiz shart!`,
+          channelUrl: `https://t.me/${channelClean}`,
+        });
+      }
+
       const { user } = getOrCreateUser(chatId, { username, firstName });
       if (user.coins <= 0) {
         return res.status(403).json({
@@ -392,36 +408,25 @@ app.post('/api/check-channel', async (req, res) => {
       return res.status(400).json({ success: false, error: 'userId kiritilishi shart' });
     }
 
-    const userRecord = getOrCreateUser(userId);
-    const user = userRecord.user;
-
-    if (user.channelBonusClaimed) {
-      return res.json({
-        success: false,
-        alreadyClaimed: true,
-        message: 'Siz ushbu kanal bonusini allaqachon olgansiz!',
-      });
-    }
-
-    let isMember = false;
-    const channelRaw = config.channelUsername || 'akhrorov18';
-    const channelClean = channelRaw.replace('@', '');
-
-    try {
-      const member = await bot.api.getChatMember(`@${channelClean}`, Number(userId));
-      if (['creator', 'administrator', 'member', 'restricted'].includes(member.status)) {
-        isMember = true;
-      }
-    } catch (checkErr) {
-      console.warn('[Check Channel Error]:', checkErr.message);
-      // Agar bot kanalda admin bo'lmasa yoki kanal tekshiruvida xatolik bo'lsa, qulaylik uchun ruxsat beramiz
-      isMember = true;
-    }
+    const channelClean = (config.channelUsername || 'ahroriAI').replace('@', '');
+    const isMember = await isUserSubscribedToChannel(userId, true);
 
     if (!isMember) {
       return res.json({
         success: false,
         message: `Iltimos, avval @${channelClean} kanalimizga a'zo bo'ling va so'ngra tekshirish tugmasini bosing!`,
+        channelUrl: `https://t.me/${channelClean}`,
+      });
+    }
+
+    const userRecord = getOrCreateUser(userId);
+    const user = userRecord.user;
+
+    if (user.channelBonusClaimed) {
+      return res.json({
+        success: true,
+        alreadyClaimed: true,
+        message: 'Kanal a\'zoligingiz tasdiqlangan! Siz avvalroq bonus olgansiz.',
         channelUrl: `https://t.me/${channelClean}`,
       });
     }
@@ -432,20 +437,21 @@ app.post('/api/check-channel', async (req, res) => {
       try {
         await bot.api.sendMessage(
           userId,
-          `🎁 *Tabriklaymiz!*\n\nKanalimizga a'zo bo'lganingiz uchun hisobingizga **+2 ta bepul taqdimot (koin)** qo'shildi! 🪙\n\nJoriy balansingiz: *${result.coins} ta* taqdimot.`,
+          `🎁 *Tabriklaymiz!*\n\nKanalimizga a'zo bo'lganingiz tasdiqlandi va hisobingizga **+2 ta bepul taqdimot (koin)** qo'shildi! 🪙\n\nJoriy balansingiz: *${result.coins} ta* taqdimot.`,
           { parse_mode: 'Markdown' }
         );
       } catch (_) {}
 
       res.json({
         success: true,
-        message: 'Ajoyib! Kanalimizga a\'zo bo\'lganingiz uchun hisobingizga +2 ta bepul koin berildi! 🪙',
+        message: 'Ajoyib! Kanal a\'zoligingiz tasdiqlandi va hisobingizga +2 ta bepul koin berildi! 🪙',
         newBalance: result.coins,
       });
     } else {
       res.json({
-        success: false,
-        message: result.error || 'Bonusni berishda xatolik',
+        success: true,
+        alreadyClaimed: true,
+        message: 'Kanal a\'zoligingiz tasdiqlangan!',
       });
     }
   } catch (err) {

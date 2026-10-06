@@ -119,6 +119,7 @@ export function getOrCreateUser(userId, info = {}, referrerId = null) {
     referralsCount: 0,
     referralProgress: 0, // Har 3 taga yetganda 1 coin beriladi
     channelBonusClaimed: false, // Telegram kanalga a'zo bo'lganlik bonusi
+    isChannelSubscribed: false, // Rasmiy kanalga a'zolik holati
     createdAt: new Date().toISOString(),
     lastActive: new Date().toISOString(),
   };
@@ -151,6 +152,17 @@ export function getOrCreateUser(userId, info = {}, referrerId = null) {
 export function getUser(userId) {
   const idStr = String(userId);
   return users.get(idStr) || null;
+}
+
+export function setUserSubscribed(userId, isSubscribed = true) {
+  const idStr = String(userId);
+  const user = users.get(idStr);
+  if (user) {
+    user.isChannelSubscribed = Boolean(isSubscribed);
+    saveUsers();
+    return true;
+  }
+  return false;
 }
 
 export function getAllUsers() {

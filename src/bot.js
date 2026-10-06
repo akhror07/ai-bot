@@ -19,6 +19,7 @@ import {
   approvePayment,
   rejectPayment,
   getPaymentById,
+  setUserSubscribed,
   CARD_NUMBER,
   PRICE_PER_SLIDE,
   ADMIN_TELEGRAM_USERNAME,
@@ -115,22 +116,87 @@ function getThemeKeyboard() {
     .text('❌ Bekor qilish', 'cancel_action');
 }
 
-// /start buyrug'i (Referal bilan: /start ref_123456)
-bot.command('start', async (ctx) => {
-  sessions.delete(ctx.chat.id);
+// Rasmiy kanal sozlamalari (Majburiy a'zolik)
+export const CHANNEL_USERNAME = (config.channelUsername || 'ahroriAI').replace('@', '');
+export const CHANNEL_URL = `https://t.me/${CHANNEL_USERNAME}`;
 
-  // Referal parametrini tekshirish
-  let referrerId = null;
-  const match = ctx.match;
-  if (match && match.startsWith('ref_')) {
-    referrerId = match.replace('ref_', '');
+// Foydalanuvchining kanalga a'zoligini tekshirish
+export async function isUserSubscribedToChannel(userId, forceCheck = false) {
+  if (!userId) return false;
+  const idStr = String(userId);
+
+  // Admin doimo ruxsatga ega
+  if (idStr === String(config.adminId)) return true;
+
+  const existingUser = getUser(idStr);
+  if (!forceCheck && existingUser && existingUser.isChannelSubscribed) {
+    return true;
   }
 
+  try {
+    const member = await bot.api.getChatMember(`@${CHANNEL_USERNAME}`, Number(idStr));
+    const isSubscribed = ['creator', 'administrator', 'member', 'restricted'].includes(member.status);
+    if (isSubscribed) {
+      if (existingUser) {
+        existingUser.isChannelSubscribed = true;
+        setUserSubscribed(idStr, true);
+      }
+      return true;
+    }
+    if (existingUser && existingUser.isChannelSubscribed) {
+      existingUser.isChannelSubscribed = false;
+      setUserSubscribed(idStr, false);
+    }
+    return false;
+  } catch (err) {
+    const desc = err.description || err.message || '';
+    if (desc.includes('PARTICIPANT_ID_INVALID') || desc.includes('user not found')) {
+      if (existingUser && existingUser.isChannelSubscribed) {
+        existingUser.isChannelSubscribed = false;
+        setUserSubscribed(idStr, false);
+      }
+      return false;
+    }
+    console.warn(`[Kanal tekshirish xatosi: ${userId}]:`, desc);
+    return existingUser?.isChannelSubscribed || false;
+  }
+}
+
+// Majburiy a'zolik klaviaturasi
+export function getSubscriptionKeyboard() {
+  return new InlineKeyboard()
+    .url('📢 Kanalga a\'zo bo\'lish', CHANNEL_URL)
+    .row()
+    .text('✅ A\'zo bo\'ldim (Tekshirish)', 'check_subscription');
+}
+
+// Majburiy a'zolik xabari
+export function getSubscriptionMessage(firstName = '') {
+  return `
+👋 *Assalomu alaykum${firstName ? `, ${firstName}` : ''}!*
+
+🤖 Botdan foydalanish va AI yordamida professional taqdimotlar tayyorlash uchun, iltimos, avval rasmiy kanalimizga a'zo bo'ling:
+
+📢 **Rasmiy kanal:** [@${CHANNEL_USERNAME}](${CHANNEL_URL})
+
+1️⃣ Yuqoridagi **"📢 Kanalga a'zo bo'lish"** tugmasini bosing va a'zo bo'ling.
+2️⃣ So'ngra pastdagi **«✅ A'zo bo'ldim (Tekshirish)»** tugmasini bosing!
+  `.trim();
+}
+
+// Kanal tekshiruvidan o'tmagan referallarni saqlash
+const pendingReferrers = new Map();
+
+// Asosiy xush kelibsiz menyusi
+async function sendWelcomeMenu(ctx, referrerId = null) {
   const { user, isNew, bonusGiven, referrer } = getOrCreateUser(
     ctx.chat.id,
     { username: ctx.from.username, firstName: ctx.from.first_name },
     referrerId
   );
+
+  user.isChannelSubscribed = true;
+  setUserSubscribed(ctx.chat.id, true);
 
   // Agar yangi foydalanuvchi referal orqali kirgan bo'lsa va 3-do'st bo'lsa
   if (isNew && referrer) {
@@ -185,19 +251,77 @@ Men sun'iy intellekt yordamida **PowerPoint (.pptx)** taqdimotlarini tayyorlab b
 2️⃣ **Word (.docx) yoki PDF fayl yuboring** — AI konspekt asosida slayd yasaydi!
 3️⃣ **Har 3 ta do'stingizni taklif qiling** — cheksiz bepul taqdimotlar yutib oling!
 4️⃣ **Taqdimot bilan birga himoya uchun tayyor nutq (Speaker notes)** beriladi!
-5️⃣ **Kanalimizga a'zo bo'ling** — qo'shimcha +2 ta bepul koin oling!
 
 👉 *Boshlash uchun mavzuni yozing, ovozli xabar yuboring yoki quyidagi tugma orqali Mini App ni oching!*
-  `;
+  `.trim();
 
   await ctx.reply(welcomeText, {
     parse_mode: 'Markdown',
     reply_markup: keyboard,
   });
+}
+
+// /start buyrug'i (Referal bilan: /start ref_123456)
+bot.command('start', async (ctx) => {
+  sessions.delete(ctx.chat.id);
+
+  let referrerId = null;
+  const match = ctx.match;
+  if (match && match.startsWith('ref_')) {
+    referrerId = match.replace('ref_', '');
+    pendingReferrers.set(String(ctx.chat.id), referrerId);
+  }
+
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
+
+  const refToUse = referrerId || pendingReferrers.get(String(ctx.chat.id));
+  await sendWelcomeMenu(ctx, refToUse);
+  pendingReferrers.delete(String(ctx.chat.id));
+});
+
+// A'zolikni tekshirish tugmasi bosilganda
+bot.callbackQuery('check_subscription', async (ctx) => {
+  const userId = ctx.chat?.id || ctx.from?.id;
+  const isSubscribed = await isUserSubscribedToChannel(userId, true);
+
+  if (!isSubscribed) {
+    return ctx.answerCallbackQuery({
+      text: `❌ Siz hali @${CHANNEL_USERNAME} kanaliga a'zo bo'lmadingiz! Iltimos, avval kanalga a'zo bo'lib, so'ng qayta tekshiring.`,
+      show_alert: true,
+    });
+  }
+
+  await ctx.answerCallbackQuery({
+    text: "🎉 Rahmat! Kanal a'zoligingiz muvaffaqiyatli tasdiqlandi.",
+  });
+
+  try {
+    await ctx.deleteMessage();
+  } catch (_) {}
+
+  const pendingRef = pendingReferrers.get(String(userId));
+  await sendWelcomeMenu(ctx, pendingRef);
+  pendingReferrers.delete(String(userId));
 });
 
 // /app yoki /miniapp buyrug'i orqali doimo yangilangan Mini App tugmasini olish
 bot.command(['app', 'miniapp', 'slayd'], async (ctx) => {
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
+
   const keyboard = new InlineKeyboard();
   if (config.miniAppUrl && config.miniAppUrl.startsWith('https://')) {
     keyboard.webApp('🚀 Mini App ni ochish', config.miniAppUrl);
@@ -207,6 +331,14 @@ bot.command(['app', 'miniapp', 'slayd'], async (ctx) => {
 
 // /balance buyrug'i
 bot.command('balance', async (ctx) => {
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
   await showUserBalance(ctx);
 });
 
@@ -518,6 +650,15 @@ bot.callbackQuery(/^pay_no_(.+)$/, async (ctx) => {
 
 // Ovozli xabar qabul qilish (message:voice)
 bot.on('message:voice', async (ctx) => {
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
+
   const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
 
   if (user.coins <= 0) {
@@ -571,6 +712,15 @@ bot.on('message:voice', async (ctx) => {
 
 // Hujjat fayllari qabul qilish (PDF / Word / TXT)
 bot.on('message:document', async (ctx) => {
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
+
   const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
 
   if (user.coins <= 0) {
@@ -871,6 +1021,15 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
 bot.on('message:text', async (ctx) => {
   const text = ctx.message.text.trim();
   if (text.startsWith('/')) return;
+
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
 
   const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
 

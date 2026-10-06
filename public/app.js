@@ -110,7 +110,14 @@ async function fetchUserData() {
         if (adminTab) adminTab.classList.remove('hidden');
       }
 
-      // Kanal bonusi holati
+      // Kanal bonusi va a'zolik holati
+      if (data.isChannelSubscribed) {
+        const btnVerify = document.getElementById('btnVerifyChannel');
+        if (btnVerify) {
+          btnVerify.textContent = '✅ Kanal a\'zoligi tasdiqlangan';
+          btnVerify.classList.add('claimed');
+        }
+      }
       if (data.channelBonusClaimed) {
         const btnVerify = document.getElementById('btnVerifyChannel');
         if (btnVerify) {
@@ -119,11 +126,9 @@ async function fetchUserData() {
           btnVerify.classList.add('claimed');
         }
       }
-      if (data.channelUsername) {
-        const channelLink = document.getElementById('btnJoinChannelLink');
-        if (channelLink) {
-          channelLink.href = `https://t.me/${data.channelUsername.replace('@', '')}`;
-        }
+      const channelLink = document.getElementById('btnJoinChannelLink');
+      if (channelLink) {
+        channelLink.href = data.channelUrl || 'https://t.me/ahroriAI';
       }
     }
   } catch (err) {
@@ -342,6 +347,15 @@ slideWizardForm.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok || !data.success) {
+      if (data.error === 'CHANNEL_SUBSCRIPTION_REQUIRED') {
+        const chMsg = "📢 Diqqat! Taqdimot yaratish uchun rasmiy @ahroriAI kanalimizga a'zo bo'lishingiz shart!\n\nIltimos, kanalga a'zo bo'ling va «Limit & Referal» bo'limida a'zolikni tasdiqlang.";
+        if (tg?.showAlert) tg.showAlert(chMsg);
+        else alert(chMsg);
+        loadingBox.classList.add('hidden');
+        slideWizardForm.classList.remove('hidden');
+        switchTab('tabLimit');
+        return;
+      }
       if (data.error === 'NO_COINS') {
         const payMsg = "🪙 Sizda imkoniyatlar (coin) tugadi!\n\n1 ta taqdimot: 5 000 so'm\nKarta: 9860160142530080\n\nYoki 3 ta do'stingizni taklif qilib, bepul coin oling! (Limit bo'limi)";
         if (tg?.showAlert) tg.showAlert(payMsg);

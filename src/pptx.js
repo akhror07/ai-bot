@@ -48,12 +48,111 @@ async function loadAllImages(slidesList, mainTitle) {
   return result;
 }
 
+function getI18n(lang = 'uz') {
+  const dict = {
+    uz: {
+      badge: 'TAQDIMOT',
+      slide: 'Slayd',
+      highlightPrefix: '💡 Xulosa: ',
+      mainVisual: '📌 ASOSIY VIZUAL',
+      coreConcept: '🎯 Asosiy Tushuncha',
+      stepBadge: (n) => `0${n}-BOSQICH`,
+      stepFallback: (n) => `Bosqich ${n}`,
+      analysisSummary: '📊 Tahliliy Xulosa: ',
+      analysisSummaryFallback: 'Tizimli tahlil va aniq metodologiya yuqori samaradorlikni ta\'minlaydi.',
+      spotlightPrefix: "💬 Bosh G'oya: ",
+      conclusionHeading: '🎯 BOSH XULOSA',
+      conclusionSuccess: '🚀 Muvaffaqiyat kaliti: Doimiy rivojlanish va aniq harakatlar rejasi!',
+      recommendation: (n) => `Tavsiya ${n}`,
+      pointFallback: (n) => `Asosiy yo'nalish ${n}`,
+      partFallback: (n) => `Tarkibiy qism ${n}`,
+      partDesc: 'Muhim tamoyil va uning amaliy ahamiyati.',
+      leftDefault: 'ASOSIY OMILLAR',
+      rightDefault: 'AMALIY NATIJALAR',
+      kpiLabels: ['Samaradorlik o\'sishi', 'Unumdorlik ko\'rsatkichi', 'Yetakchi o\'rin'],
+      kpiDescs: ['Jarayonlar optimallashuvi', 'Resurslardan oqilona foydalanish', 'Yuqori sifat ko\'rsatkichlari'],
+      totalInfo: (n) => `Jami: ${n} ta slayd • 16:9 Full HD • Professional Dizayn`,
+    },
+    ru: {
+      badge: 'ПРЕЗЕНТАЦИЯ',
+      slide: 'Слайд',
+      highlightPrefix: '💡 Ключевой вывод: ',
+      mainVisual: '📌 КЛЮЧЕВОЙ ОБЪЕКТ',
+      coreConcept: '🎯 Ключевая Концепция',
+      stepBadge: (n) => `ЭТАП 0${n}`,
+      stepFallback: (n) => `Этап ${n}`,
+      analysisSummary: '📊 Аналитический Вывод: ',
+      analysisSummaryFallback: 'Системный анализ и обоснованная методология обеспечивают наивысшую результативность.',
+      spotlightPrefix: '💬 Главная Идея: ',
+      conclusionHeading: '🎯 ГЛАВНЫЙ ВЫВОД',
+      conclusionSuccess: '🚀 Ключ к успеху: Постоянное развитие и системный подход!',
+      recommendation: (n) => `Рекомендация ${n}`,
+      pointFallback: (n) => `Ключевой аспект ${n}`,
+      partFallback: (n) => `Компонент ${n}`,
+      partDesc: 'Ключевой принцип и его практическая ценность.',
+      leftDefault: 'КЛЮЧЕВЫЕ ФАКТОРЫ',
+      rightDefault: 'ПРАКТИЧЕСКИЕ РЕЗУЛЬТАТЫ',
+      kpiLabels: ['Рост эффективности', 'Показатель продуктивности', 'Лидирующая позиция'],
+      kpiDescs: ['Оптимизация ключевых процессов', 'Рациональное использование ресурсов', 'Высокие стандарты качества'],
+      totalInfo: (n) => `Всего: ${n} слайдов • 16:9 Full HD • Премиум Дизайн`,
+    },
+    en: {
+      badge: 'PRESENTATION',
+      slide: 'Slide',
+      highlightPrefix: '💡 Key Takeaway: ',
+      mainVisual: '📌 KEY VISUAL',
+      coreConcept: '🎯 Core Concept',
+      stepBadge: (n) => `PHASE 0${n}`,
+      stepFallback: (n) => `Phase ${n}`,
+      analysisSummary: '📊 Analytical Insight: ',
+      analysisSummaryFallback: 'Systematic analysis and proven methodologies drive sustainable performance.',
+      spotlightPrefix: '💬 Core Insight: ',
+      conclusionHeading: '🎯 KEY TAKEAWAY',
+      conclusionSuccess: '🚀 Key to success: Continuous development and disciplined execution!',
+      recommendation: (n) => `Recommendation ${n}`,
+      pointFallback: (n) => `Key Dimension ${n}`,
+      partFallback: (n) => `Core Pillar ${n}`,
+      partDesc: 'Essential principle delivering validated practical impact.',
+      leftDefault: 'CORE FACTORS',
+      rightDefault: 'PRACTICAL OUTCOMES',
+      kpiLabels: ['Efficiency Surge', 'Productivity Index', 'Industry Benchmark'],
+      kpiDescs: ['Systematic process optimization', 'Effective turnaround of resources', 'High standards of excellence'],
+      totalInfo: (n) => `Total: ${n} slides • 16:9 Full HD • Executive Design`,
+    },
+    tg: {
+      badge: 'МУАРРИФӢ',
+      slide: 'Слайд',
+      highlightPrefix: '💡 Хулосаи асосӣ: ',
+      mainVisual: '📌 ВИЗУАЛИ АСОСӢ',
+      coreConcept: '🎯 Консепсияи Асосӣ',
+      stepBadge: (n) => `МАРҲИЛАИ 0${n}`,
+      stepFallback: (n) => `Марҳилаи ${n}`,
+      analysisSummary: '📊 Хулосаи Таҳлилӣ: ',
+      analysisSummaryFallback: 'Таҳлили мунтазам ва усулҳои дақиқ самаранокии баландро таъмин менамоянд.',
+      spotlightPrefix: '💬 Ғояи Асосӣ: ',
+      conclusionHeading: '🎯 ХУЛОСАИ АСОСӢ',
+      conclusionSuccess: '🚀 Калиди комёбӣ: Рушди доимӣ ва фаъолияти пайгирона!',
+      recommendation: (n) => `Тавсияи ${n}`,
+      pointFallback: (n) => `Ҷанбаи асосӣ ${n}`,
+      partFallback: (n) => `Рукни асосӣ ${n}`,
+      partDesc: 'Принсипи муҳим ва аҳамияти амалии он.',
+      leftDefault: 'ОМИЛҲОИ АСОСӢ',
+      rightDefault: 'НАТИҶАҲОИ АМАЛӢ',
+      kpiLabels: ['Афзоиши самаранокӣ', 'Нишондиҳандаи маҳсулнокӣ', 'Мавқеи пешсаф'],
+      kpiDescs: ['Оптимизатсияи равандҳо', 'Истифодаи дурусти захираҳо', 'Стандартҳои баланди сифат'],
+      totalInfo: (n) => `Ҳамагӣ: ${n} слайд • 16:9 Full HD • Тарҳи Касбӣ`,
+    },
+  };
+  return dict[lang] || dict.uz;
+}
+
 /**
  * Har bir slayd uchun standart sarlavha paneli (xatlar ramkadan chiqmaydigan qilib)
  */
-function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalSlides) {
+function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalSlides, i18n = null) {
+  const slideWord = i18n?.slide || 'Slayd';
   // Sarlavha (fit: 'shrink' bilan matn uzun bo'lsa avtomatik moslashadi)
-  slide.addText(title || `Slayd ${slideNumber}`, {
+  slide.addText(title || `${slideWord} ${slideNumber}`, {
     x: 0.8, y: 0.45, w: 9.8, h: 0.65,
     fontFace: 'Arial', fontSize: 22, bold: true,
     color: theme.primary, valign: 'middle', wrap: true, fit: 'shrink',
@@ -90,9 +189,10 @@ function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalS
 /**
  * Xulosa bloki (Highlight) — qat'iy chegaralangan balandlik va fit: shrink bilan
  */
-function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false) {
+function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false, i18n = null) {
   if (!text) return;
 
+  const prefix = i18n?.highlightPrefix || '💡 Xulosa: ';
   const boxH = 0.80;
   slide.addShape(pres.ShapeType.roundRect, {
     x: 0.8, y, w: 11.73, h: boxH,
@@ -101,7 +201,7 @@ function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false) {
     rectRadius: 0.12,
   });
 
-  slide.addText(`💡 Xulosa: ${text}`, {
+  slide.addText(`${prefix}${text}`, {
     x: 1.05, y: y + 0.05, w: 11.23, h: boxH - 0.1,
     fontFace: 'Arial', fontSize: 11.5, italic: true,
     color: '#FFFFFF',
@@ -110,21 +210,23 @@ function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false) {
 }
 
 /**
- * Pastki footer
+ * Pastki footer (Hech qanday keraksiz AI so'zlari yo'q)
  */
 function addSlideFooter(slide, theme, mainTitle) {
-  slide.addText(mainTitle || 'AI Taqdimot', {
+  if (!mainTitle) return;
+  slide.addText(mainTitle, {
     x: 0.8, y: 6.65, w: 8.0, h: 0.30,
     fontFace: 'Arial', fontSize: 9.5, color: theme.subtext, align: 'left', fit: 'shrink',
   });
 }
 
 // ================================================================
+// ================================================================
 // 1-LAYOUT: SPLIT HERO (Chapda rasm kartochkasi, O'ngda tahlil kartochkalari)
 // ================================================================
-function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data) {
+function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -151,7 +253,7 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data) 
       rounding: true,
     });
   } else {
-    slide.addText('🎯 Asosiy Tushuncha', {
+    slide.addText(i18n.coreConcept, {
       x: 0.8, y: contentY, w: leftW, h: contentH,
       fontFace: 'Arial', fontSize: 16, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
     });
@@ -159,14 +261,14 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data) 
 
   // Rasm ustidagi badge
   slide.addShape(pres.ShapeType.roundRect, {
-    x: 1.05, y: contentY + 0.25, w: 2.1, h: 0.38,
+    x: 1.05, y: contentY + 0.25, w: 2.3, h: 0.38,
     fill: { color: theme.bg, transparency: 15 },
     line: { color: theme.primary, width: 1 },
     rectRadius: 0.1,
   });
-  slide.addText('📌 ASOSIY VIZUAL', {
-    x: 1.05, y: contentY + 0.25, w: 2.1, h: 0.38,
-    fontFace: 'Arial', fontSize: 9.5, bold: true, color: theme.primary, align: 'center', valign: 'middle',
+  slide.addText(i18n.mainVisual, {
+    x: 1.05, y: contentY + 0.25, w: 2.3, h: 0.38,
+    fontFace: 'Arial', fontSize: 9.5, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   // O'ng tomon: 3 ta qulay tahlil kartochkasi
@@ -195,7 +297,7 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data) 
     });
 
     slide.addText([
-      { text: `${p.heading || `Nuqta ${idx + 1}`}\n`, options: { bold: true, fontSize: 13, color: '#FFFFFF' } },
+      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n`, options: { bold: true, fontSize: 13, color: '#FFFFFF' } },
       { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.subtext } }
     ], {
       x: rightX + 0.75, y: y + 0.08, w: rightW - 0.95, h: cardH - 0.16,
@@ -203,16 +305,16 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data) 
     });
   });
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 2-LAYOUT: 2-COLUMN COMPARISON (Ikki ustunli taqqoslash)
 // ================================================================
-function renderComparisonLayout(slide, pres, theme, item, num, total, img, data) {
+function renderComparisonLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -236,15 +338,15 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data)
     fill: { color: theme.primary },
     rectRadius: 0.1,
   });
-  slide.addText(`🌟 ${item.leftHeading || 'ASOSIY OMIL VA TALABLAR'}`, {
+  slide.addText(`🌟 ${item.leftHeading || i18n.leftDefault}`, {
     x: leftX + 0.2, y: contentY + 0.2, w: colW - 0.4, h: 0.55,
     fontFace: 'Arial', fontSize: 12, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   const p1 = points[0] || {};
   slide.addText([
-    { text: `${p1.heading || 'Konseptual jihat'}\n\n`, options: { bold: true, fontSize: 14, color: '#FFFFFF' } },
-    { text: p1.description || 'Mazkur yo\'nalish bo\'yicha asosiy tamoyillar va dastlabki shartlar.', options: { bold: false, fontSize: 11.5, color: theme.subtext } }
+    { text: `${p1.heading || i18n.leftDefault}\n\n`, options: { bold: true, fontSize: 14, color: '#FFFFFF' } },
+    { text: p1.description || '', options: { bold: false, fontSize: 11.5, color: theme.subtext } }
   ], {
     x: leftX + 0.35, y: contentY + 0.95, w: colW - 0.7, h: contentH - 1.15,
     valign: 'top', wrap: true, fit: 'shrink',
@@ -277,36 +379,36 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data)
     fill: { color: theme.border },
     rectRadius: 0.1,
   });
-  slide.addText(`🚀 ${item.rightHeading || 'AMALIY NATIJA VA SAMARADORLIK'}`, {
+  slide.addText(`🚀 ${item.rightHeading || i18n.rightDefault}`, {
     x: rightX + 0.2, y: contentY + 0.2, w: colW - 0.4, h: 0.55,
     fontFace: 'Arial', fontSize: 12, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   const p2 = points[1] || points[0] || {};
   slide.addText([
-    { text: `${p2.heading || 'Kutilayotgan samara'}\n\n`, options: { bold: true, fontSize: 14, color: '#FFFFFF' } },
-    { text: p2.description || 'Zamonaviy metodologiyalar yordamida jarayonlarni jadallashtirish va optimal natijaga erishish.', options: { bold: false, fontSize: 11.5, color: theme.subtext } }
+    { text: `${p2.heading || i18n.rightDefault}\n\n`, options: { bold: true, fontSize: 14, color: '#FFFFFF' } },
+    { text: p2.description || '', options: { bold: false, fontSize: 11.5, color: theme.subtext } }
   ], {
     x: rightX + 0.35, y: contentY + 0.95, w: colW - 0.7, h: contentH - 1.15,
     valign: 'top', wrap: true, fit: 'shrink',
   });
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 3-LAYOUT: DYNAMIC KPI & STATS (Ulkan raqamlar va ko'rsatkichlar)
 // ================================================================
-function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data) {
+function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const metrics = item.metrics || [
-    { val: '+85%', label: 'Samaradorlik o\'sishi', desc: points[0]?.heading || 'Jarayonlar tezlashuvi' },
-    { val: '3.5x', label: 'Unumdorlik ko\'rsatkichi', desc: points[1]?.heading || 'Resurslardan oqilona foydalanish' },
-    { val: 'TOP 1', label: 'Yetakchi sohaviy o\'rin', desc: points[2]?.heading || 'Xalqaro standartlar darajasi' }
+    { val: '+85%', label: i18n.kpiLabels[0], desc: points[0]?.heading || i18n.kpiDescs[0] },
+    { val: '3.5x', label: i18n.kpiLabels[1], desc: points[1]?.heading || i18n.kpiDescs[1] },
+    { val: 'TOP 1', label: i18n.kpiLabels[2], desc: points[2]?.heading || i18n.kpiDescs[2] }
   ];
 
   const hasHighlight = !!item.highlight;
@@ -336,14 +438,14 @@ function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data)
     });
 
     // Qisqa nishon
-    slide.addText(m.label, {
+    slide.addText(m.label || i18n.kpiLabels[idx % 3], {
       x: x + 0.2, y: contentY + 1.25, w: cardW - 0.4, h: 0.45,
       fontFace: 'Arial', fontSize: 11.5, bold: true,
       color: theme.subtext, align: 'center', valign: 'middle', fit: 'shrink',
     });
 
     // Tavsif
-    slide.addText(m.desc, {
+    slide.addText(m.desc || '', {
       x: x + 0.2, y: contentY + 1.75, w: cardW - 0.4, h: contentH * 0.58 - 1.85,
       fontFace: 'Arial', fontSize: 10, color: theme.subtext, align: 'center', valign: 'top', wrap: true, fit: 'shrink',
     });
@@ -361,23 +463,23 @@ function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data)
   });
 
   slide.addText([
-    { text: `📊 Tahliliy Xulosa: `, options: { bold: true, fontSize: 12, color: theme.primary } },
-    { text: points[0]?.description || 'Statistik ko\'rsatkichlar sohada innovatsiyalarni joriy etish yuqori iqtisodiy va sifat samarasini berayotganini ko\'rsatadi.', options: { bold: false, fontSize: 11, color: '#FFFFFF' } }
+    { text: i18n.analysisSummary, options: { bold: true, fontSize: 12, color: theme.primary } },
+    { text: points[0]?.description || i18n.analysisSummaryFallback, options: { bold: false, fontSize: 11, color: '#FFFFFF' } }
   ], {
     x: 1.1, y: bottomY + 0.05, w: 11.13, h: bottomH - 0.1,
     valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 4-LAYOUT: PROCESS TIMELINE (Gorizontal ketma-ket jarayon)
 // ================================================================
-function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, data) {
+function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -404,9 +506,9 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
       line: { color: '#FFFFFF', width: 1.5 },
       rectRadius: 0.2,
     });
-    slide.addText(`0${idx + 1}-BOSQICH`, {
+    slide.addText(i18n.stepBadge(idx + 1), {
       x: x + cardW / 2 - 0.7, y: contentY + 0.1, w: 1.4, h: 0.5,
-      fontFace: 'Arial', fontSize: 9.5, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
+      fontFace: 'Arial', fontSize: 9.5, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle', fit: 'shrink',
     });
 
     // Bosqich kartochkasi
@@ -417,7 +519,7 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
       rectRadius: 0.14,
     });
 
-    slide.addText(p.heading || `Bosqich ${idx + 1}`, {
+    slide.addText(p.heading || i18n.stepFallback(idx + 1), {
       x: x + 0.15, y: contentY + 0.95, w: cardW - 0.3, h: 0.60,
       fontFace: 'Arial', fontSize: 13, bold: true, color: theme.primary, align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
     });
@@ -436,16 +538,16 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
     }
   });
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 5-LAYOUT: 4-BOX MATRIX (2x2 To'rtburchak matritsa)
 // ================================================================
-function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data) {
+function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -480,24 +582,24 @@ function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data)
     });
 
     slide.addText([
-      { text: `${p.heading || `Tarkibiy qism ${i + 1}`}\n`, options: { bold: true, fontSize: 12.5, color: '#FFFFFF' } },
-      { text: p.description || 'Muhim tamoyil va uning amaliy ahamiyati.', options: { bold: false, fontSize: 10.5, color: theme.subtext } }
+      { text: `${p.heading || i18n.partFallback(i + 1)}\n`, options: { bold: true, fontSize: 12.5, color: '#FFFFFF' } },
+      { text: p.description || i18n.partDesc, options: { bold: false, fontSize: 10.5, color: theme.subtext } }
     ], {
       x: x + 0.75, y: y + 0.08, w: cardW - 0.95, h: cardH - 0.16,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
   }
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 6-LAYOUT: SPOTLIGHT CALLOUT (Bosh g'oya banneri + 2 ta karta)
 // ================================================================
-function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img, data) {
+function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -519,9 +621,9 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
     fontFace: 'Georgia', fontSize: 68, bold: true, color: theme.primary,
   });
 
-  const spotlight = item.spotlightText || `"${item.title}" mavzusidagi amaliy tahlillar shuni ko'rsatadiki, to'g'ri strategiya va integratsiyalashgan yondashuv eng yuqori samarani beradi.`;
+  const spotlight = item.spotlightText || item.highlight || item.title || '';
   slide.addText([
-    { text: `💬 Bosh G'oya: `, options: { bold: true, fontSize: 13, color: theme.primary } },
+    { text: i18n.spotlightPrefix, options: { bold: true, fontSize: 13, color: theme.primary } },
     { text: `"${spotlight}"`, options: { bold: false, italic: true, fontSize: 12, color: '#FFFFFF' } }
   ], {
     x: 1.1, y: contentY + 0.1, w: 11.13, h: bannerH - 0.2,
@@ -545,7 +647,7 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
     });
 
     slide.addText([
-      { text: `${p.heading || `Tahlil ${idx + 1}`}\n\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
+      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
       { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.subtext } }
     ], {
       x: x + 0.3, y: bottomY + 0.15, w: colW - 0.6, h: bottomH - 0.3,
@@ -553,14 +655,14 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
     });
   });
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 7-LAYOUT: CINEMATIC FULL HERO (To'liq fon rasmi + shaffof kartalar)
 // ================================================================
-function renderCinematicLayout(slide, pres, theme, item, num, total, img, data) {
+function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   if (img) {
     slide.addImage({ data: img, x: 0, y: 0, w: 13.333, h: 7.5 });
     slide.addShape(pres.ShapeType.rect, {
@@ -572,7 +674,7 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data) 
     slide.background = { color: theme.bg };
   }
 
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -603,7 +705,7 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data) 
       fontFace: 'Arial', fontSize: 12, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
     });
 
-    slide.addText(p.heading || '', {
+    slide.addText(p.heading || i18n.pointFallback(idx + 1), {
       x: x + 0.2, y: contentY + 0.85, w: cardW - 0.4, h: 0.60,
       fontFace: 'Arial', fontSize: 14, bold: true, color: '#FFFFFF', valign: 'middle', wrap: true, fit: 'shrink',
     });
@@ -614,16 +716,16 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data) 
     });
   });
 
-  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, true);
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, true, i18n);
   addSlideFooter(slide, theme, data.title);
 }
 
 // ================================================================
 // 8-LAYOUT: CONCLUSION & ACTION PLAN (Yakuniy xulosa va harakatlar)
 // ================================================================
-function renderConclusionLayout(slide, pres, theme, item, num, total, img, data) {
+function renderConclusionLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   slide.background = { color: theme.bg };
-  addSlideHeader(slide, pres, theme, item.title || 'Yakuniy Xulosalar', item.subtitle || 'Kutilayotgan natijalar va strategik tavsiyalar', num, total);
+  addSlideHeader(slide, pres, theme, item.title || i18n.conclusionHeading, item.subtitle || '', num, total, i18n);
 
   const points = item.points || [];
   const contentY = 1.68;
@@ -654,7 +756,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data)
     });
 
     slide.addText([
-      { text: `${p.heading || `Tavsiya ${idx + 1}`}\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
+      { text: `${p.heading || i18n.recommendation(idx + 1)}\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
       { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.text } }
     ], {
       x: 1.55, y: y + 0.08, w: leftW - 1.75, h: cardH - 0.16,
@@ -670,12 +772,12 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data)
     rectRadius: 0.15,
   });
 
-  slide.addText('🎯 BOSH XULOSA', {
+  slide.addText(i18n.conclusionHeading, {
     x: rightX + 0.35, y: contentY + 0.30, w: rightW - 0.7, h: 0.40,
     fontFace: 'Arial', fontSize: 14, bold: true, color: theme.primary, fit: 'shrink',
   });
 
-  const mainConclusion = item.highlight || `${data.title} bo'yicha tizimli yondashuv va innovatsion amaliyot eng yuqori natijani ta'minlaydi.`;
+  const mainConclusion = item.highlight || `${data.title}: ${i18n.conclusionSuccess}`;
   slide.addText(mainConclusion, {
     x: rightX + 0.35, y: contentY + 0.85, w: rightW - 0.7, h: 2.30,
     fontFace: 'Arial', fontSize: 13, italic: true, color: '#FFFFFF', valign: 'top', wrap: true, fit: 'shrink',
@@ -688,7 +790,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data)
     line: { color: theme.border, width: 1 },
     rectRadius: 0.1,
   });
-  slide.addText('🚀 Muvaffaqiyat kaliti: Doimiy rivojlanish va aniq harakatlar rejasi!', {
+  slide.addText(i18n.conclusionSuccess, {
     x: rightX + 0.45, y: contentY + 3.35, w: rightW - 0.9, h: 0.90,
     fontFace: 'Arial', fontSize: 11, bold: true, color: theme.primary, align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
   });
@@ -706,15 +808,18 @@ export async function createPptx(data) {
   const pres = new pptxgen();
   pres.defineLayout({ name: 'WIDE_16_9', width: 13.333, height: 7.5 });
   pres.layout = 'WIDE_16_9';
-  pres.author = 'AI Presentation Bot';
-  pres.company = 'Telegram AI Bot';
-  pres.title = data.title || 'Prezentatsiya';
+  pres.author = data.organization || data.title || 'Presentation';
+  pres.company = data.organization || '';
+  pres.title = data.title || 'Presentation';
+
+  const lang = data.language || 'uz';
+  const i18n = getI18n(lang);
 
   const theme = getTheme(data.theme);
   const slidesList = data.slides || [];
 
   // Mavzuga mos rasmlarni yuklab olish
-  const allSlideImages = await loadAllImages(slidesList, data.title || 'Taqdimot');
+  const allSlideImages = await loadAllImages(slidesList, data.title || 'Presentation');
 
   // ================================================================
   // 1. MUQOVA SLAYDI (TITLE SLIDE)
@@ -746,29 +851,30 @@ export async function createPptx(data) {
     line: { color: theme.primary },
   });
 
-  // Badge
+  // Badge (Top-left) — NO AI MENTIONS
+  const coverBadgeText = data.organization ? data.organization.toUpperCase() : i18n.badge;
   titleSlide.addShape(pres.ShapeType.roundRect, {
-    x: 1.0, y: 1.0, w: 2.2, h: 0.45,
+    x: 1.0, y: 1.0, w: 2.8, h: 0.45,
     fill: { color: theme.cardBg },
     line: { color: theme.border, width: 1 },
     rectRadius: 0.1,
   });
-  titleSlide.addText('✨ AI TAQDIMOT', {
-    x: 1.0, y: 1.0, w: 2.2, h: 0.45,
+  titleSlide.addText(coverBadgeText, {
+    x: 1.0, y: 1.0, w: 2.8, h: 0.45,
     fontFace: 'Arial', fontSize: 11, bold: true,
-    color: theme.primary, align: 'center', valign: 'middle',
+    color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   // Tashkilot / Universitet nomi (Branding)
   if (data.organization) {
     titleSlide.addShape(pres.ShapeType.roundRect, {
-      x: 3.4, y: 1.0, w: 4.2, h: 0.45,
+      x: 4.0, y: 1.0, w: 4.2, h: 0.45,
       fill: { color: theme.cardBg },
       line: { color: theme.border, width: 1 },
       rectRadius: 0.1,
     });
     titleSlide.addText(`🏢 ${data.organization}`, {
-      x: 3.4, y: 1.0, w: 4.2, h: 0.45,
+      x: 4.0, y: 1.0, w: 4.2, h: 0.45,
       fontFace: 'Arial', fontSize: 10, bold: true,
       color: theme.text, align: 'center', valign: 'middle', fit: 'shrink',
     });
@@ -787,19 +893,21 @@ export async function createPptx(data) {
 
   const textW = coverImg2 ? 6.7 : 11.3;
 
-  titleSlide.addText(data.title || titleData.title || 'Taqdimot', {
+  titleSlide.addText(data.title || titleData.title || '', {
     x: 1.0, y: 1.9, w: textW, h: 2.3,
     fontFace: 'Arial', fontSize: coverImg2 ? 30 : 36, bold: true,
     color: 'FFFFFF', valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  titleSlide.addText(data.subtitle || titleData.subtitle || 'Sun\'iy intellekt tomonidan tayyorlandi', {
-    x: 1.0, y: 4.4, w: textW, h: 1.2,
-    fontFace: 'Arial', fontSize: 16, color: theme.primary, valign: 'top', wrap: true, fit: 'shrink',
-  });
+  if (data.subtitle || titleData.subtitle) {
+    titleSlide.addText(data.subtitle || titleData.subtitle, {
+      x: 1.0, y: 4.4, w: textW, h: 1.2,
+      fontFace: 'Arial', fontSize: 16, color: theme.primary, valign: 'top', wrap: true, fit: 'shrink',
+    });
+  }
 
-  titleSlide.addText(`Jami: ${slidesList.length} ta slayd • 16:9 Full HD • Professional Dizayn`, {
-    x: 1.0, y: 6.6, w: 6.0, h: 0.35,
+  titleSlide.addText(i18n.totalInfo(slidesList.length), {
+    x: 1.0, y: 6.6, w: 8.0, h: 0.35,
     fontFace: 'Arial', fontSize: 10, color: theme.subtext, fit: 'shrink',
   });
 
@@ -821,6 +929,11 @@ export async function createPptx(data) {
     'cinematic'
   ];
 
+  const speakerNotesList = [];
+  if (titleData.speakerNotes) {
+    speakerNotesList.push({ slideNumber: 1, notes: titleData.speakerNotes });
+  }
+
   contentSlides.forEach((slideItem, index) => {
     const slideNumber = index + 2;
     const isLast = (index === contentSlides.length - 1);
@@ -830,97 +943,42 @@ export async function createPptx(data) {
     const slide = pres.addSlide();
 
     if (isLast) {
-      renderConclusionLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+      renderConclusionLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
     } else {
       const chosenLayout = slideItem.layoutType || layoutRotator[index % layoutRotator.length];
 
       switch (chosenLayout) {
         case 'split_hero':
-          renderSplitHeroLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderSplitHeroLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'comparison':
-          renderComparisonLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderComparisonLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'kpi_metrics':
-          renderKpiMetricsLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderKpiMetricsLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'process_timeline':
-          renderProcessTimelineLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderProcessTimelineLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'matrix_grid':
-          renderMatrixGridLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderMatrixGridLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'spotlight':
-          renderSpotlightCalloutLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderSpotlightCalloutLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'cinematic':
-          renderCinematicLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderCinematicLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         default:
-          renderSplitHeroLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data);
+          renderSplitHeroLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
       }
     }
 
-    if (slideItem.speakerNotes) slide.addNotes(slideItem.speakerNotes);
+    if (slideItem.speakerNotes) {
+      slide.addNotes(slideItem.speakerNotes);
+      speakerNotesList.push({ slideNumber, notes: slideItem.speakerNotes });
+    }
   });
-
-  // ================================================================
-  // 3. VIRAL BRANDING SLAYDI
-  // ================================================================
-  if (data.includeBranding !== false) {
-    const brandSlide = pres.addSlide();
-    brandSlide.background = { color: theme.bg };
-
-    brandSlide.addShape(pres.ShapeType.rect, {
-      x: 0, y: 0, w: 0.35, h: 7.5,
-      fill: { color: theme.primary },
-      line: { color: theme.primary },
-    });
-
-    brandSlide.addShape(pres.ShapeType.roundRect, {
-      x: 2.2, y: 1.1, w: 8.933, h: 5.3,
-      fill: { color: theme.cardBg },
-      line: { color: theme.primary, width: 2 },
-      rectRadius: 0.2,
-    });
-
-    brandSlide.addShape(pres.ShapeType.roundRect, {
-      x: 4.6, y: 1.5, w: 4.133, h: 0.55,
-      fill: { color: theme.primary },
-      line: { color: theme.primary },
-      rectRadius: 0.15,
-    });
-    brandSlide.addText('✨ E\'TIBORINGIZ UCHUN RAHMAT!', {
-      x: 4.6, y: 1.5, w: 4.133, h: 0.55,
-      fontFace: 'Arial', fontSize: 13, bold: true,
-      color: '#FFFFFF', align: 'center', valign: 'middle',
-    });
-
-    brandSlide.addText('Taqdimot Sun\'iy Intellekt yordamida professional tarzda tayyorlandi.', {
-      x: 2.6, y: 2.35, w: 8.133, h: 0.45,
-      fontFace: 'Arial', fontSize: 13, color: theme.subtext, align: 'center', fit: 'shrink',
-    });
-
-    brandSlide.addShape(pres.ShapeType.roundRect, {
-      x: 3.2, y: 3.1, w: 6.933, h: 1.4,
-      fill: { color: theme.bg },
-      line: { color: theme.primary, width: 1.5 },
-      rectRadius: 0.15,
-    });
-
-    brandSlide.addText([
-      { text: '🤖 @ai_slide_bot\n', options: { bold: true, fontSize: 18, color: theme.primary } },
-      { text: 'Bir necha soniyada istalgan mavzuda professional slaydlar yarating!', options: { fontSize: 11.5, color: theme.subtext } }
-    ], {
-      x: 3.4, y: 3.2, w: 6.533, h: 1.2,
-      align: 'center', valign: 'middle', fit: 'shrink',
-    });
-
-    brandSlide.addText('🚀 Powered by @ahroriAI | Telegram AI Platform', {
-      x: 2.6, y: 5.85, w: 8.133, h: 0.35,
-      fontFace: 'Arial', fontSize: 10, color: theme.subtext, align: 'center', fit: 'shrink',
-    });
-  }
 
   // Faylni vaqtinchalik xotiraga eksport qilish
   const buffer = await pres.write({ outputType: 'nodebuffer' });
@@ -950,12 +1008,12 @@ export async function createPptx(data) {
 
     console.log(`[PPTX] Taqdimot yaratildi (${(modifiedBuffer.length / 1024).toFixed(0)} KB): ${filePath}`);
 
-    return { filePath, filename, buffer: modifiedBuffer };
+    return { filePath, filename, fileName: filename, buffer: modifiedBuffer, speakerNotesList };
   } catch (err) {
     console.warn('[PPTX] Animatsiyalar qo\'shishda xatolik, standart eksport qilinmoqda:', err.message);
     const filename = `presentation_${Date.now()}_${Math.random().toString(36).substring(7)}.pptx`;
     const filePath = path.join(TEMP_DIR, filename);
     fs.writeFileSync(filePath, buffer);
-    return { filePath, filename, buffer };
+    return { filePath, filename, fileName: filename, buffer, speakerNotesList };
   }
 }
