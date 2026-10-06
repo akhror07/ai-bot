@@ -10,12 +10,21 @@ const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const PAYMENTS_FILE = path.join(DATA_DIR, 'payments.json');
 const PRESENTATIONS_FILE = path.join(DATA_DIR, 'presentations.json');
 const FEEDBACKS_FILE = path.join(DATA_DIR, 'feedbacks.json');
+const PROMOS_FILE = path.join(DATA_DIR, 'promos.json');
 
 // In-memory cache
 let users = new Map();
 let payments = [];
 let presentations = [];
 let feedbacks = [];
+let promoCodes = [
+  { code: 'TALABA', coins: 2, maxUses: 2000, usedBy: [] },
+  { code: 'START5', coins: 2, maxUses: 2000, usedBy: [] },
+  { code: 'TATU', coins: 3, maxUses: 1000, usedBy: [] },
+  { code: 'SAMDU', coins: 3, maxUses: 1000, usedBy: [] },
+  { code: 'VIP2026', coins: 3, maxUses: 1000, usedBy: [] },
+  { code: 'AHROR', coins: 5, maxUses: 500, usedBy: [] },
+];
 
 function loadData() {
   try {
@@ -49,6 +58,25 @@ function loadData() {
     }
   } catch (e) {
     console.error('[DB] Feedbacks yuklashda xatolik:', e.message);
+  }
+
+  try {
+    if (fs.existsSync(PROMOS_FILE)) {
+      const loaded = JSON.parse(fs.readFileSync(PROMOS_FILE, 'utf-8'));
+      if (Array.isArray(loaded) && loaded.length > 0) {
+        promoCodes = loaded;
+      }
+    }
+  } catch (e) {
+    console.error('[DB] Promos yuklashda xatolik:', e.message);
+  }
+}
+
+function savePromoCodes() {
+  try {
+    fs.writeFileSync(PROMOS_FILE, JSON.stringify(promoCodes, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[DB] Promos saqlashda xatolik:', e.message);
   }
 }
 
@@ -120,6 +148,7 @@ export function getOrCreateUser(userId, info = {}, referrerId = null) {
     referralProgress: 0, // Har 3 taga yetganda 1 coin beriladi
     channelBonusClaimed: false, // Telegram kanalga a'zo bo'lganlik bonusi
     isChannelSubscribed: false, // Rasmiy kanalga a'zolik holati
+    vipUntil: null, // VIP obuna muddati (ISO sana)
     createdAt: new Date().toISOString(),
     lastActive: new Date().toISOString(),
   };
@@ -170,12 +199,19 @@ export function getAllUsers() {
 }
 
 /**
- * 1 ta coin yechadi.
+ * 1 ta coin yechadi (VIP foydalanuvchilarda coin kamaymaydi).
  */
 export function deductCoin(userId) {
   const idStr = String(userId);
   const user = users.get(idStr);
   if (!user) return false;
+
+  // VIP foydalanuvchi tekshiruvi (cheksiz taqdimotlar)
+  if (user.vipUntil && new Date(user.vipUntil) > new Date()) {
+    user.usedCoins = (user.usedCoins || 0) + 1;
+    saveUsers();
+    return true;
+  }
 
   if (user.coins > 0) {
     user.coins -= 1;
@@ -339,5 +375,93 @@ export function saveFeedback(data) {
 
 export function getAllFeedbacks(limit = 50) {
   return feedbacks.slice(0, limit);
+}
+
+// ================================================================
+// VIP OBUNA VA CHEKSIZ IMKONIYATLAR
+// ================================================================
+
+export function isUserVip(userId) {
+  const user = getUser(userId);
+  if (!user || !user.vipUntil) return false;
+  return new Date(user.vipUntil) > new Date();
+}
+
+export function setVipSubscription(userId, days = 30) {
+  const user = getUser(userId);
+  if (!user) return null;
+  const currentExpiry = (user.vipUntil && new Date(user.vipUntil) > new Date())
+    ? new Date(user.vipUntil)
+    : new Date();
+  currentExpiry.setDate(currentExpiry.getDate() + Number(days));
+  user.vipUntil = currentExpiry.toISOString();
+  saveUsers();
+  return user.vipUntil;
+}
+
+// ================================================================
+// PROMO-KODLAR TIZIMI
+// ================================================================
+
+export function redeemPromoCode(userId, rawCode) {
+  if (!rawCode || typeof rawCode !== 'string') {
+    return { success: false, message: "Promo-kod kiritilmadi!" };
+  }
+  const idStr = String(userId);
+  const user = getUser(idStr);
+  if (!user) {
+    return { success: false, message: "Foydalanuvchi topilmadi!" };
+  }
+
+  const code = rawCode.trim().toUpperCase();
+  const promo = promoCodes.find(p => p.code.toUpperCase() === code);
+  if (!promo) {
+    return { success: false, message: `❌ "${code}" nomli promo-kod topilmadi yoki muddati o'tgan.` };
+  }
+
+  if (promo.usedBy && promo.usedBy.includes(idStr)) {
+    return { success: false, message: `⚠️ Siz "${code}" promo-kodidan allaqachon foydalangansiz!` };
+  }
+
+  if (promo.usedBy && promo.usedBy.length >= (promo.maxUses || 1000)) {
+    return { success: false, message: `⚠️ Ushbu promo-koddan foydalanish limiti tugagan.` };
+  }
+
+  if (!promo.usedBy) promo.usedBy = [];
+  promo.usedBy.push(idStr);
+  user.coins = (user.coins || 0) + (promo.coins || 2);
+  saveUsers();
+  savePromoCodes();
+
+  return {
+    success: true,
+    coins: promo.coins,
+    newBalance: user.coins,
+    message: `🎉 Tabriklaymiz! "${code}" promo-kodi faollashtirildi va hisobingizga +${promo.coins} ta taqdimot qo'shildi! 🪙`,
+  };
+}
+
+export function getAllPromoCodes() {
+  return promoCodes.map(p => ({
+    code: p.code,
+    coins: p.coins,
+    maxUses: p.maxUses,
+    usedCount: p.usedBy ? p.usedBy.length : 0,
+  }));
+}
+
+export function createPromoCode(code, coins = 2, maxUses = 1000) {
+  const upper = String(code).trim().toUpperCase();
+  const existing = promoCodes.find(p => p.code === upper);
+  if (existing) {
+    existing.coins = Number(coins);
+    existing.maxUses = Number(maxUses);
+    savePromoCodes();
+    return existing;
+  }
+  const newPromo = { code: upper, coins: Number(coins), maxUses: Number(maxUses), usedBy: [] };
+  promoCodes.push(newPromo);
+  savePromoCodes();
+  return newPromo;
 }
 

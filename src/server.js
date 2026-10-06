@@ -26,6 +26,9 @@ import {
   getAllFeedbacks,
   ADMIN_TELEGRAM_USERNAME,
   claimChannelBonus,
+  isUserVip,
+  redeemPromoCode,
+  getAllPromoCodes,
 } from './db.js';
 
 export const app = express();
@@ -68,10 +71,13 @@ app.get('/api/user/:userId', async (req, res) => {
   const myPresentations = getUserPresentations(userId);
   const isSubscribed = await isUserSubscribedToChannel(userId);
   const channelClean = (config.channelUsername || 'ahroriAI').replace('@', '');
+  const isVip = isUserVip(userId);
 
   res.json({
     success: true,
     user: userRecord.user,
+    isVip,
+    vipUntil: userRecord.user.vipUntil,
     presentationsCount: myPresentations.length,
     isAdmin: String(userId) === config.adminId,
     adminUsername: ADMIN_TELEGRAM_USERNAME,
@@ -115,7 +121,8 @@ app.post('/api/generate', async (req, res) => {
       }
 
       const { user } = getOrCreateUser(chatId, { username, firstName });
-      if (user.coins <= 0) {
+      const isVip = isUserVip(chatId);
+      if (!isVip && user.coins <= 0) {
         return res.status(403).json({
           success: false,
           error: 'NO_COINS',
@@ -124,8 +131,10 @@ app.post('/api/generate', async (req, res) => {
         });
       }
 
-      deductCoin(chatId);
-      remainingCoins = user.coins;
+      if (!isVip) {
+        deductCoin(chatId);
+      }
+      remainingCoins = isVip ? 'VIP' : user.coins;
     }
 
     console.log(`[API] Yangi taqdimot: "${topic}", soha: ${category}, slaydlar: ${slideCount}, til: ${language}, tema: ${theme}`);
@@ -209,6 +218,7 @@ app.post('/api/generate', async (req, res) => {
       slidesCount: presentationData.slides?.length || slideCount,
       downloadUrl,
       slides: presentationData.slides,
+      qaList: presentationData.qaList || [],
       remainingCoins,
       speakerNotes: speakerNotesList,
     });
@@ -490,6 +500,21 @@ app.post('/api/create-stars-invoice', async (req, res) => {
   } catch (err) {
     console.error('[Create Stars Invoice Error]', err);
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 11. API: Promo-kodni faollashtirish (Mini App)
+app.post('/api/promo', (req, res) => {
+  try {
+    const { userId, code } = req.body;
+    if (!userId || !code) {
+      return res.status(400).json({ success: false, message: 'Foydalanuvchi ID va promo-kod kiritilishi shart' });
+    }
+    const result = redeemPromoCode(userId, code);
+    res.json(result);
+  } catch (err) {
+    console.error('[Promo API Error]', err);
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 

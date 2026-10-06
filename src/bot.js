@@ -1,6 +1,6 @@
 import { Bot, InlineKeyboard, InputFile } from 'grammy';
 import { config } from './config.js';
-import { generatePresentationData } from './ai.js';
+import { generatePresentationData, extractTextFromImage } from './ai.js';
 import { createPptx } from './pptx.js';
 import { categories, getCategory } from './categories.js';
 import {
@@ -20,6 +20,10 @@ import {
   rejectPayment,
   getPaymentById,
   setUserSubscribed,
+  isUserVip,
+  setVipSubscription,
+  redeemPromoCode,
+  getAllPromoCodes,
   CARD_NUMBER,
   PRICE_PER_SLIDE,
   ADMIN_TELEGRAM_USERNAME,
@@ -236,23 +240,34 @@ async function sendWelcomeMenu(ctx, referrerId = null) {
   keyboard
     .text('🪙 Balans & Referal', 'action_balance')
     .text('💳 Hisobni to\'ldirish', 'action_pay')
+    .row()
+    .text('💎 VIP Pass (Cheksiz)', 'action_vip')
+    .text('🎟 Promo-kod', 'action_promo')
+    .row()
+    .text('📸 Konspektdan slayd (OCR)', 'action_ocr')
     .row();
+
+  const isVip = isUserVip(ctx.chat.id);
+  const vipBadge = isVip && user.vipUntil
+    ? `\n👑 *VIP Obuna: FAOL!* (${new Date(user.vipUntil).toLocaleDateString('uz-UZ')} gacha cheksiz)\n`
+    : '';
 
   const welcomeText = `
 👋 *Assalomu alaykum, ${ctx.from.first_name || 'do\'stim'}!*
 
 Men sun'iy intellekt yordamida **PowerPoint (.pptx)** taqdimotlarini tayyorlab beruvchi botman.
-
+${vipBadge}
 🎁 *Sizga ${isNew ? 'boshlang\'ich ' : ''}5 ta BEPUL taqdimot imkoniyati berildi!*
 🪙 Joriy balansingiz: *${user.coins} ta* taqdimot
 
-*Nimalar qila olaman?*
+*Kengaytirilgan imkoniyatlar:*
 1️⃣ **Mavzu yozing yoki ovozli xabar (voice) tashlang!**
-2️⃣ **Word (.docx) yoki PDF fayl yuboring** — AI konspekt asosida slayd yasaydi!
-3️⃣ **Har 3 ta do'stingizni taklif qiling** — cheksiz bepul taqdimotlar yutib oling!
-4️⃣ **Taqdimot bilan birga himoya uchun tayyor nutq (Speaker notes)** beriladi!
+2️⃣ **Word (.docx), PDF yoki Konspekt rasmini yuboring** — AI avtomatik o'qiydi!
+3️⃣ **YouTube video havolasini yuboring** — video mavzusidan slayd tayyorlaydi!
+4️⃣ **Himoya uchun tayyor nutq (Speaker notes) va komissiya Q&A savol-javoblari!**
+5️⃣ **Promo-kod (/promo) & VIP Pass (/vip)** cheksiz taqdimotlar rejimi!
 
-👉 *Boshlash uchun mavzuni yozing, ovozli xabar yuboring yoki quyidagi tugma orqali Mini App ni oching!*
+👉 *Boshlash uchun mavzuni yozing, havola tashlang, konspekt rasmini yuboring yoki quyidagi tugmani bosing!*
   `.trim();
 
   await ctx.reply(welcomeText, {
@@ -351,12 +366,17 @@ async function showUserBalance(ctx) {
   const user = getUser(ctx.chat.id) || { coins: 10, referralsCount: 0, referralProgress: 0 };
   const botInfo = await bot.api.getMe();
   const refLink = `https://t.me/${botInfo.username}?start=ref_${ctx.chat.id}`;
+  const isVip = isUserVip(ctx.chat.id);
+
+  const vipSection = isVip && user.vipUntil
+    ? `👑 *VIP Obuna:* **FAOL!** (${new Date(user.vipUntil).toLocaleDateString('uz-UZ')} gacha cheksiz)\n`
+    : `💎 *VIP Obuna:* Faol emas (/vip orqali oling)\n`;
 
   const text = `
 🪙 *Sizning balansingiz:*
 • Mavjud imkoniyatlar: *${user.coins} ta* taqdimot
 • Ishlatilgan: *${user.usedCoins || 0} ta* taqdimot
-
+${vipSection}
 👥 *Referal dasturi:*
 • Taklif qilingan do'stlar: *${user.referralsCount || 0} ta*
 • Yangi coin uchun: *${user.referralProgress || 0} / 3 ta* do'st
@@ -366,11 +386,13 @@ async function showUserBalance(ctx) {
 🔗 *Sizning shaxsiy referal havolangiz:*
 \`${refLink}\`
 _(Ustiga bossangiz nusxa olinadi, do'stlaringizga ulashing!)_
-  `;
+  `.trim();
 
   const kb = new InlineKeyboard()
     .url('📤 Do\'stlarga ulashish', `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Do'stim, mana bu AI bot PowerPoint taqdimotlarni bir necha daqiqada tayyorlab berar ekan! 5 ta bepul slayd beradi:")}`).row()
-    .text('💳 Hisobni to\'ldirish', 'action_pay');
+    .text('💳 Hisobni to\'ldirish', 'action_pay')
+    .text('💎 VIP Pass', 'action_vip').row()
+    .text('🎟 Promo-kod kiritish', 'action_promo');
 
   await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: kb });
 }
@@ -400,6 +422,7 @@ async function sendStarsInvoiceMenu(ctx) {
     .text('⭐️ 3 ta koin (40 Stars)', 'buy_stars_3_40').row()
     .text('🔥 5 ta koin (60 Stars)', 'buy_stars_5_60')
     .text('💎 10 ta koin (100 Stars)', 'buy_stars_10_100').row()
+    .text('👑 30 kunlik VIP Cheksiz (100 Stars)', 'buy_vip_stars_30_100').row()
     .text('💳 Karta orqali to\'lash', 'action_pay');
 
   const text = `
@@ -412,6 +435,7 @@ Karta ma'lumotlarini kiritmasdan, to'g'ridan-to'g'ri Telegram hisobingizdan 1 bo
 • **3 ta taqdimot** — 40 ⭐️ Stars
 • **5 ta taqdimot** — 60 ⭐️ Stars _(Aksiya)_
 • **10 ta taqdimot** — 100 ⭐️ Stars _(Eng arzon)_
+• 👑 **30 kunlik VIP Cheksiz** — 100 ⭐️ Stars _(Cheksiz slaydlar!)_
 
 👇 *Kerakli paketni tanlang (darhol to'lov oynasi chiqadi):*
   `;
@@ -429,6 +453,20 @@ bot.callbackQuery(/^buy_stars_(\d+)_(\d+)$/, async (ctx) => {
     JSON.stringify({ userId: String(ctx.chat.id), coins, stars, time: Date.now() }),
     'XTR', // Stars valyutasi
     [{ label: `${coins} ta koin`, amount: stars }]
+  );
+});
+
+bot.callbackQuery(/^buy_vip_stars_(\d+)_(\d+)$/, async (ctx) => {
+  const days = Number(ctx.match[1]) || 30;
+  const stars = Number(ctx.match[2]) || 100;
+  await ctx.answerCallbackQuery();
+
+  await ctx.replyWithInvoice(
+    `VIP Cheksiz Obuna (${days} kun)`,
+    `AI Slayd Bot orqali ${days} kun davomida cheksiz va bepul taqdimotlar yaratish imkoniyati.`,
+    JSON.stringify({ userId: String(ctx.chat.id), isVip: true, days, stars, time: Date.now() }),
+    'XTR',
+    [{ label: `${days} kunlik VIP Cheksiz`, amount: stars }]
   );
 });
 
@@ -450,8 +488,32 @@ bot.on('message:successful_payment', async (ctx) => {
 
     try {
       const payload = JSON.parse(sp.invoice_payload);
-      if (payload.coins) coins = Number(payload.coins);
       if (payload.userId) userId = String(payload.userId);
+
+      if (payload.isVip) {
+        const days = Number(payload.days) || 30;
+        setVipSubscription(userId, days);
+        const payment = createPayment(userId, sp.total_amount, 0, null, `stars_vip_${sp.telegram_payment_charge_id}`);
+        payment.status = 'approved';
+
+        await ctx.reply(
+          `🎉 *VIP Obuna muvaffaqiyatli faollashtirildi!*\n\n⭐️ *${sp.total_amount} Stars* to'landi.\n👑 *VIP Muddat:* ${days} kun cheksiz taqdimotlar!\n\nIstalgan mavzuda bemalol cheksiz slaydlar yaratishingiz mumkin! Tashakkur! 🚀`,
+          { parse_mode: 'Markdown' }
+        );
+
+        if (config.adminId && String(ctx.chat.id) !== String(config.adminId)) {
+          try {
+            await bot.api.sendMessage(
+              config.adminId,
+              `💎 *Yangi VIP Stars to'lovi!*\n\n👤 *Foydalanuvchi:* ${ctx.from.first_name || ''} (@${ctx.from.username || 'yoq'})\n🆔 *ID:* \`${userId}\`\n⭐️ *Summa:* ${sp.total_amount} Stars\n👑 *Muddat:* ${days} kun`,
+              { parse_mode: 'Markdown' }
+            );
+          } catch (_) {}
+        }
+        return;
+      }
+
+      if (payload.coins) coins = Number(payload.coins);
     } catch (_) {}
 
     addCoins(userId, coins);
@@ -489,6 +551,7 @@ async function showPaymentInfo(ctx) {
 • **1 ta taqdimot** — 5 000 so'm (yoki 15 ⭐️)
 • **5 ta taqdimot** — 20 000 so'm (yoki 60 ⭐️)
 • **10 ta taqdimot** — 35 000 so'm (yoki 100 ⭐️)
+• 💎 **30 kunlik VIP Cheksiz Pass** — 35 000 so'm (yoki 100 ⭐️)
 
 🏦 *To'lov uchun karta raqami:*
 \`${CARD_NUMBER}\`
@@ -497,23 +560,96 @@ _(Humo / Uzcard)_
 📌 *To'lov tartibi:*
 1. Yuqoridagi karta raqamiga kerakli summani o'tkazing (Payme, Click, Uzum).
 2. To'lov cheki (screenshot yoki rasm)ni **to'g'ridan-to'g'ri ushbu chatga rasm qilib yuboring!**
-3. Yoki pastdagi tugma orqali darhol **Telegram Stars (Yulduzlar)** bilan to'lang!
+3. Yoki pastdagi tugmalar orqali darhol **Telegram Stars (Yulduzlar)** bilan to'lang!
   `;
 
   const kb = new InlineKeyboard()
-    .text('⭐️ Telegram Stars orqali to\'lash', 'action_stars_menu');
+    .text('⭐️ Stars orqali to\'lash', 'action_stars_menu').row()
+    .text('💎 VIP Cheksiz Pass', 'action_vip');
 
   await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: kb });
 }
 
-// Chek rasmi yuborilganda (message:photo) - FIRIBGARLIKDAN 100% HIMOYA
+// Rasm qabul qilish: A) Konspekt/Kitob OCR yoki B) To'lov cheki
 bot.on('message:photo', async (ctx) => {
   const photos = ctx.message.photo;
   const bestPhoto = photos[photos.length - 1];
   const fileId = bestPhoto.file_id;
   const fileUniqueId = bestPhoto.file_unique_id;
 
-  // 1. Bir xil chek rasmini qayta-qayta yuborishni qat'iy bloklash!
+  const session = sessions.get(ctx.chat.id);
+  const caption = (ctx.message.caption || '').trim().toLowerCase();
+  const isOcrRequest = (session && session.step === 'AWAIT_NOTE_PHOTO') ||
+    /konspekt|kitob|darslik|referat|maqola|daftar|qo['`]?lyozma|ocr|slayd/i.test(caption);
+
+  // 1. KONSPEKT / KITOB RASMIDAN SLAYD YARATISH (OCR VISION)
+  if (isOcrRequest) {
+    const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+    if (!isSubscribed) {
+      return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+        parse_mode: 'Markdown',
+        reply_markup: getSubscriptionKeyboard(),
+        disable_web_page_preview: true,
+      });
+    }
+
+    const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
+    const isVip = isUserVip(ctx.chat.id);
+    if (!isVip && user.coins <= 0) {
+      await ctx.reply(
+        `❌ Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\nKarta: \`${CARD_NUMBER}\`\nYoki 3 ta do'stingizni taklif qiling! (/balance)`,
+        { parse_mode: 'Markdown' }
+      );
+      return;
+    }
+
+    const waitMsg = await ctx.reply(
+      "📸 _Rasm tahlil qilinmoqda, qo'lyozma va matnlar o'qilmoqda (Vision AI)..._",
+      { parse_mode: 'Markdown' }
+    );
+
+    try {
+      const file = await ctx.getFile();
+      const fileUrl = `https://api.telegram.org/file/bot${config.botToken}/${file.file_path}`;
+      const res = await fetch(fileUrl);
+      const arrayBuffer = await res.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      const ocrResult = await extractTextFromImage(buffer, 'image/jpeg');
+
+      if (!ocrResult || !ocrResult.text || ocrResult.text.length < 15) {
+        throw new Error("Rasmda yetarlicha matn yoki mavzu aniqlanmadi. Iltimos, ravshanroq rasm yuboring.");
+      }
+
+      sessions.set(ctx.chat.id, {
+        topic: ocrResult.topic || 'Konspekt asosidagi taqdimot',
+        documentText: ocrResult.text,
+        step: 'ASK_CATEGORY',
+      });
+
+      await ctx.api.editMessageText(
+        ctx.chat.id,
+        waitMsg.message_id,
+        `📸 *Konspekt / Kitob sahifasi muvaffaqiyatli o'qildi!*\n\n📌 Aniqlangan mavzu: *"${ocrResult.topic}"*\n📝 Matn hajmi: *${ocrResult.text.length} belgi*\n\n1️⃣ *Qaysi soha / yo'nalishga moslab slayd tayyorlaymiz?*`,
+        {
+          parse_mode: 'Markdown',
+          reply_markup: getCategoryKeyboard(),
+        }
+      );
+      return;
+    } catch (ocrErr) {
+      console.error('[OCR Photo Error]:', ocrErr);
+      await ctx.api.editMessageText(
+        ctx.chat.id,
+        waitMsg.message_id,
+        `❌ Rasmdagi matnni o'qishda xatolik bo'ldi:\n_${ocrErr.message}_\n\nIltimos, ravshanroq rasm oling yoki mavzuni matn ko'rinishida yozing.`,
+        { parse_mode: 'Markdown' }
+      );
+      return;
+    }
+  }
+
+  // 2. TO'LOV CHEKI RASMI (FIRIBGARLIKDAN HIMOYA)
   if (isReceiptDuplicate(fileUniqueId)) {
     return ctx.reply(
       `⚠️ *Bu to'lov cheki allaqachon botga yuborilgan!*\n\nBir xil chekni bir necha marta yuborish orqali koin olish mumkin emas. Agar to'lov bo'yicha savolingiz bo'lsa, adminga murojaat qiling.`,
@@ -521,7 +657,6 @@ bot.on('message:photo', async (ctx) => {
     );
   }
 
-  // 2. Ketma-ket spam qilib chek tashlashni oldini olish (avvalgisi tekshirilayotgan bo'lsa)
   const pending = hasPendingPayment(ctx.chat.id);
   if (pending) {
     return ctx.reply(
@@ -530,21 +665,19 @@ bot.on('message:photo', async (ctx) => {
     );
   }
 
-  // 3. To'lovni kutilayotgan (pending) holatda bazaga saqlash (KOIN DARHOL BERILMAYDI!)
   const payment = createPayment(ctx.chat.id, PRICE_PER_SLIDE, 1, fileId, fileUniqueId);
   const user = getUser(ctx.chat.id);
 
   await ctx.reply(
     `📩 *To'lov chekingiz tekshiruvga qabul qilindi!*
 
-Admin chekni ko'rib chiqib tasdiqlaganidan so'ng (1-2 daqiqa ichida), balansingizga taqdimot coinlari qo'shiladi va sizga darhol xabar boradi! 🪙
+Admin chekni ko'rib chiqib tasdiqlaganidan so'ng (1-2 daqiqa ichida), balansingizga taqdimot coinlari yoki VIP obuna qo'shiladi va sizga darhol xabar boradi! 🪙
 
 Joriy balansingiz: *${user?.coins || 0} ta* taqdimot.
 Iltimos, kuting...`,
     { parse_mode: 'Markdown' }
   );
 
-  // 4. Adminga chek rasmi va 1-bosish bilan tasdiqlash / rad etish tugmalarini yuborish
   if (config.adminId && String(ctx.chat.id) !== String(config.adminId)) {
     try {
       const adminKeyboard = new InlineKeyboard()
@@ -552,6 +685,7 @@ Iltimos, kuting...`,
         .text('💎 3 ta coin (15 000)', `pay_ok_${payment.id}_3`).row()
         .text('🚀 5 ta coin (20 000)', `pay_ok_${payment.id}_5`)
         .text('🔥 10 ta coin (35 000)', `pay_ok_${payment.id}_10`).row()
+        .text('👑 30 kunlik VIP Pass (35 000)', `pay_vip_${payment.id}_30`).row()
         .text('❌ Rad etish (Soxta / pul tushmagan)', `pay_no_${payment.id}`).row();
 
       await bot.api.sendPhoto(
@@ -611,6 +745,47 @@ bot.callbackQuery(/^pay_ok_(.+)_(.+)$/, async (ctx) => {
   }
 });
 
+// Admin VIP obunani tasdiqlaganda (Callback query)
+bot.callbackQuery(/^pay_vip_(.+)_(.+)$/, async (ctx) => {
+  if (String(ctx.from.id) !== String(config.adminId)) {
+    return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
+  }
+
+  const paymentId = ctx.match[1];
+  const days = parseInt(ctx.match[2], 10) || 30;
+  const payment = getPaymentById(paymentId);
+
+  if (!payment || payment.status !== 'pending') {
+    return ctx.answerCallbackQuery({ text: '⚠️ Bu to\'lov allaqachon ko\'rib chiqilgan yoki topilmadi!', show_alert: true });
+  }
+
+  payment.status = 'approved';
+  payment.approvedAt = new Date().toISOString();
+  payment.vipDays = days;
+  setVipSubscription(payment.userId, days);
+
+  await ctx.answerCallbackQuery({ text: `✅ VIP tasdiqlandi! (${days} kun)` });
+
+  try {
+    const prevCaption = ctx.callbackQuery.message?.caption || '💳 To\'lov cheki';
+    await ctx.editMessageCaption({
+      caption: `${prevCaption}\n\n━━━━━━━━━━━━━━━━━━━━\n👑 *ADMIN TOMONIDAN VIP TASDIQLANDI!*\n💎 *VIP Muddat:* ${days} kun cheksiz taqdimotlar`,
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [] },
+    });
+  } catch (err) {
+    console.warn('[Edit Caption Failed]', err.message);
+  }
+
+  try {
+    await bot.api.sendMessage(
+      payment.userId,
+      `🎉 *Tabriklaymiz! Sizning to'lovingiz admin tomonidan tasdiqlandi!*\n\n👑 Hisobingizga **${days} kunlik VIP Cheksiz Obuna (VIP Pass)** berildi! 💎\nEndi siz ${days} kun davomida istalgancha bepul va cheksiz slaydlar tayyorlashingiz mumkin! 🚀`,
+      { parse_mode: 'Markdown' }
+    );
+  } catch (e) {}
+});
+
 // Admin to'lovni rad etganda (Callback query)
 bot.callbackQuery(/^pay_no_(.+)$/, async (ctx) => {
   if (String(ctx.from.id) !== String(config.adminId)) {
@@ -660,8 +835,9 @@ bot.on('message:voice', async (ctx) => {
   }
 
   const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
+  const isVip = isUserVip(ctx.chat.id);
 
-  if (user.coins <= 0) {
+  if (!isVip && user.coins <= 0) {
     await ctx.reply(
       `❌ Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\n\nHar 1 ta taqdimot: *${PRICE_PER_SLIDE.toLocaleString()} so'm*.\nKarta: \`${CARD_NUMBER}\`\n\nYoki 3 ta do'stingizni taklif qilib, +1 ta bepul taqdimot oling! (/balance)`,
       { parse_mode: 'Markdown' }
@@ -722,8 +898,9 @@ bot.on('message:document', async (ctx) => {
   }
 
   const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
+  const isDocVip = isUserVip(ctx.chat.id);
 
-  if (user.coins <= 0) {
+  if (!isDocVip && user.coins <= 0) {
     await ctx.reply(
       `❌ Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\nKarta: \`${CARD_NUMBER}\`\nYoki 3 ta do'stingizni taklif qiling! (/balance)`,
       { parse_mode: 'Markdown' }
@@ -911,7 +1088,8 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
 
   // Coin tekshirish va yechish
   const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
-  if (user.coins <= 0) {
+  const isVip = isUserVip(ctx.chat.id);
+  if (!isVip && user.coins <= 0) {
     await ctx.answerCallbackQuery({ text: 'Imkoniyatlar tugagan' });
     await ctx.reply(
       `❌ Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\n\nHar 1 ta taqdimot: *${PRICE_PER_SLIDE.toLocaleString()} so'm*.\nKarta: \`${CARD_NUMBER}\`\n\nYoki 3 ta do'stingizni taklif qilib, bepul coin oling! (/balance)`,
@@ -933,10 +1111,10 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
   const catObj = getCategory(session.category || 'general', langKey);
 
   const statusText = {
-    ru: `⏳ *" ${session.topic} "*\n\n🎯 Направление: *${catObj.name}*\n🌐 Язык: *${langName}*\n📊 Слайды: *${session.slideCount}*\n🎨 Стиль: *${themeName}*\n🪙 Баланс: *${user.coins}*\n\n_Формирование структуры слайдов, подбор визуалов и создание PowerPoint (.pptx)..._`,
-    en: `⏳ *" ${session.topic} "*\n\n🎯 Field: *${catObj.name}*\n🌐 Language: *${langName}*\n📊 Slides: *${session.slideCount}*\n🎨 Theme: *${themeName}*\n🪙 Balance: *${user.coins}*\n\n_Structuring slide architecture, selecting visuals, and generating PowerPoint (.pptx)..._`,
-    tg: `⏳ *" ${session.topic} "*\n\n🎯 Самт: *${catObj.name}*\n🌐 Забон: *${langName}*\n📊 Слайдҳо: *${session.slideCount}*\n🎨 Тарҳ: *${themeName}*\n🪙 Бақия: *${user.coins}*\n\n_Таҳияи нақшаи слайдҳо, интихоби аксҳо ва ташаккули PowerPoint (.pptx)..._`,
-  }[langKey] || `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n🌐 Til: *${langName}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${user.coins} ta*\n\n_Slaydlar rejasi tuzilmoqda, rasmlar yuklanmoqda va PowerPoint (.pptx) shakllantirilmoqda..._`;
+    ru: `⏳ *" ${session.topic} "*\n\n🎯 Направление: *${catObj.name}*\n🌐 Язык: *${langName}*\n📊 Слайды: *${session.slideCount}*\n🎨 Стиль: *${themeName}*\n🪙 Баланс: *${isVip ? '💎 VIP' : user.coins}*\n\n_Формирование структуры слайдов, подбор визуалов и создание PowerPoint (.pptx)..._`,
+    en: `⏳ *" ${session.topic} "*\n\n🎯 Field: *${catObj.name}*\n🌐 Language: *${langName}*\n📊 Slides: *${session.slideCount}*\n🎨 Theme: *${themeName}*\n🪙 Balance: *${isVip ? '💎 VIP' : user.coins}*\n\n_Structuring slide architecture, selecting visuals, and generating PowerPoint (.pptx)..._`,
+    tg: `⏳ *" ${session.topic} "*\n\n🎯 Самт: *${catObj.name}*\n🌐 Забон: *${langName}*\n📊 Слайдҳо: *${session.slideCount}*\n🎨 Тарҳ: *${themeName}*\n🪙 Бақия: *${isVip ? '💎 VIP' : user.coins}*\n\n_Таҳияи нақшаи слайдҳо, интихоби аксҳо ва ташаккули PowerPoint (.pptx)..._`,
+  }[langKey] || `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n🌐 Til: *${langName}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${isVip ? '💎 VIP' : user.coins + ' ta'}*\n\n_Slaydlar rejasi tuzilmoqda, rasmlar yuklanmoqda va PowerPoint (.pptx) shakllantirilmoqda..._`;
 
   const statusMsg = await ctx.reply(statusText, { parse_mode: 'Markdown' });
 
@@ -980,17 +1158,17 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
 🌐 *Til:* ${langName}
 📄 *Slaydlar:* ${data.slides?.length || session.slideCount} ta
 🎨 *Uslub:* ${themeName}
-🪙 *Qolgan balansi:* ${user.coins} ta
+🪙 *Qolgan balansi:* ${isVip ? '💎 VIP' : user.coins + ' ta'}
       `;
       await ctx.api.sendMessage(config.adminId, adminReport, { parse_mode: 'Markdown' });
     } catch (_) {}
 
     // 3. Foydalanuvchiga yuborish
     const docCaption = {
-      ru: `✅ *${data.title}*\n\n🎯 Направление: ${catObj.name}\n🌐 Язык: ${langName}\n📄 Слайды: ${data.slides?.length || session.slideCount}\n🎨 Стиль: ${themeName}\n🪙 Оставшийся баланс: *${user.coins}*\n\n_Файл можно открыть и редактировать в программе PowerPoint._`,
-      en: `✅ *${data.title}*\n\n🎯 Field: ${catObj.name}\n🌐 Language: ${langName}\n📄 Slides: ${data.slides?.length || session.slideCount}\n🎨 Theme: ${themeName}\n🪙 Remaining balance: *${user.coins}*\n\n_You can open and present this file in PowerPoint._`,
-      tg: `✅ *${data.title}*\n\n🎯 Самт: ${catObj.name}\n🌐 Забон: ${langName}\n📄 Слайдҳо: ${data.slides?.length || session.slideCount}\n🎨 Тарҳ: ${themeName}\n🪙 Бақияи шумо: *${user.coins}*\n\n_Шумо метавонед файлро дар барномаи PowerPoint кушоед._`,
-    }[langKey] || `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${user.coins} ta*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`;
+      ru: `✅ *${data.title}*\n\n🎯 Направление: ${catObj.name}\n🌐 Язык: ${langName}\n📄 Слайды: ${data.slides?.length || session.slideCount}\n🎨 Стиль: ${themeName}\n🪙 Оставшийся баланс: *${isVip ? '💎 VIP' : user.coins}*\n\n_Файл можно открыть и редактировать в программе PowerPoint._`,
+      en: `✅ *${data.title}*\n\n🎯 Field: ${catObj.name}\n🌐 Language: ${langName}\n📄 Slides: ${data.slides?.length || session.slideCount}\n🎨 Theme: ${themeName}\n🪙 Remaining balance: *${isVip ? '💎 VIP' : user.coins}*\n\n_You can open and present this file in PowerPoint._`,
+      tg: `✅ *${data.title}*\n\n🎯 Самт: ${catObj.name}\n🌐 Забон: ${langName}\n📄 Слайдҳо: ${data.slides?.length || session.slideCount}\n🎨 Тарҳ: ${themeName}\n🪙 Бақияи шумо: *${isVip ? '💎 VIP' : user.coins}*\n\n_Шумо метавонед файлро дар барномаи PowerPoint кушоед._`,
+    }[langKey] || `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${isVip ? '💎 VIP' : user.coins + ' ta'}*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`;
 
     await ctx.replyWithDocument(
       new InputFile(filePath, `${data.title || 'prezentatsiya'}.pptx`),
@@ -1031,18 +1209,164 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
       await ctx.reply(notesText, { parse_mode: 'Markdown' });
     }
 
+    // 5. Himoya va komissiya savol-javoblari (Defense Q&A)
+    if (data.qaList && data.qaList.length > 0) {
+      const qaHeader = {
+        ru: `🎓 *Вопросы и ответы для защиты перед комиссией (Q&A):*\n_(Возможные вопросы преподавателя/комиссии и образцовые ответы)_\n\n`,
+        en: `🎓 *Defense & Examination Q&A (Anticipated Questions & Model Answers):*\n_(Key committee questions and authoritative responses)_\n\n`,
+        tg: `🎓 *Саволу ҷавобҳои эҳтимолӣ барои ҳимоя дар назди комиссия (Q&A):*\n_(Саволҳои муҳими омӯзгор ва посухҳои намунавӣ)_\n\n`,
+      }[langKey] || `🎓 *Himoya va komissiya savol-javoblari (Q&A):*\n_(O'qituvchi yoki hay'at a'zolari berishi mumkin bo'lgan savollar va tayyor namunali javoblar)_\n\n`;
+
+      const qLabel = {
+        ru: (num) => `❓ *Вопрос ${num}:*`,
+        en: (num) => `❓ *Question ${num}:*`,
+        tg: (num) => `❓ *Саволи ${num}:*`,
+      }[langKey] || ((num) => `❓ *${num}-savol:*`);
+
+      const aLabel = {
+        ru: `💡 *Ответ:*`,
+        en: `💡 *Answer:*`,
+        tg: `💡 *Ҷавоб:*`,
+      }[langKey] || `💡 *Javob:*`;
+
+      let qaText = qaHeader;
+      data.qaList.slice(0, 4).forEach((item, idx) => {
+        qaText += `${qLabel(idx + 1)} ${item.question}\n${aLabel} ${item.answer}\n\n`;
+      });
+
+      await ctx.reply(qaText.trim(), { parse_mode: 'Markdown' });
+    }
+
     try {
       await ctx.api.deleteMessage(ctx.chat.id, statusMsg.message_id);
     } catch (_) {}
   } catch (error) {
     console.error('Xatolik:', error);
-    // Xatolik bo'lsa coinni qaytarish
-    addCoins(ctx.chat.id, 1);
+    // Xatolik bo'lsa coinni qaytarish (VIP bo'lmasa)
+    if (!isVip) {
+      addCoins(ctx.chat.id, 1);
+    }
     await ctx.reply(
       `❌ Taqdimot tayyorlashda qisqa uzilish bo'ldi:\n_${error.message}_\n\nCoin hisobingizga qaytarildi. Iltimos, qayta urinib ko'ring.`,
       { parse_mode: 'Markdown' }
     );
   }
+});
+
+// /promo buyrug'i
+bot.command('promo', async (ctx) => {
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
+
+  const match = (ctx.match || '').trim();
+  if (match) {
+    const res = redeemPromoCode(ctx.chat.id, match);
+    return ctx.reply(res.message, { parse_mode: 'Markdown' });
+  }
+
+  sessions.set(ctx.chat.id, { step: 'AWAIT_PROMO_CODE' });
+  await ctx.reply(
+    `🎟 *Promo-kodni kiriting:*\n\nAgarda sizda maxsus promo-kod bo'lsa (masalan: *TALABA*, *START5*, *TATU*, *SAMDU*, *VIP2026*), uni yozib yuboring va hisobingizga qo'shimcha bepul koinlar oling! 🪙\n\n_Bekor qilish uchun: /cancel_`,
+    { parse_mode: 'Markdown' }
+  );
+});
+
+bot.callbackQuery('action_promo', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  sessions.set(ctx.chat.id, { step: 'AWAIT_PROMO_CODE' });
+  await ctx.reply(
+    `🎟 *Promo-kodni yozib yuboring:*\n\n(Masalan: \`TALABA\`, \`START5\`, \`TATU\`, \`VIP2026\`)`,
+    { parse_mode: 'Markdown' }
+  );
+});
+
+// /vip buyrug'i (VIP Cheksiz obuna haqida)
+bot.command('vip', async (ctx) => {
+  await showVipInfo(ctx);
+});
+
+bot.callbackQuery('action_vip', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await showVipInfo(ctx);
+});
+
+async function showVipInfo(ctx) {
+  const isVip = isUserVip(ctx.chat.id);
+  const user = getUser(ctx.chat.id);
+
+  let statusHeader = '';
+  if (isVip && user?.vipUntil) {
+    const untilDate = new Date(user.vipUntil).toLocaleDateString('uz-UZ');
+    statusHeader = `👑 *Sizning VIP maqomingiz: FAOL!* (${untilDate} gacha cheksiz taqdimotlar)\n\n`;
+  }
+
+  const text = `
+${statusHeader}💎 *VIP Cheksiz Obuna (VIP Pass):*
+
+Talabalar, o'qituvchilar va tadbirkorlar uchun cheklovlarsiz eng qulay tarif!
+
+🔥 *VIP afzalliklari:*
+• **Cheksiz taqdimotlar:** 30 kun davomida istalgancha slayd yarating (koin sarflanmaydi!)
+• **Navbatsiz va ustuvor:** AI serverlarida 1-navbatda generatsiya qilinadi.
+• **Konspekt & Foto OCR:** Daftardagi yozuv yoki kitoblardan cheksiz slaydlar.
+• **To'liq Q&A va Spiker Nutqi:** Himoya va ma'ruza uchun tayyor savol-javoblar.
+
+💰 *VIP Narxi:*
+• **30 kunlik VIP Pass** — **35 000 so'm** (yoki 100 ⭐️ Stars)
+
+👇 *To'lov usulini tanlang:*
+  `.trim();
+
+  const kb = new InlineKeyboard()
+    .text('⭐️ Stars orqali to\'lash (100 Stars)', 'buy_vip_stars_30_100').row()
+    .text('💳 Karta orqali to\'lash (35 000 so\'m)', 'action_pay_vip_card').row()
+    .text('🔙 Orqaga', 'action_balance');
+
+  await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: kb });
+}
+
+bot.callbackQuery('action_pay_vip_card', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const text = `
+💳 *VIP Pass uchun karta orqali to'lov:*
+
+Summa: **35 000 so'm** (30 kunlik cheksiz kirish)
+Karta raqami: \`${CARD_NUMBER}\`
+_(Humo / Uzcard)_
+
+📌 To'lovni amalga oshirgach, to'lov cheki (screenshot yoki rasm)ni **to'g'ridan-to'g'ri ushbu chatga rasm qilib yuboring!** Admin tasdiqlashi bilan profilingiz darhol VIP ga o'tadi.
+  `.trim();
+  await ctx.reply(text, { parse_mode: 'Markdown' });
+});
+
+// /ocr yoki /konspekt buyrug'i
+bot.command(['ocr', 'konspekt', 'foto', 'photo'], async (ctx) => {
+  sessions.set(ctx.chat.id, { step: 'AWAIT_NOTE_PHOTO' });
+  await ctx.reply(
+    `📸 *Konspekt, kitob sahifasi yoki qo'lyozmani rasmga olib yuboring!*
+
+Vision AI qo'lyozma va bosma matnlarni to'liq o'qib, undan chiroyli professional PowerPoint taqdimot tayyorlab beradi.
+
+👉 *Rasmni to'g'ridan-to'g'ri chatga yuboring:*`,
+    { parse_mode: 'Markdown' }
+  );
+});
+
+bot.callbackQuery('action_ocr', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  sessions.set(ctx.chat.id, { step: 'AWAIT_NOTE_PHOTO' });
+  await ctx.reply(
+    `📸 *Daftar konspekti yoki kitob sahifasini rasmga olib yuboring!*
+
+AI matnni o'zi o'qib, tartibli slaydga aylantiradi.`,
+    { parse_mode: 'Markdown' }
+  );
 });
 
 // Foydalanuvchi matn yozganda
@@ -1059,19 +1383,17 @@ bot.on('message:text', async (ctx) => {
     });
   }
 
-  const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
+  const session = sessions.get(ctx.chat.id);
 
-  if (user.coins <= 0) {
-    await ctx.reply(
-      `❌ Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\n\nHar 1 ta taqdimot: *${PRICE_PER_SLIDE.toLocaleString()} so'm*.\nKarta: \`${CARD_NUMBER}\`\n\nYoki 3 ta do'stingizni taklif qiling! (/balance)`,
-      { parse_mode: 'Markdown' }
-    );
+  // 1. Promo-kod kiritish holati
+  if (session && session.step === 'AWAIT_PROMO_CODE') {
+    sessions.delete(ctx.chat.id);
+    const promoRes = redeemPromoCode(ctx.chat.id, text);
+    await ctx.reply(promoRes.message, { parse_mode: 'Markdown' });
     return;
   }
 
-  const session = sessions.get(ctx.chat.id);
-
-  // Agar foydalanuvchi slayd sonini qo'lda raqam qilib yozgan bo'lsa
+  // 2. Agar foydalanuvchi slayd sonini qo'lda raqam qilib yozgan bo'lsa
   if (session && session.step === 'ASK_COUNT') {
     const customCount = parseInt(text, 10);
     if (!isNaN(customCount) && customCount >= 3 && customCount <= 25) {
@@ -1090,7 +1412,49 @@ bot.on('message:text', async (ctx) => {
     }
   }
 
-  // Yangi mavzu kiritildi: 1-qadam (Soha tanlash)
+  // Coin tekshirish (VIP foydalanuvchilar cheksiz foydalanadi)
+  const user = getUser(ctx.chat.id) || getOrCreateUser(ctx.chat.id).user;
+  const isVip = isUserVip(ctx.chat.id);
+
+  if (!isVip && user.coins <= 0) {
+    await ctx.reply(
+      `❌ Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\n\nHar 1 ta taqdimot: *${PRICE_PER_SLIDE.toLocaleString()} so'm*.\nKarta: \`${CARD_NUMBER}\`\n\nYoki 3 ta do'stingizni taklif qiling! (/balance)\nYoki /vip orqali cheksiz pass oling!`,
+      { parse_mode: 'Markdown' }
+    );
+    return;
+  }
+
+  // 3. YouTube havola aniqlash
+  const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+  const ytMatch = text.match(youtubeRegex);
+  if (ytMatch) {
+    const videoUrl = ytMatch[0].startsWith('http') ? ytMatch[0] : `https://${ytMatch[0]}`;
+    let videoTitle = '';
+    try {
+      const oembedRes = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(videoUrl)}&format=json`);
+      if (oembedRes.ok) {
+        const oembedData = await oembedRes.json();
+        videoTitle = oembedData.title || '';
+      }
+    } catch (_) {}
+
+    const topicToUse = videoTitle || `YouTube Video Tahlili (${ytMatch[1]})`;
+    sessions.set(ctx.chat.id, {
+      topic: topicToUse,
+      step: 'ASK_CATEGORY',
+    });
+
+    await ctx.reply(
+      `🎥 *YouTube video aniqlandi!*\n\n📌 Mavzu: *"${topicToUse}"*\n\n1️⃣ *Qaysi soha / yo'nalishga moslab slayd tayyorlaymiz?*`,
+      {
+        parse_mode: 'Markdown',
+        reply_markup: getCategoryKeyboard(),
+      }
+    );
+    return;
+  }
+
+  // 4. Oddiy matn / yangi mavzu
   sessions.set(ctx.chat.id, {
     topic: text,
     step: 'ASK_CATEGORY',

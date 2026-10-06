@@ -11,6 +11,38 @@ if (config.geminiApiKey && config.geminiApiKey.startsWith('AIzaSy')) {
 }
 
 /**
+ * Rasm (konspekt, daftar qo'lyozmasi, kitob sahifasi) ichidagi matnni OCR orqali aniqlash
+ */
+export async function extractTextFromImage(imageBuffer, mimeType = 'image/jpeg') {
+  if (genAI) {
+    try {
+      console.log('[Vision OCR] Gemini 1.5 Flash orqali rasmdan matn o\'qilmoqda...');
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const prompt = `Ushbu rasmda konspekt, daftardagi qo'lyozma, kitob sahifasi yoki o'quv materiali keltirilgan.
+Iltimos, rasmdagi barcha matnlarni juda aniq, to'liq va tartibli ravishda o'qib ber.
+Faqat rasmdagi matnning o'zini qaytar, boshqa hech qanday izoh yoki kirish so'zlari yozma.`;
+
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: imageBuffer.toString('base64'),
+            mimeType,
+          },
+        },
+      ]);
+      const text = result.response.text();
+      if (text && text.trim().length > 10) {
+        return text.trim();
+      }
+    } catch (err) {
+      console.warn('[Vision OCR Error]:', err.message);
+    }
+  }
+  return null;
+}
+
+/**
  * Pollinations AI orqali yuqori sifatli erkin generatsiya (OpenAI GPT-4o-mini asosida)
  */
 async function generateViaPollinations(prompt) {
@@ -1308,11 +1340,37 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
     }
   }
 
+  const localizedQA = {
+    uz: [
+      { question: `"${topic}" mavzusining asosiy ilmiy yangiligi va amaliy ahamiyati nimada?`, answer: `Asosiy ahamiyat tarqoq yondashuvlarni yagona tizimga keltirib, jarayonlar samaradorligini 35-50% ga oshirish va tizimli xatarlarni kamaytirishdadir.` },
+      { question: `Amaliyotga tatbiq etishda qanday asosiy to'siqlar yuzaga kelishi mumkin va ular qanday hal qilinadi?`, answer: `Asosiy omil yangi standartlarga moslashishdir, bu bosqichma-bosqich tajriba-sinov va maxsus o'quv dasturlari orqali bartaraf etiladi.` },
+      { question: `Ushbu loyihaning uzoq muddatli iqtisodiy va sifat ko'rsatkichlari qanday mezonlar bilan baholanadi?`, answer: `Baholash aniq KPI mezonlari: resurslar aylanmasi tezligi, operatsion xarajatlar tejalishi va sifat barqarorligi bilan o'lchanadi.` },
+    ],
+    ru: [
+      { question: `В чем заключается ключевая научная новизна и прикладная ценность темы "${topic}"?`, answer: `Основная ценность состоит в систематизации подходов и создании комплексной модели, повышающей эффективность процессов на 35–50%.` },
+      { question: `С какими рисками можно столкнуться при практической реализации и как их нивелировать?`, answer: `Главным риском является сопротивление адаптации к новым регламентам, что устраняется поэтапным пилотированием и обучением команды.` },
+      { question: `Какие метрики используются для подтверждения долгосрочной результативности?`, answer: `Оценка базируется на измеримых KPI: снижении издержек, скорости цикла ключевых ресурсов и стабильности стандартов качества.` },
+    ],
+    en: [
+      { question: `What is the core strategic breakthrough and real-world value of "${topic}"?`, answer: `The primary value lies in consolidating fragmented practices into an integrated framework that boosts operational output by 35–50%.` },
+      { question: `What are the critical implementation hurdles and how are they overcome?`, answer: `The primary challenge is organizational adoption, effectively resolved through phased milestones, risk audits, and targeted upskilling.` },
+      { question: `How do you measure and validate sustainable long-term ROI?`, answer: `Validation relies on empirical KPI metrics: reduced turnaround times, lower operating friction, and durable quality benchmarks.` },
+    ],
+    tg: [
+      { question: `Навоварии асосии илмӣ ва аҳамияти амалии мавзӯи "${topic}" дар чист?`, answer: `Аҳамияти асосӣ дар муттаҳид сохтани усулҳо ва баланд бардоштани маҳсулнокии равандҳо ба андозаи 35-50% мебошад.` },
+      { question: `Ҳангоми татбиқи амалӣ бо кадом монеаҳо рӯ ба рӯ шудан мумкин аст?`, answer: `Мушкили асосӣ мутобиқшавии мутахассисон ба қоидаҳои нав мебошад, ки он тавассути санҷишҳои марҳилавӣ бартараф мегардад.` },
+      { question: `Самаранокии дарозмуддати ин қарорҳо бо кадом нишондиҳандаҳо чен карда мешавад?`, answer: `Арзёбӣ бар асоси нишондиҳандаҳои KPI: сарфаи захираҳо, суръати амалиёт ва устувории сифати натиҷаҳо муайян карда мешавад.` },
+    ],
+  }[language] || [
+    { question: `"${topic}" mavzusining asosiy ilmiy yangiligi nimada?`, answer: `Jarayonlar samaradorligini 35-50% ga oshirish va xatarlarni kamaytirishda.` }
+  ];
+
   return {
     title: topic,
     subtitle: localizedMeta.sub,
     theme: theme || 'ocean',
-    slides
+    slides,
+    qaList: localizedQA,
   };
 }
 
@@ -1361,6 +1419,9 @@ ${docContext}
    - Для каждого слайда напишите живой, готовый для выступления текст речи докладчика из 3–5 предложений.
 7. Общее количество слайдов в массиве "slides" ДОЛЖНО БЫТЬ РОВНО ${targetCount}!
 
+8. ВОПРОСЫ И ОТВЕТЫ ДЛЯ ЗАЩИТЫ (qaList):
+   - Сформируйте в корневом объекте массив "qaList" из 3 ключевых аналитических вопросов экзаменационной комиссии/преподавателя и образцовых развернутых ответов докладчика.
+
 Строго верните ЧИСТЫЙ JSON следующей структуры:
 {
   "title": "${topic}",
@@ -1396,6 +1457,12 @@ ${docContext}
       "highlight": "Фундаментальный системный подход и точная диагностика гарантируют максимальную эффективность практической реализации.",
       "speakerNotes": "На данном слайде мы анализируем базовые предпосылки и ключевые точки роста, определяющие высокую актуальность рассматриваемого вопроса."
     }
+  ],
+  "qaList": [
+    {
+      "question": "В чем заключается ключевая прикладная ценность данного исследования?",
+      "answer": "Ключевая ценность заключается в снижении рисков и оптимизации процессов на 35-50% за счет системного внедрения стандартов."
+    }
   ]
 }
 `;
@@ -1429,6 +1496,8 @@ STRICT MANDATORY REQUIREMENTS:
 6. COMPREHENSIVE SPEAKER NOTES (speakerNotes):
    - Provide a natural, polished 3–5 sentence verbal script for the presenter on every slide.
 7. The "slides" array MUST contain EXACTLY ${targetCount} slides!
+8. COMMITTEE DEFENSE QUESTIONS & ANSWERS (qaList):
+   - Provide a "qaList" array in the root object containing 3 critical examination questions with authoritative model answers.
 
 Strictly return CLEAN JSON of this structure:
 {
@@ -1465,6 +1534,12 @@ Strictly return CLEAN JSON of this structure:
       "highlight": "A disciplined foundational architecture is the cornerstone of sustainable long-term excellence.",
       "speakerNotes": "On this slide, we examine the baseline theoretical foundations and critical levers that drive operational success in this domain."
     }
+  ],
+  "qaList": [
+    {
+      "question": "What is the core strategic breakthrough and practical value of this approach?",
+      "answer": "The core breakthrough lies in systemic workflow optimization yielding a 35-50% throughput gain while controlling execution risks."
+    }
   ]
 }
 `;
@@ -1498,6 +1573,8 @@ ${docContext}
 6. ҚАЙДҲОИ БАРОМАДКУНАНДА (speakerNotes):
    - Барои ҳар як слайд матни нутқи зинда ва касбии баромадкунандаро (3–5 ҷумла) бо забони тоҷикӣ омода кунед.
 7. Дар маҷмӯъ шумораи слайдҳо дар массиви "slides" ДАҚИҚАН ${targetCount} адад бошад!
+8. САВОЛУ ҶАВОБҲОИ ҲИМОЯ (qaList):
+   - Дар қисмати "qaList" 3 саволи муҳими комиссия ва посухҳои мукаммали илмию амалиро пешниҳод намоед.
 
 Қатъиян дар формати JSON посух диҳед:
 {
@@ -1533,6 +1610,12 @@ ${docContext}
       ],
       "highlight": "Пойдевори мустаҳками назариявӣ кафили комёбиҳои амалӣ ва рушди устувор мебошад.",
       "speakerNotes": "Дар ин слайд мо омилҳои асосии пешбаранда ва нуқтаҳои муҳими рушдро, ки мубрамияти мавзӯъро таъмин менамоянд, таҳлил мекунем."
+    }
+  ],
+  "qaList": [
+    {
+      "question": "Аҳамияти асосии амалии ин таҳқиқот дар чист?",
+      "answer": "Аҳамияти асосӣ дар баланд бардоштани маҳсулнокӣ ба андозаи 35-50% ва истифодаи самараноки захираҳо мебошад."
     }
   ]
 }
@@ -1571,6 +1654,8 @@ MUHIM QAT'IY TALABLAR VA CHEKLOVLAR:
 5. SPIKER NUTQI (speakerNotes):
    - Har bir slayd uchun spiker minbardan turib gapirib berishi mumkin bo'lgan 3-5 gapdan iborat jonli, qiziqarli nutq matnini yozing.
 6. Jami "slides" massivida AYNAN ${targetCount} ta slayd bo'lsin!
+7. HIMOYA VA KOMISSIYA SAVOL-JAVOBLARI (qaList):
+   - "qaList" massivida komissiya yoki ustozlar berishi mumkin bo'lgan 3 ta dolzarb savol va spikerning namunali chuqur javoblarini keltiring.
 
 Qat'iy toza JSON formatida javob bering:
 {
@@ -1609,6 +1694,12 @@ Qat'iy toza JSON formatida javob bering:
       ],
       "highlight": "Mukammal nazariy poydevor va izchil harakatlar strategiyasi yuqori natijalarga erishishning asosiy kalitidir.",
       "speakerNotes": "Ushbu slaydda biz sohaning bugungi kundagi holati, mavzuni dolzarb qilayotgan asosiy omillar hamda kelgusidagi transformatsiya yo'nalishlariga chuqur to'xtalamiz."
+    }
+  ],
+  "qaList": [
+    {
+      "question": "Ushbu loyihaning amaliy ahamiyati va asosiy yangiligi nimada?",
+      "answer": "Asosiy yangilik jarayonlarni tizimlashtirish, samaradorlikni 35-50% ga oshirish va xatarlarni minimallashtirishdan iboratdir."
     }
   ]
 }
@@ -1710,6 +1801,40 @@ function sanitizePresentationData(data, language = 'uz') {
         });
       }
     });
+  }
+
+  if (Array.isArray(data.qaList)) {
+    data.qaList = data.qaList.map(item => ({
+      question: cleanText(item?.question, ''),
+      answer: cleanText(item?.answer, ''),
+    })).filter(x => x.question && x.answer);
+  }
+
+  if (!Array.isArray(data.qaList) || data.qaList.length === 0) {
+    const topicTitle = data.title || 'Mavzu';
+    const localizedDefaults = {
+      uz: [
+        { question: `"${topicTitle}" bo'yicha asosiy ilmiy yangilik va amaliy samara nimada?`, answer: `Asosiy ahamiyat tarqoq yondashuvlarni yagona tizimga keltirib, jarayonlar unumdorligini 35-50% ga oshirish va operatsion xatarlarni kamaytirishdan iborat.` },
+        { question: `Ushbu loyihani amaliyotga joriy qilishda asosiy xatarlar qanday bartaraf etiladi?`, answer: `Bosqichma-bosqich rejalashtirish, xodimlar malakasini oshirish va muntazam sifat nazorati o'rnatish orqali xatarlar bartaraf qilinadi.` },
+        { question: `Natijadorlik qaysi asosiy mezonlar (KPI) orqali baholanadi?`, answer: `Resurslar tejamkorligi, operatsion tezlik va xalqaro sifat mezonlariga muvofiqlik darajasi bilan o'lchanadi.` },
+      ],
+      ru: [
+        { question: `В чем заключается ключевая научная новизна и прикладная ценность темы "${topicTitle}"?`, answer: `Основная ценность состоит в систематизации процессов и повышении эффективности на 35–50% при минимальных эксплуатационных рисках.` },
+        { question: `С какими сложностями можно столкнуться при реализации и как их нивелировать?`, answer: `Сложности преодолеваются поэтапным пилотированием, обучением специалистов и внедрением непрерывного аудита качества.` },
+        { question: `Какие метрики используются для подтверждения результативности?`, answer: `Оценка базируется на измеримых KPI: снижении издержек, ускорении ключевых циклов и устойчивости стандартов.` },
+      ],
+      en: [
+        { question: `What is the core breakthrough and real-world value of "${topicTitle}"?`, answer: `The primary value lies in systemic framework integration that accelerates operational output by 35–50% while controlling friction.` },
+        { question: `What are the primary implementation hurdles and how are they overcome?`, answer: `Hurdles are resolved through phased milestones, comprehensive stakeholder training, and continuous metric tracking.` },
+        { question: `How do you measure and validate sustainable long-term ROI?`, answer: `Validation relies on empirical KPI metrics: lower turnaround latency, minimized operational overhead, and compliance with industry standards.` },
+      ],
+      tg: [
+        { question: `Навоварии асосии илмӣ ва аҳамияти амалии мавзӯи "${topicTitle}" дар чист?`, answer: `Аҳамияти асосӣ дар баланд бардоштани маҳсулнокии равандҳо ба андозаи 35-50% ва истифодаи самараноки захираҳо мебошад.` },
+        { question: `Ҳангоми татбиқи амалӣ мушкилиҳо чӣ гуна бартараф карда мешаванд?`, answer: `Тавассути озмоишҳои марҳилавӣ, омӯзиши пайвастаи мутахассисон ва назорати сифати натиҷаҳо бартараф мегардад.` },
+        { question: `Самаранокии ин лоиҳа бо кадом нишондиҳандаҳо чен карда мешавад?`, answer: `Сарфаи захираҳо, суръати амалиёт ва риояи стандартҳои байналмилалии сифат мебошанд.` },
+      ],
+    };
+    data.qaList = localizedDefaults[language] || localizedDefaults.uz;
   }
 
   return data;
