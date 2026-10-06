@@ -55,6 +55,26 @@ const THEME_NAMES = {
   minimal: '📄 Clean Light',
 };
 
+// Tillarning chiroyli nomlari
+const LANG_NAMES = {
+  uz: "🇺🇿 O'zbekcha",
+  ru: "🇷🇺 Русский",
+  en: "🇬🇧 English",
+  tg: "🇹🇯 Тоҷикӣ",
+};
+
+// Til tanlash klaviaturasi
+function getLanguageKeyboard() {
+  return new InlineKeyboard()
+    .text('🇺🇿 O\'zbekcha', 'lang_uz')
+    .text('🇷🇺 Русский', 'lang_ru')
+    .row()
+    .text('🇬🇧 English', 'lang_en')
+    .text('🇹🇯 Тоҷикӣ', 'lang_tg')
+    .row()
+    .text('❌ Bekor qilish', 'cancel_action');
+}
+
 // 1. Soha / Yo'nalish klaviaturasi
 function getCategoryKeyboard() {
   return new InlineKeyboard()
@@ -651,7 +671,7 @@ bot.callbackQuery('cancel_action', async (ctx) => {
   await ctx.reply("❌ Taqdimot yaratish bekor qilindi.");
 });
 
-// 1-qadam: Soha / Kategoriya tanlanganda
+// 1-qadam: Soha / Kategoriya tanlanganda -> Til tanlashga o'tish
 bot.callbackQuery(/^cat_([a-z]+)$/, async (ctx) => {
   const catKey = ctx.match[1];
   const session = sessions.get(ctx.chat.id);
@@ -663,13 +683,39 @@ bot.callbackQuery(/^cat_([a-z]+)$/, async (ctx) => {
   }
 
   session.category = catKey;
-  session.step = 'ASK_COUNT';
+  session.step = 'ASK_LANG';
   sessions.set(ctx.chat.id, session);
 
   const catObj = getCategory(catKey);
   await ctx.answerCallbackQuery();
   await ctx.reply(
-    `✅ Soha: *${catObj.name}*\n\n2️⃣ *Necha betli taqdimot tayyorlaymiz?*\nTugmalardan tanlang yoki istalgan sonni (masalan: *18*) yozing:`,
+    `✅ Soha: *${catObj.name}*\n\n2️⃣ *Taqdimot qaysi tilda tayyorlansin?*`,
+    {
+      parse_mode: 'Markdown',
+      reply_markup: getLanguageKeyboard(),
+    }
+  );
+});
+
+// 2-qadam: Til tanlanganda -> Slaydlar soniga o'tish
+bot.callbackQuery(/^lang_([a-z]+)$/, async (ctx) => {
+  const langKey = ctx.match[1];
+  const session = sessions.get(ctx.chat.id);
+
+  if (!session || !session.topic) {
+    await ctx.answerCallbackQuery({ text: 'Iltimos, avval mavzuni yozing' });
+    await ctx.reply("Iltimos, taqdimot mavzusini yozib yuboring:");
+    return;
+  }
+
+  session.language = langKey;
+  session.step = 'ASK_COUNT';
+  sessions.set(ctx.chat.id, session);
+
+  const langTitle = LANG_NAMES[langKey] || langKey;
+  await ctx.answerCallbackQuery();
+  await ctx.reply(
+    `✅ Til: *${langTitle}*\n\n3️⃣ *Necha betli taqdimot tayyorlaymiz?*\nTugmalardan tanlang yoki istalgan sonni (masalan: *18*) yozing:`,
     {
       parse_mode: 'Markdown',
       reply_markup: getSlideCountKeyboard(),
@@ -677,7 +723,7 @@ bot.callbackQuery(/^cat_([a-z]+)$/, async (ctx) => {
   );
 });
 
-// 2-qadam: Slaydlar soni tanlanganda
+// 3-qadam: Slaydlar soni tanlanganda -> Fon uslubiga o'tish
 bot.callbackQuery(/^count_(\d+)$/, async (ctx) => {
   const count = parseInt(ctx.match[1], 10);
   const session = sessions.get(ctx.chat.id);
@@ -694,7 +740,7 @@ bot.callbackQuery(/^count_(\d+)$/, async (ctx) => {
 
   await ctx.answerCallbackQuery();
   await ctx.reply(
-    `✅ Slaydlar soni: *${count} ta*\n\n3️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
+    `✅ Slaydlar soni: *${count} ta*\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
     {
       parse_mode: 'Markdown',
       reply_markup: getThemeKeyboard(),
@@ -702,7 +748,7 @@ bot.callbackQuery(/^count_(\d+)$/, async (ctx) => {
   );
 });
 
-// 3-qadam: Fon uslubi tanlanganda va generatsiya boshlash
+// 4-qadam: Fon uslubi tanlanganda va generatsiya boshlash
 bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
   const theme = ctx.match[1];
   const session = sessions.get(ctx.chat.id);
@@ -732,10 +778,11 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
 
   const themeName = THEME_NAMES[theme] || theme;
+  const langName = LANG_NAMES[session.language || 'uz'] || session.language || 'uz';
   const catObj = getCategory(session.category || 'general');
 
   const statusMsg = await ctx.reply(
-    `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${user.coins} ta*\n\n_AI slaydlar rejasini tuzmoqda, rasmlar yuklanmoqda va PowerPoint (.pptx) shakllantirilmoqda..._`,
+    `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n🌐 Til: *${langName}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${user.coins} ta*\n\n_AI slaydlar rejasini tuzmoqda, rasmlar yuklanmoqda va PowerPoint (.pptx) shakllantirilmoqda..._`,
     { parse_mode: 'Markdown' }
   );
 
@@ -744,7 +791,7 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
     const data = await generatePresentationData({
       topic: session.topic,
       slideCount: session.slideCount,
-      language: 'uz',
+      language: session.language || 'uz',
       theme: session.theme,
       category: session.category || 'general',
       documentText: session.documentText || '',
@@ -762,6 +809,7 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
       topic: data.title,
       category: session.category || 'general',
       slideCount: data.slides?.length || session.slideCount,
+      language: session.language || 'uz',
       theme: session.theme,
       fileName,
       downloadUrl: `/api/download/${fileName}`,
@@ -775,6 +823,7 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
 🆔 *ID:* \`${ctx.chat.id}\`
 📌 *Mavzu:* "${data.title}"
 🎯 *Soha:* ${catObj.name}
+🌐 *Til:* ${langName}
 📄 *Slaydlar:* ${data.slides?.length || session.slideCount} ta
 🎨 *Uslub:* ${themeName}
 🪙 *Qolgan balansi:* ${user.coins} ta
@@ -786,7 +835,7 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
     await ctx.replyWithDocument(
       new InputFile(filePath, `${data.title || 'prezentatsiya'}.pptx`),
       {
-        caption: `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${user.coins} ta*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`,
+        caption: `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${user.coins} ta*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`,
         parse_mode: 'Markdown',
       }
     );
@@ -844,7 +893,7 @@ bot.on('message:text', async (ctx) => {
       sessions.set(ctx.chat.id, session);
 
       await ctx.reply(
-        `✅ Slaydlar soni: *${customCount} ta* deb belgilandi.\n\n3️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
+        `✅ Slaydlar soni: *${customCount} ta* deb belgilandi.\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
         {
           parse_mode: 'Markdown',
           reply_markup: getThemeKeyboard(),

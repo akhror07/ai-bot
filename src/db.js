@@ -216,6 +216,7 @@ export function savePresentationRecord(data) {
     topic: data.topic || '',
     category: data.category || 'general',
     slideCount: data.slideCount || 6,
+    language: data.language || 'uz',
     theme: data.theme || 'ocean',
     fileName: data.fileName || '',
     downloadUrl: data.downloadUrl || '',

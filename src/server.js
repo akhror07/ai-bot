@@ -141,6 +141,7 @@ app.post('/api/generate', async (req, res) => {
         topic: presentationData.title || topic,
         category: category || 'general',
         slideCount: presentationData.slides?.length || slideCount,
+        language: language || 'uz',
         theme: theme || 'ocean',
         fileName,
         downloadUrl,
@@ -154,6 +155,7 @@ app.post('/api/generate', async (req, res) => {
 🆔 *ID:* \`${chatId}\`
 📌 *Mavzu:* "${presentationData.title || topic}"
 🎯 *Soha:* ${category || 'general'}
+🌐 *Til:* ${language || 'uz'}
 📄 *Slaydlar:* ${presentationData.slides?.length || slideCount} ta
 🎨 *Uslub:* ${theme || 'ocean'}
 🪙 *Qolgan balansi:* ${remainingCoins} ta
