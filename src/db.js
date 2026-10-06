@@ -18,12 +18,7 @@ let payments = [];
 let presentations = [];
 let feedbacks = [];
 let promoCodes = [
-  { code: 'TALABA', coins: 2, maxUses: 2000, usedBy: [] },
-  { code: 'START5', coins: 2, maxUses: 2000, usedBy: [] },
-  { code: 'TATU', coins: 3, maxUses: 1000, usedBy: [] },
-  { code: 'SAMDU', coins: 3, maxUses: 1000, usedBy: [] },
-  { code: 'VIP2026', coins: 3, maxUses: 1000, usedBy: [] },
-  { code: 'AHROR', coins: 5, maxUses: 500, usedBy: [] },
+  { code: 'SOVGA', coins: 1, maxUses: 100000, usedBy: [] },
 ];
 
 function loadData() {
@@ -63,8 +58,13 @@ function loadData() {
   try {
     if (fs.existsSync(PROMOS_FILE)) {
       const loaded = JSON.parse(fs.readFileSync(PROMOS_FILE, 'utf-8'));
-      if (Array.isArray(loaded) && loaded.length > 0) {
-        promoCodes = loaded;
+      if (Array.isArray(loaded)) {
+        // Eski ko'p koin beruvchi namunalarni tozalash
+        const filtered = loaded.filter(p => !['TALABA', 'START5', 'TATU', 'SAMDU', 'VIP2026', 'AHROR'].includes(p.code));
+        if (!filtered.some(p => p.code === 'SOVGA')) {
+          filtered.unshift({ code: 'SOVGA', coins: 1, maxUses: 100000, usedBy: [] });
+        }
+        promoCodes = filtered;
       }
     }
   } catch (e) {
@@ -429,7 +429,7 @@ export function redeemPromoCode(userId, rawCode) {
 
   if (!promo.usedBy) promo.usedBy = [];
   promo.usedBy.push(idStr);
-  user.coins = (user.coins || 0) + (promo.coins || 2);
+  user.coins = (user.coins || 0) + (promo.coins || 1);
   saveUsers();
   savePromoCodes();
 
@@ -437,7 +437,7 @@ export function redeemPromoCode(userId, rawCode) {
     success: true,
     coins: promo.coins,
     newBalance: user.coins,
-    message: `🎉 Tabriklaymiz! "${code}" promo-kodi faollashtirildi va hisobingizga +${promo.coins} ta taqdimot qo'shildi! 🪙`,
+    message: `🎉 Tabriklaymiz! "${code}" promo-kodi muvaffaqiyatli faollashtirildi va hisobingizga +${promo.coins} ta taqdimot qo'shildi! 🪙`,
   };
 }
 
@@ -450,7 +450,7 @@ export function getAllPromoCodes() {
   }));
 }
 
-export function createPromoCode(code, coins = 2, maxUses = 1000) {
+export function createPromoCode(code, coins = 1, maxUses = 1000) {
   const upper = String(code).trim().toUpperCase();
   const existing = promoCodes.find(p => p.code === upper);
   if (existing) {
@@ -463,5 +463,16 @@ export function createPromoCode(code, coins = 2, maxUses = 1000) {
   promoCodes.push(newPromo);
   savePromoCodes();
   return newPromo;
+}
+
+export function deletePromoCode(code) {
+  const upper = String(code).trim().toUpperCase();
+  const index = promoCodes.findIndex(p => p.code === upper);
+  if (index !== -1) {
+    const deleted = promoCodes.splice(index, 1)[0];
+    savePromoCodes();
+    return deleted;
+  }
+  return null;
 }
 

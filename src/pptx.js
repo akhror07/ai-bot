@@ -812,7 +812,20 @@ export async function createPptx(data) {
   pres.company = data.organization || '';
   pres.title = data.title || 'Presentation';
 
-  const lang = data.language || 'uz';
+  let lang = data.language;
+  if (!lang || lang === 'uz') {
+    // Matn tarkibidan aqlli aniqlash (agar slaydlar ruscha yoki tojikcha bo'lsa)
+    const sampleText = `${data.title || ''} ${data.slides?.[0]?.title || ''} ${data.slides?.[1]?.title || ''} ${data.slides?.[1]?.points?.[0]?.heading || ''} ${data.slides?.[1]?.points?.[0]?.description || ''}`;
+    if (/[ҷҳӣӯғқ]/i.test(sampleText)) {
+      lang = 'tg';
+    } else if (/[ыэъщёц]/i.test(sampleText) || /[а-я]/i.test(sampleText)) {
+      lang = 'ru';
+    } else if (data.language) {
+      lang = data.language;
+    } else {
+      lang = 'uz';
+    }
+  }
   const i18n = getI18n(lang);
 
   const theme = getTheme(data.theme);

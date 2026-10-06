@@ -152,6 +152,7 @@ app.post('/api/generate', async (req, res) => {
     // PPTX fayl yasash (viral brending slaydi bilan)
     const { filePath, fileName, speakerNotesList } = await createPptx({
       ...presentationData,
+      language: language || presentationData.language || 'uz',
       includeBranding: true,
       botUsername: config.botUsername || 'ai_slide_bot',
     });

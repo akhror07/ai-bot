@@ -108,13 +108,23 @@ const DICTIONARY = {
   ijod: 'art literature writing creative work',
   tarix: 'history ancient architecture heritage museum',
   tarixiy: 'historical ancient architecture heritage',
+  madaniy: 'cultural heritage tradition monument architecture museum',
   madaniyat: 'culture tradition heritage architecture',
-  meros: 'cultural heritage historical architecture',
+  boylik: 'cultural heritage wealth historical treasures',
+  boyligi: 'cultural heritage treasure historical assets',
+  meros: 'cultural heritage historical architecture monument',
   muzey: 'museum art historical artifacts gallery',
   qadimiy: 'ancient historical architecture monument',
   buxoro: 'ancient central asia architecture monuments',
   samarqand: 'ancient central asia turquoise dome architecture',
   temur: 'historical central asia empire architecture',
+  культура: 'culture heritage cultural museum art',
+  культурное: 'cultural heritage museum historical architecture',
+  наследие: 'cultural heritage historical architecture monument',
+  богатство: 'cultural heritage treasure historical',
+  фарҳанг: 'culture heritage traditional art',
+  фарҳангӣ: 'cultural heritage traditional architecture',
+  мерос: 'cultural heritage historical architecture',
 
   // Tabiat, Ekologiya va Qishloq xo'jaligi
   tabiat: 'nature landscape green environment forest',
@@ -243,7 +253,13 @@ export async function fetchContextualImage(promptText, width = 1000, height = 70
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 4500);
 
-    const res = await fetch(unsplashUrl, { signal: controller.signal });
+    const res = await fetch(unsplashUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+      },
+      signal: controller.signal,
+    });
     clearTimeout(timeout);
 
     if (res.ok) {
@@ -254,7 +270,11 @@ export async function fetchContextualImage(promptText, width = 1000, height = 70
         const directUrl = picked?.urls?.regular || picked?.urls?.small;
 
         if (directUrl) {
-          const imgRes = await fetch(directUrl);
+          const imgRes = await fetch(directUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+            }
+          });
           if (imgRes.ok) {
             const buf = Buffer.from(await imgRes.arrayBuffer());
             if (buf.byteLength > 6000) {
@@ -273,9 +293,14 @@ export async function fetchContextualImage(promptText, width = 1000, height = 70
   try {
     const wikiUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=3&prop=imageinfo&iiprop=url&format=json`;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3500);
+    const timeout = setTimeout(() => controller.abort(), 4000);
 
-    const res = await fetch(wikiUrl, { signal: controller.signal });
+    const res = await fetch(wikiUrl, {
+      headers: {
+        'User-Agent': 'SlideCraftBot/2.0 (https://t.me/ai_slide_bot; admin@slidecraft.uz)'
+      },
+      signal: controller.signal,
+    });
     clearTimeout(timeout);
 
     if (res.ok) {
@@ -286,7 +311,11 @@ export async function fetchContextualImage(promptText, width = 1000, height = 70
           const imgInfo = pages[k]?.imageinfo?.[0];
           const imgUrl = imgInfo?.url;
           if (imgUrl && (imgUrl.endsWith('.jpg') || imgUrl.endsWith('.jpeg') || imgUrl.endsWith('.png'))) {
-            const imgRes = await fetch(imgUrl);
+            const imgRes = await fetch(imgUrl, {
+              headers: {
+                'User-Agent': 'SlideCraftBot/2.0 (https://t.me/ai_slide_bot; admin@slidecraft.uz)'
+              }
+            });
             if (imgRes.ok) {
               const buf = Buffer.from(await imgRes.arrayBuffer());
               if (buf.byteLength > 6000 && buf.byteLength < 5000000) {
@@ -306,7 +335,7 @@ export async function fetchContextualImage(promptText, width = 1000, height = 70
   try {
     const seed = Math.floor(Math.random() * 900000) + 10000;
     const aiPrompt = `${searchQuery} professional 4k high quality photography cinematic documentary`;
-    const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(aiPrompt)}?width=${width}&height=${height}&nologo=true&seed=${seed}`;
+    const aiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(aiPrompt)}?width=${width}&height=${height}&nologo=true&nofeed=true&seed=${seed}`;
     
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000); // 12 soniya yetarli

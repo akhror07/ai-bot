@@ -562,18 +562,183 @@ function getDomainStages(topic, enKeywords) {
   ];
 }
 
+const KNOWN_TOPIC_TRANSLATIONS = {
+  'madaniy boylik': { ru: 'Культурное наследие', en: 'Cultural Heritage', tg: 'Мероси фарҳангӣ' },
+  'madaniy boyliklar': { ru: 'Культурные ценности и наследие', en: 'Cultural Heritage and Assets', tg: 'Боигарӣ ва мероси фарҳангӣ' },
+  'madaniy meros': { ru: 'Культурное наследие', en: 'Cultural Heritage', tg: 'Мероси фарҳангӣ' },
+  'madaniyat': { ru: 'Культура и духовность', en: 'Culture & Humanities', tg: 'Фарҳанг ва маънавият' },
+  'ona tili': { ru: 'Родной язык и национальное наследие', en: 'Native Language & Heritage', tg: 'Забони модарӣ ва мероси миллӣ' },
+  'alisher navoiy': { ru: 'Алишер Навои: Жизнь и творчество', en: 'Alisher Navoi: Life & Legacy', tg: 'Алишер Навоӣ: Ҳаёт ва эҷодиёт' },
+  'amir temur': { ru: 'Амир Темур и эпоха Тимуридов', en: 'Amir Timur & The Timurid Era', tg: 'Амир Темур ва давлатдории Темуриён' },
+  'suniy intellekt': { ru: 'Искусственный интеллект и технологии будущего', en: 'Artificial Intelligence & Future Tech', tg: 'Зеҳни сунъӣ ва технологияи оянда' },
+  'sun\'iy intellekt': { ru: 'Искусственный интеллект и технологии будущего', en: 'Artificial Intelligence & Future Tech', tg: 'Зеҳни сунъӣ ва технологияи оянда' },
+  'raqamli iqtisodiyot': { ru: 'Цифровая экономика и трансформация', en: 'Digital Economy & Transformation', tg: 'Иқтисодиёти рақамӣ' },
+  'psixologiya': { ru: 'Когнитивная психология и восприятие', en: 'Cognitive Psychology & Perception', tg: 'Равоншиносӣ ва идроки инсон' },
+  'kognitiv psixologiya': { ru: 'Когнитивная психология', en: 'Cognitive Psychology', tg: 'Психологияи маърифатӣ' },
+  'xotira': { ru: 'Память и когнитивные процессы', en: 'Memory & Cognitive Architecture', tg: 'Хотира ва равандҳои зеҳнӣ' },
+  'iqtisodiyot': { ru: 'Экономическая стратегия и развитие', en: 'Economic Strategy & Growth', tg: 'Стратегияи иқтисодӣ' },
+  'moliya': { ru: 'Финансовый менеджмент и инвестиции', en: 'Financial Management & Investment', tg: 'Идоракунии молиявӣ' },
+  'biznes': { ru: 'Современный бизнес и предпринимательство', en: 'Modern Business & Enterprise', tg: 'Бизнес ва соҳибкорӣ' },
+  'tibbiyot': { ru: 'Современная медицина и здравоохранение', en: 'Modern Medicine & Healthcare', tg: 'Тиббиёти муосир' },
+  'salomatlik': { ru: 'Здоровье и медицина', en: 'Health and Wellness', tg: 'Саломатӣ ва тарзи ҳаёт' },
+  'talim': { ru: 'Современное образование и педагогика', en: 'Modern Education & Pedagogy', tg: 'Маориф ва низоми таълим' },
+  'ta\'lim': { ru: 'Современное образование и педагогика', en: 'Modern Education & Pedagogy', tg: 'Маориф ва низоми таълим' },
+  'pedagogika': { ru: 'Педагогика и методика обучения', en: 'Pedagogy & Teaching Methods', tg: 'Педагогика ва методикаи таълим' },
+  'huquq': { ru: 'Правовые основы и юриспруденция', en: 'Legal Frameworks & Jurisprudence', tg: 'Асосҳои ҳуқуқӣ ва қонунгузорӣ' },
+  'ekologiya': { ru: 'Экологическая безопасность и устойчивость', en: 'Ecology & Sustainability', tg: 'Экология ва рушди устувор' },
+  'tabiat': { ru: 'Природа и окружающая среда', en: 'Nature and the Environment', tg: 'Табиат ва муҳити зист' },
+  'sport': { ru: 'Физическая культура и спорт', en: 'Physical Education & Athletics', tg: 'Варзиш ва тарбияи ҷисмонӣ' },
+  'sanat': { ru: 'Искусство и эстетическая культура', en: 'Art & Aesthetic Dimensions', tg: 'Санъат ва мероси бадеӣ' },
+  'san\'at': { ru: 'Искусство и эстетическая культура', en: 'Art & Aesthetic Dimensions', tg: 'Санъат ва мероси бадеӣ' },
+  'adabiyot': { ru: 'Классическая литература и поэзия', en: 'Classical Literature & Poetry', tg: 'Адабиёти классикӣ' },
+  'tarix': { ru: 'Всемирная и отечественная история', en: 'World & National History', tg: 'Таърихи умумӣ ва миллӣ' },
+  'falsafa': { ru: 'Философия и мировоззрение', en: 'Philosophy & Ethics', tg: 'Фалсафа ва ҷаҳонбинӣ' },
+  'turizm': { ru: 'Международный туризм и индустрия гостеприимства', en: 'Tourism & Global Hospitality', tg: 'Сайёҳӣ ва меҳмондорӣ' },
+  'qishloq xojaligi': { ru: 'Сельское хозяйство и агробизнес', en: 'Agriculture & Agribusiness', tg: 'Хоҷагии қишлоқ ва агробизнес' },
+  'arxitektura': { ru: 'Архитектура и градостроительство', en: 'Architecture & Urban Planning', tg: 'Меъморӣ ва шаҳрсозӣ' },
+  'fizika': { ru: 'Современная физика и фундаментальная наука', en: 'Modern Physics & Fundamental Science', tg: 'Физикаи муосир ва илми бунёдӣ' },
+  'kimyo': { ru: 'Химия и материаловедение', en: 'Chemistry & Material Science', tg: 'Химия ва илми маводшиносӣ' },
+};
+
+const WORD_TRANSLATIONS = {
+  ru: {
+    'madaniy boylik': 'культурное наследие',
+    'madaniy meros': 'культурное наследие',
+    'madaniy': 'культурное',
+    'boylik': 'богатство',
+    'boyliklar': 'ценности',
+    'meros': 'наследие',
+    'madaniyat': 'культура',
+    'tarix': 'история',
+    'tarixiy': 'исторический',
+    'asosiy': 'ключевой',
+    'tushuncha': 'концепция',
+    'vizual': 'объект',
+    'bosqich': 'этап',
+    'xulosa': 'вывод',
+    'maqsad': 'цель',
+    'omil': 'фактор',
+    'natija': 'результат',
+    'jarayon': 'процесс',
+    'tizim': 'система',
+    'zamonaviy': 'современный',
+    'rivojlanish': 'развитие',
+    'samaradorlik': 'эффективность',
+  },
+  en: {
+    'madaniy boylik': 'cultural heritage',
+    'madaniy meros': 'cultural heritage',
+    'madaniy': 'cultural',
+    'boylik': 'wealth',
+    'boyliklar': 'assets',
+    'meros': 'heritage',
+    'madaniyat': 'culture',
+    'tarix': 'history',
+    'tarixiy': 'historical',
+    'asosiy': 'core',
+    'tushuncha': 'concept',
+    'vizual': 'visual',
+    'bosqich': 'phase',
+    'xulosa': 'takeaway',
+    'maqsad': 'objective',
+    'omil': 'factor',
+    'natija': 'outcome',
+    'jarayon': 'process',
+    'tizim': 'system',
+    'zamonaviy': 'modern',
+    'rivojlanish': 'development',
+    'samaradorlik': 'efficiency',
+  },
+  tg: {
+    'madaniy boylik': 'мероси фарҳангӣ',
+    'madaniy meros': 'мероси фарҳангӣ',
+    'madaniy': 'фарҳангӣ',
+    'boylik': 'боигарӣ',
+    'boyliklar': 'боигариҳо',
+    'meros': 'мерос',
+    'madaniyat': 'фарҳанг',
+    'tarix': 'таърих',
+    'tarixiy': 'таърихӣ',
+    'asosiy': 'асосӣ',
+    'tushuncha': 'консепсия',
+    'vizual': 'визуал',
+    'bosqich': 'марҳила',
+    'xulosa': 'хулоса',
+    'maqsad': 'ҳадаф',
+    'omil': 'омил',
+    'natija': 'натиҷа',
+    'jarayon': 'раванд',
+    'tizim': 'низом',
+    'zamonaviy': 'муосир',
+    'rivojlanish': 'рушд',
+    'samaradorlik': 'самаранокӣ',
+  }
+};
+
+export function translateUzbekTopic(rawTopic, targetLang = 'uz') {
+  if (!rawTopic || typeof rawTopic !== 'string') return rawTopic || 'Presentation';
+  if (targetLang === 'uz') return rawTopic;
+
+  const normalized = rawTopic.toLowerCase().replace(/['`ʻ’]/g, '').trim();
+
+  // 1. To'liq moslik
+  for (const [key, trans] of Object.entries(KNOWN_TOPIC_TRANSLATIONS)) {
+    const normKey = key.toLowerCase().replace(/['`ʻ’]/g, '').trim();
+    if (normalized === normKey) {
+      return trans[targetLang] || rawTopic;
+    }
+  }
+
+  // 2. Qisman moslik
+  for (const [key, trans] of Object.entries(KNOWN_TOPIC_TRANSLATIONS)) {
+    const normKey = key.toLowerCase().replace(/['`ʻ’]/g, '').trim();
+    if (normalized.includes(normKey)) {
+      return trans[targetLang] || rawTopic;
+    }
+  }
+
+  // 3. So'zma-so'z almashtirish
+  let result = rawTopic;
+  const wordsDict = WORD_TRANSLATIONS[targetLang];
+  if (wordsDict) {
+    for (const [uWord, tWord] of Object.entries(wordsDict)) {
+      const reg = new RegExp(`\\b${uWord}\\b`, 'gi');
+      result = result.replace(reg, tWord);
+    }
+    if (result !== rawTopic) {
+      return result.charAt(0).toUpperCase() + result.slice(1);
+    }
+  }
+
+  return rawTopic;
+}
+
+function cleanUzbekWordsFromText(text, targetLang = 'uz') {
+  if (!text || typeof text !== 'string' || targetLang === 'uz') return text;
+  let res = text;
+  const wordsDict = WORD_TRANSLATIONS[targetLang];
+  if (wordsDict) {
+    for (const [uWord, tWord] of Object.entries(wordsDict)) {
+      const reg = new RegExp(`\\b${uWord}\\b`, 'gi');
+      res = res.replace(reg, tWord);
+    }
+  }
+  return res;
+}
+
 function getLocalizedGenericStages(topic, enKeywords, language) {
+  const effectiveTopic = translateUzbekTopic(topic, language);
   if (language === 'ru') {
     return [
       {
         layout: 'split_hero',
-        title: `${topic}: Суть и Стратегические Цели`,
+        title: `${effectiveTopic}: Суть и Стратегические Цели`,
         sub: 'Концептуальные основы, теоретический базис и приоритетные задачи',
         photo: `${enKeywords} concept analysis professional`,
         points: [
           {
             heading: 'Актуальность и системная трансформация',
-            description: `Современные динамичные условия требуют глубокого переосмысления устоявшихся подходов по направлению "${topic}". Внедрение передовых стандартов повышает общую результативность на 35-50% и гарантирует устойчивость к внешним факторам.`
+            description: `Современные динамичные условия требуют глубокого переосмысления устоявшихся подходов по направлению "${effectiveTopic}". Внедрение передовых стандартов повышает общую результативность на 35-50% и гарантирует устойчивость к внешним факторам.`
           },
           {
             heading: 'Стратегический вектор и целеполагание',
@@ -715,13 +880,13 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
     return [
       {
         layout: 'split_hero',
-        title: `${topic}: Core Concept & Strategic Imperatives`,
+        title: `${effectiveTopic}: Core Concept & Strategic Imperatives`,
         sub: 'Conceptual foundation, theoretical basis, and priority objectives',
         photo: `${enKeywords} concept analysis professional`,
         points: [
           {
             heading: 'Strategic Relevance & Systemic Shift',
-            description: `Dynamic environmental shifts demand a thorough re-evaluation of established practices regarding "${topic}". Adopting modern benchmarks elevates operational performance by 35-50% while guaranteeing structural resilience against disruption.`
+            description: `Dynamic environmental shifts demand a thorough re-evaluation of established practices regarding "${effectiveTopic}". Adopting modern benchmarks elevates operational performance by 35-50% while guaranteeing structural resilience against disruption.`
           },
           {
             heading: 'Long-term Strategic Vision',
@@ -863,13 +1028,13 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
     return [
       {
         layout: 'split_hero',
-        title: `${topic}: Моҳият ва Ҳадафҳои Стратегӣ`,
+        title: `${effectiveTopic}: Моҳият ва Ҳадафҳои Стратегӣ`,
         sub: 'Асосҳои консептуалӣ, заминаи назариявӣ ва вазифаҳои афзалиятнок',
         photo: `${enKeywords} concept analysis professional`,
         points: [
           {
             heading: 'Аҳамият ва таҳаввулоти низомманд',
-            description: `Шароити муосир таҷдиди назари амиқи усулҳои пешинаро дар самти "${topic}" тақозо мекунад. Татбиқи стандартҳои пешрафта самаранокиро 35-50% боло бурда, устувориро дар баробари омилҳои беруна кафолат медиҳад.`
+            description: `Шароити муосир таҷдиди назари амиқи усулҳои пешинаро дар самти "${effectiveTopic}" тақозо мекунад. Татбиқи стандартҳои пешрафта самаранокиро 35-50% боло бурда, устувориро дар баробари омилҳои беруна кафолат медиҳад.`
           },
           {
             heading: 'Самти стратегӣ ва ҳадафгузорӣ',
@@ -1159,14 +1324,15 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
  * Mavzuga to'liq moslashtirilgan, har bir slaydi unikal va xilma-xil zaxira generator.
  */
 function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz', theme, categoryObj }) {
-  console.log(`[AI Fallback] Mavzuga moslashtirilgan boy unikal reja tuzilmoqda: "${topic}" (${language})`);
-  const enKeywords = extractCleanKeywords(topic);
+  const effectiveTopic = translateUzbekTopic(topic, language);
+  console.log(`[AI Fallback] Mavzuga moslashtirilgan boy unikal reja tuzilmoqda: "${effectiveTopic}" (asli: "${topic}", til: ${language})`);
+  const enKeywords = extractCleanKeywords(effectiveTopic || topic);
   const slides = [];
 
   const localizedMeta = {
     uz: {
       sub: `${categoryObj.name} doirasidagi maxsus ilmiy-tahliliy tadqiqot`,
-      notes: `Assalomu alaykum, hurmatli qatnashchilar! Bugungi taqdimotimiz "${topic}" mavzusining konseptual asoslari, amaliy ahamiyati va istiqboldagi vazifalariga bag'ishlanadi.`,
+      notes: `Assalomu alaykum, hurmatli qatnashchilar! Bugungi taqdimotimiz "${effectiveTopic}" mavzusining konseptual asoslari, amaliy ahamiyati va istiqboldagi vazifalariga bag'ishlanadi.`,
       concTitle: 'Xulosalar va Strategik Tavsiyalar',
       concSub: 'Tizimli tahlil natijalari va istiqboldagi ustuvor yo\'nalishlar',
       concPoints: [
@@ -1183,12 +1349,12 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
           description: 'Mavjud moddiy, texnologik va inson resurslarini eng yuqori daromad va samara keltiruvchi yo\'nalishlarga yo\'naltirish talab etiladi. Natijada xarajatlar tejaladi va barqaror rivojlanish ta\'minlanadi.'
         }
       ],
-      concHighlight: `"${topic}" bo'yicha to'g'ri strategiya va izchil harakat eng yuqori natijani kafolatlaydi.`,
+      concHighlight: `"${effectiveTopic}" bo'yicha to'g'ri strategiya va izchil harakat eng yuqori natijani kafolatlaydi.`,
       concNotes: 'Hurmatli tinglovchilar, e\'tiboringiz uchun katta rahmat! Mavzu yuzasidan barcha savollaringiz bo\'lsa, bajonidil javob berishga tayyorman.'
     },
     ru: {
       sub: `Аналитическое исследование в сфере: ${categoryObj.name}`,
-      notes: `Здравствуйте, уважаемые коллеги! Сегодняшняя презентация посвящена глубокому рассмотрению темы "${topic}", ее стратегических аспектов и практических механизмов реализации.`,
+      notes: `Здравствуйте, уважаемые коллеги! Сегодняшняя презентация посвящена глубокому рассмотрению темы "${effectiveTopic}", ее стратегических аспектов и практических механизмов реализации.`,
       concTitle: 'Выводы и Стратегические Рекомендации',
       concSub: 'Ключевые итоги исследования и следующие шаги развития',
       concPoints: [
@@ -1210,7 +1376,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
     },
     en: {
       sub: `Comprehensive analytical briefing on ${categoryObj.name}`,
-      notes: `Welcome, distinguished colleagues! Today's presentation provides an in-depth strategic analysis of "${topic}", examining operational frameworks, key metrics, and implementation roadmaps.`,
+      notes: `Welcome, distinguished colleagues! Today's presentation provides an in-depth strategic analysis of "${effectiveTopic}", examining operational frameworks, key metrics, and implementation roadmaps.`,
       concTitle: 'Strategic Conclusions & Next Steps',
       concSub: 'Executive takeaways and critical recommendations',
       concPoints: [
@@ -1232,7 +1398,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
     },
     tg: {
       sub: `Таҳқиқоти махсуси илмию амалӣ дар самти: ${categoryObj.name}`,
-      notes: `Салом, ҳамкасбони гиромӣ! Муаррифии имрӯзаи мо ба таҳлили амиқи мавзӯи "${topic}", самтҳои стратегӣ ва тарҳрезии амалии он бахшида шудааст.`,
+      notes: `Салом, ҳамкасбони гиромӣ! Муаррифии имрӯзаи мо ба таҳлили амиқи мавзӯи "${effectiveTopic}", самтҳои стратегӣ ва тарҳрезии амалии он бахшида шудааст.`,
       concTitle: 'Хулосаҳо ва Тавсияҳои Стратегӣ',
       concSub: 'Натиҷагирии ниҳоӣ ва самтҳои афзалиятноки рушд',
       concPoints: [
@@ -1254,7 +1420,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
     }
   }[language] || {
     sub: `${categoryObj.name} doirasidagi maxsus ilmiy-tahliliy tadqiqot`,
-    notes: `Assalomu alaykum! Bugungi taqdimotimiz "${topic}" mavzusiga bag'ishlanadi.`,
+    notes: `Assalomu alaykum! Bugungi taqdimotimiz "${effectiveTopic}" mavzusiga bag'ishlanadi.`,
     concTitle: 'Xulosalar va Strategik Tavsiyalar',
     concSub: 'Tizimli tahlil natijalari va istiqboldagi ustuvor yo\'nalishlar',
     concPoints: [
@@ -1271,7 +1437,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
         description: 'Mavjud resurslarni eng yuqori daromad va samara keltiruvchi yo\'nalishlarga yo\'naltirish orqali barqaror rivojlanish ta\'minlanadi.'
       }
     ],
-    concHighlight: `"${topic}" bo'yicha to'g'ri strategiya va izchil harakat eng yuqori natijani kafolatlaydi.`,
+    concHighlight: `"${effectiveTopic}" bo'yicha to'g'ri strategiya va izchil harakat eng yuqori natijani kafolatlaydi.`,
     concNotes: 'Hurmatli tinglovchilar, e\'tiboringiz uchun katta rahmat! Savollaringiz bo\'lsa bajonidil javob beraman.'
   };
 
@@ -1280,7 +1446,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
     slideNumber: 1,
     type: 'title',
     layoutType: 'title',
-    title: topic.length > 50 ? topic.substring(0, 50) + '...' : topic,
+    title: effectiveTopic.length > 50 ? effectiveTopic.substring(0, 50) + '...' : effectiveTopic,
     subtitle: localizedMeta.sub,
     imagePrompts: [
       `${enKeywords} professional concept`,
@@ -1290,7 +1456,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
   });
 
   // Mavzuga moslashtirilgan boy va unikal bosqichlar (chet tillarda faqat sof o'sha til ishlatiladi!)
-  const stageTemplates = (language === 'uz' ? (getDomainStages(topic, enKeywords) || getLocalizedGenericStages(topic, enKeywords, 'uz')) : getLocalizedGenericStages(topic, enKeywords, language)) || getLocalizedGenericStages(topic, enKeywords, 'uz');
+  const stageTemplates = (language === 'uz' ? (getDomainStages(effectiveTopic, enKeywords) || getLocalizedGenericStages(effectiveTopic, enKeywords, 'uz')) : getLocalizedGenericStages(effectiveTopic, enKeywords, language)) || getLocalizedGenericStages(effectiveTopic, enKeywords, 'uz');
 
   for (let i = 2; i <= slideCount; i++) {
     const isLast = (i === slideCount);
@@ -1342,33 +1508,34 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
 
   const localizedQA = {
     uz: [
-      { question: `"${topic}" mavzusining asosiy ilmiy yangiligi va amaliy ahamiyati nimada?`, answer: `Asosiy ahamiyat tarqoq yondashuvlarni yagona tizimga keltirib, jarayonlar samaradorligini 35-50% ga oshirish va tizimli xatarlarni kamaytirishdadir.` },
+      { question: `"${effectiveTopic}" mavzusining asosiy ilmiy yangiligi va amaliy ahamiyati nimada?`, answer: `Asosiy ahamiyat tarqoq yondashuvlarni yagona tizimga keltirib, jarayonlar samaradorligini 35-50% ga oshirish va tizimli xatarlarni kamaytirishdadir.` },
       { question: `Amaliyotga tatbiq etishda qanday asosiy to'siqlar yuzaga kelishi mumkin va ular qanday hal qilinadi?`, answer: `Asosiy omil yangi standartlarga moslashishdir, bu bosqichma-bosqich tajriba-sinov va maxsus o'quv dasturlari orqali bartaraf etiladi.` },
       { question: `Ushbu loyihaning uzoq muddatli iqtisodiy va sifat ko'rsatkichlari qanday mezonlar bilan baholanadi?`, answer: `Baholash aniq KPI mezonlari: resurslar aylanmasi tezligi, operatsion xarajatlar tejalishi va sifat barqarorligi bilan o'lchanadi.` },
     ],
     ru: [
-      { question: `В чем заключается ключевая научная новизна и прикладная ценность темы "${topic}"?`, answer: `Основная ценность состоит в систематизации подходов и создании комплексной модели, повышающей эффективность процессов на 35–50%.` },
+      { question: `В чем заключается ключевая научная новизна и прикладная ценность темы "${effectiveTopic}"?`, answer: `Основная ценность состоит в систематизации подходов и создании комплексной модели, повышающей эффективность процессов на 35–50%.` },
       { question: `С какими рисками можно столкнуться при практической реализации и как их нивелировать?`, answer: `Главным риском является сопротивление адаптации к новым регламентам, что устраняется поэтапным пилотированием и обучением команды.` },
       { question: `Какие метрики используются для подтверждения долгосрочной результативности?`, answer: `Оценка базируется на измеримых KPI: снижении издержек, скорости цикла ключевых ресурсов и стабильности стандартов качества.` },
     ],
     en: [
-      { question: `What is the core strategic breakthrough and real-world value of "${topic}"?`, answer: `The primary value lies in consolidating fragmented practices into an integrated framework that boosts operational output by 35–50%.` },
+      { question: `What is the core strategic breakthrough and real-world value of "${effectiveTopic}"?`, answer: `The primary value lies in consolidating fragmented practices into an integrated framework that boosts operational output by 35–50%.` },
       { question: `What are the critical implementation hurdles and how are they overcome?`, answer: `The primary challenge is organizational adoption, effectively resolved through phased milestones, risk audits, and targeted upskilling.` },
       { question: `How do you measure and validate sustainable long-term ROI?`, answer: `Validation relies on empirical KPI metrics: reduced turnaround times, lower operating friction, and durable quality benchmarks.` },
     ],
     tg: [
-      { question: `Навоварии асосии илмӣ ва аҳамияти амалии мавзӯи "${topic}" дар чист?`, answer: `Аҳамияти асосӣ дар муттаҳид сохтани усулҳо ва баланд бардоштани маҳсулнокии равандҳо ба андозаи 35-50% мебошад.` },
+      { question: `Навоварии асосии илмӣ ва аҳамияти амалии мавзӯи "${effectiveTopic}" дар чист?`, answer: `Аҳамияти асосӣ дар муттаҳид сохтани усулҳо ва баланд бардоштани маҳсулнокии равандҳо ба андозаи 35-50% мебошад.` },
       { question: `Ҳангоми татбиқи амалӣ бо кадом монеаҳо рӯ ба рӯ шудан мумкин аст?`, answer: `Мушкили асосӣ мутобиқшавии мутахассисон ба қоидаҳои нав мебошад, ки он тавассути санҷишҳои марҳилавӣ бартараф мегардад.` },
       { question: `Самаранокии дарозмуддати ин қарорҳо бо кадом нишондиҳандаҳо чен карда мешавад?`, answer: `Арзёбӣ бар асоси нишондиҳандаҳои KPI: сарфаи захираҳо, суръати амалиёт ва устувории сифати натиҷаҳо муайян карда мешавад.` },
     ],
   }[language] || [
-    { question: `"${topic}" mavzusining asosiy ilmiy yangiligi nimada?`, answer: `Jarayonlar samaradorligini 35-50% ga oshirish va xatarlarni kamaytirishda.` }
+    { question: `"${effectiveTopic}" mavzusining asosiy ilmiy yangiligi nimada?`, answer: `Jarayonlar samaradorligini 35-50% ga oshirish va xatarlarni kamaytirishda.` }
   ];
 
   return {
-    title: topic,
+    title: effectiveTopic,
     subtitle: localizedMeta.sub,
     theme: theme || 'ocean',
+    language: language || 'uz',
     slides,
     qaList: localizedQA,
   };
@@ -1378,6 +1545,7 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
  * Har bir til uchun 100% o'sha tildagi mukammal prompt quruvchi
  */
 function buildPresentationPrompt({ topic, targetCount, language = 'uz', theme = 'ocean', categoryObj, enKeywords, organization = '', documentText = '' }) {
+  const translatedTopic = translateUzbekTopic(topic, language);
   const docContext = documentText
     ? `\n\n${
         language === 'ru'
@@ -1393,7 +1561,7 @@ function buildPresentationPrompt({ topic, targetCount, language = 'uz', theme = 
   if (language === 'ru') {
     return `
 Вы — ведущий международный эксперт и создатель высококлассных аналитических презентаций уровня McKinsey, BCG и ведущих академических институтов.
-Тема презентации: "${topic}"
+Тема презентации: "${translatedTopic}" (ввод пользователя: "${topic}")
 Отрасль / Направление: ${categoryObj.name} (${categoryObj.promptContext})
 ТРЕБУЕМОЕ КОЛИЧЕСТВО СЛАЙДОВ: РОВНО ${targetCount} СЛАЙДОВ!
 Язык презентации: ИСКЛЮЧИТЕЛЬНО РУССКИЙ ЯЗЫК (богатый, академический, профессиональный русский язык).
@@ -1402,9 +1570,11 @@ ${organization ? `Организация / Университет: ${organizatio
 ${docContext}
 
 СТРОЖАЙШИЕ ТРЕБОВАНИЯ И ПРАВИЛА:
-1. 100% ЧИСТЫЙ РУССКИЙ ЯЗЫК:
+1. 100% ЧИСТЫЙ РУССКИЙ ЯЗЫК (ВКЛЮЧАЯ НАЗВАНИЕ ТЕМЫ):
    - ВСЕ заголовки (title), подзаголовки (subtitle), названия тезисов (heading), подробные описания (description), ключевые выводы (highlight), метрики и заметки докладчика (speakerNotes) должны быть ИСКЛЮЧИТЕЛЬНО НА РУССКОМ ЯЗЫКЕ!
-   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО использовать слова на узбекском или любых других языках (никаких "1-nuqta", "Xulosa", "Kirish so'zi", "Zamonaviy", "tushuntirish" и т.п.)! Исключение — только поисковые запросы в imagePrompts (они должны быть на английском).
+   - Если пользователь ввел тему на узбекском или другом языке (например: "${topic}"), ВЫ ОБЯЗАНЫ ПЕРЕВЕСТИ ЕЕ НА ЛИТЕРАТУРНЫЙ РУССКИЙ ЯЗЫК: "${translatedTopic}"!
+   - Поле "title" в корне и на всех слайдах ОБЯЗАНО БЫТЬ НА ЧИСТОМ РУССКОМ ЯЗЫКЕ ("${translatedTopic}")!
+   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО использовать слова на узбекском или любых других языках (никаких "${topic}", "1-nuqta", "Xulosa", "Kirish so'zi", "Zamonaviy", "tushuntirish" и т.п.)! Исключение — только поисковые запросы в imagePrompts (они должны быть на английском).
 2. ВЫСОКАЯ ИНФОРМАТИВНОСТЬ И БОЛЬШОЙ ОБЪЕМ (ОТСУТСТВИЕ ВОДЫ И ШАБЛОНОВ):
    - В каждом пункте слайда поле "description" ОБЯЗАНО содержать минимум 2–4 развернутых, содержательных предложения (от 35 до 60 слов)!
    - Приводите реальные факты, профессиональную терминологию, причинно-следственные связи, аналитические механизмы и практические аспекты.
@@ -1416,7 +1586,7 @@ ${docContext}
 5. ЗАПРОСЫ ДЛЯ ИЗОБРАЖЕНИЙ:
    - В поле "imagePrompts" ровно 2 англоязычных фотореалистичных запроса (например: ["${enKeywords} professional laboratory analysis", "${enKeywords} modern business conference"]).
 6. ЗАМЕТКИ ДОКЛАДЧИКА (speakerNotes):
-   - Для каждого слайда напишите живой, готовый для выступления текст речи докладчика из 3–5 предложений.
+   - Для каждого слайда напишите живой, готовый для выступления текст речи докладчика из 3–5 предложений на чистом русском языке.
 7. Общее количество слайдов в массиве "slides" ДОЛЖНО БЫТЬ РОВНО ${targetCount}!
 
 8. ВОПРОСЫ И ОТВЕТЫ ДЛЯ ЗАЩИТЫ (qaList):
@@ -1424,7 +1594,7 @@ ${docContext}
 
 Строго верните ЧИСТЫЙ JSON следующей структуры:
 {
-  "title": "${topic}",
+  "title": "${translatedTopic}",
   "subtitle": "Комплексный аналитический обзор и стратегические решения",
   "theme": "${theme}",
   "slides": [
@@ -1432,10 +1602,10 @@ ${docContext}
       "slideNumber": 1,
       "type": "title",
       "layoutType": "title",
-      "title": "${topic}",
+      "title": "${translatedTopic}",
       "subtitle": "Аналитическое исследование в сфере: ${categoryObj.name}",
       "imagePrompts": ["${enKeywords} professional concept", "${enKeywords} modern visual"],
-      "speakerNotes": "Здравствуйте, уважаемые участники! Сегодня мы подробно рассмотрим ключевые аспекты и стратегические перспективы темы ${topic}."
+      "speakerNotes": "Здравствуйте, уважаемые участники! Сегодня мы подробно рассмотрим ключевые аспекты и стратегические перспективы темы ${translatedTopic}."
     },
     {
       "slideNumber": 2,
@@ -1471,7 +1641,7 @@ ${docContext}
   if (language === 'en') {
     return `
 You are a world-class strategic consultant and presentation designer (McKinsey, BCG, TED-caliber executive briefings).
-Presentation Topic: "${topic}"
+Presentation Topic: "${translatedTopic}" (original user input: "${topic}")
 Domain / Industry: ${categoryObj.name} (${categoryObj.promptContext})
 REQUIRED SLIDE COUNT: EXACTLY ${targetCount} SLIDES!
 Language: 100% PROFESSIONAL, FLUENT ENGLISH.
@@ -1480,9 +1650,11 @@ ${organization ? `Organization / University: ${organization}` : ''}
 ${docContext}
 
 STRICT MANDATORY REQUIREMENTS:
-1. 100% PURE ENGLISH CONTENT:
+1. 100% PURE ENGLISH CONTENT (INCLUDING PRESENTATION TITLE):
    - ALL titles, subtitles, point headings, detailed descriptions, metric labels, highlights, and speakerNotes MUST be strictly in English!
-   - ABSOLUTELY NO foreign words or phrases (especially no Uzbek or Russian words like "1-nuqta", "Xulosa", "Kirish", etc.).
+   - If the user entered the topic in Uzbek or another language (e.g., "${topic}"), TRANSLATE IT TO PURE ENGLISH: "${translatedTopic}"!
+   - The root "title" and slide 1 title MUST BE in pure English: "${translatedTopic}"!
+   - ABSOLUTELY NO foreign words or phrases (especially no Uzbek or Russian words like "${topic}", "1-nuqta", "Xulosa", "Kirish", etc.).
 2. IN-DEPTH, SUBSTANTIVE CONTENT (HIGH INFORMATION DENSITY):
    - Every bullet point "description" MUST contain at least 2–4 complete, informative sentences (35 to 60 words)!
    - Include concrete domain terminology, real-world mechanisms, analytical depth, industry benchmarks, and cause-and-effect reasoning.
@@ -1494,14 +1666,14 @@ STRICT MANDATORY REQUIREMENTS:
 5. HIGH-QUALITY IMAGE SEARCH PROMPTS:
    - In "imagePrompts", provide exactly 2 precise photorealistic English search keywords (e.g., ["${enKeywords} professional research", "${enKeywords} technology architecture"]).
 6. COMPREHENSIVE SPEAKER NOTES (speakerNotes):
-   - Provide a natural, polished 3–5 sentence verbal script for the presenter on every slide.
+   - Provide a natural, polished 3–5 sentence verbal script for the presenter on every slide in English.
 7. The "slides" array MUST contain EXACTLY ${targetCount} slides!
 8. COMMITTEE DEFENSE QUESTIONS & ANSWERS (qaList):
-   - Provide a "qaList" array in the root object containing 3 critical examination questions with authoritative model answers.
+   - Provide a "qaList" array in the root object containing 3 critical examination questions with authoritative model answers in English.
 
 Strictly return CLEAN JSON of this structure:
 {
-  "title": "${topic}",
+  "title": "${translatedTopic}",
   "subtitle": "Comprehensive Strategic Analysis & Practical Frameworks",
   "theme": "${theme}",
   "slides": [
@@ -1509,10 +1681,10 @@ Strictly return CLEAN JSON of this structure:
       "slideNumber": 1,
       "type": "title",
       "layoutType": "title",
-      "title": "${topic}",
+      "title": "${translatedTopic}",
       "subtitle": "Executive Research Briefing on ${categoryObj.name}",
       "imagePrompts": ["${enKeywords} concept photography", "${enKeywords} modern visual"],
-      "speakerNotes": "Welcome everyone. Today we are presenting a comprehensive analytical evaluation of ${topic}, highlighting structural dynamics and strategic execution paths."
+      "speakerNotes": "Welcome everyone. Today we are presenting a comprehensive analytical evaluation of ${translatedTopic}, highlighting structural dynamics and strategic execution paths."
     },
     {
       "slideNumber": 2,
@@ -1548,7 +1720,7 @@ Strictly return CLEAN JSON of this structure:
   if (language === 'tg') {
     return `
 Шумо коршиноси сатҳи байналмилалӣ ва муаллифи муаррифиҳои касбӣ (PowerPoint) дар сатҳи олии илмӣ, донишгоҳӣ ва таҳлилӣ мебошед.
-Мавзӯи муаррифӣ: "${topic}"
+Мавзӯи муаррифӣ: "${translatedTopic}" (вориди аслӣ: "${topic}")
 Соҳа / Самт: ${categoryObj.name} (${categoryObj.promptContext})
 ШУМОРАИ ТАЛАБШУДАИ СЛАЙДҲО: ДАҚИҚАН ${targetCount} СЛАЙД!
 Забони муаррифӣ: 100% ЗАБОНИ ТОҶИКӢ (забони адабӣ, равон ва касбӣ).
@@ -1557,9 +1729,11 @@ ${organization ? `Муассиса / Донишгоҳ: ${organization}` : ''}
 ${docContext}
 
 ТАЛАБОТИ ҚАТЪӢ ВА ҚОИДАҲОИ АСОСӢ:
-1. 100% ЗАБОНИ ШЕВО ВА ТОЗАИ ТОҶИКӢ:
+1. 100% ЗАБОНИ ШЕВО ВА ТОЗАИ ТОҶИКӢ (БО ШУМУЛИ НОМИ МАВЗӮЪ):
    - ҲАМАИ сарлавҳаҳо (title), зерсарлавҳаҳо (subtitle), номи бандҳо (heading), шарҳҳои муфассал (description), нишондиҳандаҳо, хулосаҳои асосӣ (highlight) ва қайдҳои баромадкунанда (speakerNotes) бояд ТАНҲО ВА СОФ БА ЗАБОНИ ТОҶИКӢ бошанд!
-   - Истифодаи калимаҳои ӯзбекӣ, русӣ ё дигар забонҳо (ба мисли "1-nuqta", "Xulosa", "Kirish so'zi", "Zamonaviy", "tushuntirish") ҚАТЪИЯН МАНЪ АСТ! Танҳо дар imagePrompts бояд ибораҳои англисӣ истифода шаванд.
+   - Агар корбар мавзӯъро бо забони ӯзбекӣ ё дигар забон ворид карда бошад (масалан: "${topic}"), ОНРО БА ЗАБОНИ НОБИ ТОҶИКӢ ТАРҶУМА КУНЕД: "${translatedTopic}"!
+   - Қисмати "title" дар реша ва дар ҳамаи слайдҳо ҲАТМАН бояд бо забони тоҷикӣ бошад ("${translatedTopic}")!
+   - Истифодаи калимаҳои ӯзбекӣ, русӣ ё дигар забонҳо (ба мисли "${topic}", "1-nuqta", "Xulosa", "Kirish so'zi", "Zamonaviy", "tushuntirish") ҚАТЪИЯН МАНЪ АСТ! Танҳо дар imagePrompts бояд ибораҳои англисӣ истифода шаванд.
 2. МАЪЛУМОТИ АМИҚ, ПУРРА ВА СЕРМАЗМУН (ШУМОРАИ ЗИЁДИ КАЛИМАҲОИ ФОЙДАНОК):
    - Дар ҳар як банди слайд қисмати "description" (шарҳ) БОЯД ҳатман аз 2 то 4 ҷумлаи мукаммал ва пурмазмун (аз 35 то 60 калима) иборат бошад!
    - Далелҳои мушаххас, мафҳумҳои илмию соҳавӣ, таҳлилҳои амиқи сабабу натиҷа ва равандҳои амалиро зикр намоед.
@@ -1578,7 +1752,7 @@ ${docContext}
 
 Қатъиян дар формати JSON посух диҳед:
 {
-  "title": "${topic}",
+  "title": "${translatedTopic}",
   "subtitle": "Таҳлили ҳамаҷониба ва дурнамои стратегӣ",
   "theme": "${theme}",
   "slides": [
@@ -1586,10 +1760,10 @@ ${docContext}
       "slideNumber": 1,
       "type": "title",
       "layoutType": "title",
-      "title": "${topic}",
+      "title": "${translatedTopic}",
       "subtitle": "Таҳқиқоти илмӣ ва амалӣ дар самти: ${categoryObj.name}",
       "imagePrompts": ["${enKeywords} professional concept", "${enKeywords} modern visual"],
-      "speakerNotes": "Салом, ҳозирини гиромӣ! Имрӯз мо ҷанбаҳои асосӣ ва дурнамои рушди мавзӯи ${topic}-ро ба таври муфассал мавриди баррасӣ қарор медиҳем."
+      "speakerNotes": "Салом, ҳозирини гиромӣ! Имрӯз мо ҷанбаҳои асосӣ ва дурнамои рушди мавзӯи ${translatedTopic}-ро ба таври муфассал мавриди баррасӣ қарор медиҳем."
     },
     {
       "slideNumber": 2,
@@ -1711,6 +1885,7 @@ Qat'iy toza JSON formatida javob bering:
  */
 function sanitizePresentationData(data, language = 'uz') {
   if (!data || typeof data !== 'object') return data;
+  data.language = language;
 
   const aiSelfRegex = /(taqdimot\s*(sun['']iy\s*intellekt|ai)\s*(yordamida|tomonidan)\s*(tayyorlandi|tuzildi|yaratildi)|sun['']iy\s*intellekt\s*tomonidan\s*tayyorlandi|презентация\s*(создана|сгенерирована)\s*(с\s*помощью\s*ии|искусственным\s*интеллектом)|сгенерировано\s*ии|создано\s*ии|generated\s*by\s*ai|created\s*by\s*ai|prepared\s*with\s*ai|муаррифӣ\s*бо\s*зеҳни\s*сунъӣ\s*омода\s*шудааст|бо\s*зеҳни\s*сунъӣ\s*омода\s*шудааст|✨\s*ai\s*taqdimot|ai\s*presentation\s*bot)/gi;
 
@@ -1727,9 +1902,15 @@ function sanitizePresentationData(data, language = 'uz') {
     tg: 'Таҳлили ҳамаҷониба ва дурнамои стратегӣ',
   };
 
-  data.subtitle = cleanText(data.subtitle, defaultSubtitles[language] || defaultSubtitles.uz);
-
   const isNonUzbek = language !== 'uz';
+
+  const originalRootTitle = data.title || '';
+  if (isNonUzbek && data.title) {
+    const translatedRoot = translateUzbekTopic(data.title, language);
+    data.title = cleanUzbekWordsFromText(translatedRoot, language);
+  }
+
+  data.subtitle = cleanText(data.subtitle, defaultSubtitles[language] || defaultSubtitles.uz);
 
   if (Array.isArray(data.slides)) {
     data.slides.forEach((slide, idx) => {
@@ -1739,8 +1920,24 @@ function sanitizePresentationData(data, language = 'uz') {
       if (slide.spotlightText) slide.spotlightText = cleanText(slide.spotlightText, '');
       if (slide.speakerNotes) slide.speakerNotes = cleanText(slide.speakerNotes, '');
 
-      // Chet tillarda o'zbekcha qolib ketgan shablon so'zlarni almashtirish
+      // Chet tillarda o'zbekcha qolib ketgan so'zlarni va mavzu nomini almashtirish
       if (isNonUzbek) {
+        if (originalRootTitle && originalRootTitle !== data.title) {
+          const escOrig = originalRootTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const origRegex = new RegExp(escOrig, 'gi');
+          slide.title = slide.title.replace(origRegex, data.title);
+          if (slide.subtitle) slide.subtitle = slide.subtitle.replace(origRegex, data.title);
+          if (slide.highlight) slide.highlight = slide.highlight.replace(origRegex, data.title);
+          if (slide.spotlightText) slide.spotlightText = slide.spotlightText.replace(origRegex, data.title);
+          if (slide.speakerNotes) slide.speakerNotes = slide.speakerNotes.replace(origRegex, data.title);
+        }
+
+        slide.title = cleanUzbekWordsFromText(slide.title, language);
+        if (slide.subtitle) slide.subtitle = cleanUzbekWordsFromText(slide.subtitle, language);
+        if (slide.highlight) slide.highlight = cleanUzbekWordsFromText(slide.highlight, language);
+        if (slide.spotlightText) slide.spotlightText = cleanUzbekWordsFromText(slide.spotlightText, language);
+        if (slide.speakerNotes) slide.speakerNotes = cleanUzbekWordsFromText(slide.speakerNotes, language);
+
         if (/zamonaviy\s*tahlil/i.test(slide.subtitle) || /keng\s*qamrovli/i.test(slide.subtitle)) {
           slide.subtitle = defaultSubtitles[language] || '';
         }
@@ -1772,6 +1969,15 @@ function sanitizePresentationData(data, language = 'uz') {
           pt.description = cleanText(pt.description, '');
 
           if (isNonUzbek) {
+            if (originalRootTitle && originalRootTitle !== data.title) {
+              const escOrig = originalRootTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              const origRegex = new RegExp(escOrig, 'gi');
+              pt.heading = pt.heading.replace(origRegex, data.title);
+              pt.description = pt.description.replace(origRegex, data.title);
+            }
+            pt.heading = cleanUzbekWordsFromText(pt.heading, language);
+            pt.description = cleanUzbekWordsFromText(pt.description, language);
+
             if (/^\d+[-_]nuqta$/i.test(pt.heading) || /^nuqta\s*\d+$/i.test(pt.heading)) {
               pt.heading = language === 'ru'
                 ? `Ключевой фактор ${pIdx + 1}`
@@ -1808,6 +2014,15 @@ function sanitizePresentationData(data, language = 'uz') {
       question: cleanText(item?.question, ''),
       answer: cleanText(item?.answer, ''),
     })).filter(x => x.question && x.answer);
+
+    if (isNonUzbek && originalRootTitle && originalRootTitle !== data.title) {
+      const escOrig = originalRootTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const origRegex = new RegExp(escOrig, 'gi');
+      data.qaList.forEach(item => {
+        item.question = cleanUzbekWordsFromText(item.question.replace(origRegex, data.title), language);
+        item.answer = cleanUzbekWordsFromText(item.answer.replace(origRegex, data.title), language);
+      });
+    }
   }
 
   if (!Array.isArray(data.qaList) || data.qaList.length === 0) {
