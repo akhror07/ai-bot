@@ -12,16 +12,16 @@ if (!fs.existsSync(TEMP_DIR)) {
   fs.mkdirSync(TEMP_DIR, { recursive: true });
 }
 
-// 8 xil silliq perexod (transition) animatsiyalari
+// 8 xil hayratlanarli, noodatiy perexod (transition) animatsiyalari
 const TRANSITIONS = [
-  '<p:fade/>',
-  '<p:push dir="l"/>',
-  '<p:wipe dir="r"/>',
-  '<p:split orient="horz"/>',
-  '<p:push dir="r"/>',
-  '<p:wipe dir="l"/>',
-  '<p:fade/>',
-  '<p:split orient="vert"/>',
+  '<p:wheel spokes="4"/>',       // 4 qanotli aylanuvchi charxpalak!
+  '<p:circle/>',                 // Iris doira bo'ylab kengayuvchi ochilish!
+  '<p:diamond/>',                // Olmos shaklida yorib chiquvchi effekt!
+  '<p:blinds orient="horz"/>',   // Gorizontal zamonaviy jalyuzi!
+  '<p:comb orient="vert"/>',     // Vertikal taroqli chiziqlar o'tishi!
+  '<p:zoom dir="in"/>',          // 3D yaqinlashuvchi kinematik Zoom-in!
+  '<p:checker dir="horz"/>',     // Shaxmat doskasidek kubiklar bilan ochilish!
+  '<p:wedge/>',                  // Foniy ponasimon ochilish effekti!
 ];
 
 /**
@@ -259,6 +259,19 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data)
     rectRadius: 0.14,
   });
 
+  // Markaziy hayratlanarli "VS" (Taqqoslash) nishoni
+  const vsX = leftX + colW + (gap - 0.9) / 2;
+  const vsY = contentY + contentH / 2 - 0.45;
+  slide.addShape(pres.ShapeType.ellipse, {
+    x: vsX, y: vsY, w: 0.9, h: 0.9,
+    fill: { color: theme.primary },
+    line: { color: '#FFFFFF', width: 2.5 },
+  });
+  slide.addText('VS', {
+    x: vsX, y: vsY, w: 0.9, h: 0.9,
+    fontFace: 'Arial', fontSize: 13, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
+  });
+
   slide.addShape(pres.ShapeType.roundRect, {
     x: rightX + 0.2, y: contentY + 0.2, w: colW - 0.4, h: 0.55,
     fill: { color: theme.border },
@@ -413,6 +426,14 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
       x: x + 0.2, y: contentY + 1.60, w: cardW - 0.4, h: contentH - 1.80,
       fontFace: 'Arial', fontSize: 11, color: theme.subtext, align: 'left', valign: 'top', wrap: true, fit: 'shrink',
     });
+
+    // Bosqichlar orasidagi ko'rsatkich (Chevron flow arrow)
+    if (idx < count - 1) {
+      slide.addText('➔', {
+        x: x + cardW, y: contentY + 0.1, w: gap, h: 0.5,
+        fontFace: 'Arial', fontSize: 18, bold: true, color: theme.primary, align: 'center', valign: 'middle',
+      });
+    }
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight);
@@ -490,6 +511,12 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
     fill: { color: theme.cardBg },
     line: { color: theme.primary, width: 2 },
     rectRadius: 0.14,
+  });
+
+  // Bezakli katta iqtibos nishoni (Watermark)
+  slide.addText('“', {
+    x: 1.0, y: contentY - 0.22, w: 1.2, h: 1.2,
+    fontFace: 'Georgia', fontSize: 68, bold: true, color: theme.primary,
   });
 
   const spotlight = item.spotlightText || `"${item.title}" mavzusidagi amaliy tahlillar shuni ko'rsatadiki, to'g'ri strategiya va integratsiyalashgan yondashuv eng yuqori samarani beradi.`;

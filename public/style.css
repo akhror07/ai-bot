@@ -251,6 +251,66 @@ body {
   background: var(--card-hover);
 }
 
+/* Taqdimot tili tanlash */
+.lang-selector-section {
+  margin-top: 14px;
+}
+
+.field-sub-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.lang-pill-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.lang-pill-btn .flag-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.lang-pill-btn .lang-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.lang-pill-btn:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+  background: var(--card-hover);
+}
+
+.lang-pill-btn.active {
+  border-color: var(--primary-accent);
+  background: rgba(14, 165, 233, 0.15);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.25);
+  color: #ffffff;
+}
+
+.lang-pill-btn.active .lang-label {
+  color: #38bdf8;
+}
+
 /* Hujjat biriktirish tugmasi */
 .doc-attach-container {
   margin-top: 16px;

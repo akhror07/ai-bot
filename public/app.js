@@ -12,6 +12,7 @@ const currentUsername = tg?.initDataUnsafe?.user?.username || '';
 const currentFirstName = tg?.initDataUnsafe?.user?.first_name || 'Foydalanuvchi';
 
 let currentStep = 1;
+let selectedLanguage = 'uz';
 let selectedCategory = 'education';
 let selectedCount = 8;
 let selectedTheme = 'ocean';
@@ -198,6 +199,16 @@ if (attachDocBtn && docFileInput) {
   });
 }
 
+// 5.1. Taqdimot tili tanlash (4 ta til)
+document.querySelectorAll('#languageSelectionGrid .lang-pill-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#languageSelectionGrid .lang-pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedLanguage = btn.dataset.lang || 'uz';
+    if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+  });
+});
+
 // 6. Kategoriyalar tanlash (Soha)
 document.querySelectorAll('#categorySelectionGrid .category-card').forEach(card => {
   card.addEventListener('click', () => {
@@ -319,7 +330,7 @@ slideWizardForm.addEventListener('submit', async (e) => {
         category: selectedCategory,
         organization,
         slideCount: selectedCount,
-        language: 'uz',
+        language: selectedLanguage,
         theme: selectedTheme,
         chatId: currentUserId,
         username: currentUsername,
