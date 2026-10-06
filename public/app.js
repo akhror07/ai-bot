@@ -108,6 +108,22 @@ async function fetchUserData() {
         const adminTab = document.getElementById('adminNavTab');
         if (adminTab) adminTab.classList.remove('hidden');
       }
+
+      // Kanal bonusi holati
+      if (data.channelBonusClaimed) {
+        const btnVerify = document.getElementById('btnVerifyChannel');
+        if (btnVerify) {
+          btnVerify.disabled = true;
+          btnVerify.textContent = '✅ Bonus olingan (+2 koin)';
+          btnVerify.classList.add('claimed');
+        }
+      }
+      if (data.channelUsername) {
+        const channelLink = document.getElementById('btnJoinChannelLink');
+        if (channelLink) {
+          channelLink.href = `https://t.me/${data.channelUsername.replace('@', '')}`;
+        }
+      }
     }
   } catch (err) {
     console.warn('User data fetch error:', err);
@@ -345,6 +361,14 @@ slideWizardForm.addEventListener('submit', async (e) => {
       sendChatBtn.style.display = 'none';
     }
 
+    // Slaydlarni jonli ko'rish karuseli va himoya nutqini yuklash
+    if (data.slides && data.slides.length) {
+      initSlidePreview(data.slides);
+    }
+    if (data.speakerNotes || (data.slides && data.slides.length)) {
+      initSpeechNotes(data.speakerNotes || data.slides, data.title);
+    }
+
     // Balansni yangilash
     fetchUserData();
 
@@ -493,7 +517,7 @@ if (shareRefLinkBtn) {
 }
 
 // 13. Koin sotib olish, To'lov ilovalari va Tasdiqlash modali
-let selectedPackage = { coins: 5, amount: 20000 };
+let selectedPackage = { coins: 5, amount: 20000, stars: 60 };
 let pendingPaymentUrl = '';
 
 // Paket kartochkalarini tanlash
@@ -504,24 +528,93 @@ document.querySelectorAll('.pkg-card').forEach(card => {
 
     const coins = parseInt(card.dataset.coins, 10);
     const amount = parseInt(card.dataset.amount, 10);
-    selectedPackage = { coins, amount };
+    const stars = parseInt(card.dataset.stars || (coins === 1 ? 15 : coins === 3 ? 40 : coins === 5 ? 60 : 100), 10);
+    selectedPackage = { coins, amount, stars };
 
     const formattedAmount = `${amount.toLocaleString()} so'm (${coins} ta koin)`;
     const elPayme = document.getElementById('paymeAmountText');
     const elClick = document.getElementById('clickAmountText');
     const elUzum = document.getElementById('uzumAmountText');
     const elPaynet = document.getElementById('paynetAmountText');
+    const elStars = document.getElementById('starsAmountText');
 
     if (elPayme) elPayme.textContent = formattedAmount;
     if (elClick) elClick.textContent = formattedAmount;
     if (elUzum) elUzum.textContent = formattedAmount;
     if (elPaynet) elPaynet.textContent = formattedAmount;
+    if (elStars) elStars.textContent = `${stars} ⭐️ Stars (${coins} ta koin)`;
 
     if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
   });
 });
 
+// Telegram Stars to'lov tugmasi
+const btnPayStars = document.getElementById('btnPayStars');
+if (btnPayStars) {
+  btnPayStars.addEventListener('click', async () => {
+    if (!currentUserId) {
+      if (tg?.showAlert) tg.showAlert('Iltimos, Telegram ilovasi orqali kiring!');
+      else alert('Iltimos, Telegram ilovasi orqali kiring!');
+      return;
+    }
+
+    const descEl = btnPayStars.querySelector('.app-desc');
+    btnPayStars.disabled = true;
+    if (descEl) descEl.textContent = '⏳ To\'lov linki tayyorlanmoqda...';
+
+    try {
+      const res = await fetch('/api/create-stars-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUserId,
+          packageCoins: selectedPackage.coins,
+          packageStars: selectedPackage.stars || 60,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.invoiceLink) {
+        if (tg?.openInvoice) {
+          tg.openInvoice(data.invoiceLink, (status) => {
+            if (status === 'paid') {
+              if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+              if (tg?.showAlert) {
+                tg.showAlert(`🎉 Tabriklaymiz! +${selectedPackage.coins} ta koin muvaffaqiyatli hisobingizga qo'shildi!`);
+              } else {
+                alert(`🎉 Tabriklaymiz! +${selectedPackage.coins} ta koin muvaffaqiyatli hisobingizga qo'shildi!`);
+              }
+              fetchUserData();
+            } else if (status === 'cancelled') {
+              // Foydalanuvchi bekor qildi
+            } else if (status === 'failed') {
+              if (tg?.showAlert) tg.showAlert('To\'lov amalga oshmadi yoki bekor qilindi.');
+            }
+          });
+        } else if (tg?.openTelegramLink) {
+          tg.openTelegramLink(data.invoiceLink);
+        } else {
+          window.open(data.invoiceLink, '_blank');
+        }
+      } else {
+        throw new Error(data.error || 'Link yaratilmadi');
+      }
+    } catch (err) {
+      console.error('Stars payment error:', err);
+      if (tg?.showAlert) tg.showAlert('Xatolik: ' + err.message);
+      else alert('Xatolik: ' + err.message);
+    } finally {
+      btnPayStars.disabled = false;
+      const elStars = document.getElementById('starsAmountText');
+      if (elStars) {
+        elStars.textContent = `${selectedPackage.stars || 60} ⭐️ Stars (${selectedPackage.coins} ta koin)`;
+      }
+    }
+  });
+}
+
 // Modalni boshqarish
+const CARD_NUMBER_RAW = '9860160142530080';
 const paymentModalOverlay = document.getElementById('paymentModalOverlay');
 const modalAppIcon = document.getElementById('modalAppIcon');
 const modalAppTitle = document.getElementById('modalAppTitle');
@@ -529,15 +622,39 @@ const modalAppAmount = document.getElementById('modalAppAmount');
 const modalAppCoins = document.getElementById('modalAppCoins');
 const modalCancelBtn = document.getElementById('modalCancelBtn');
 const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+const modalCopyBanner = document.getElementById('modalCopyBanner');
+const modalCopyCardAgainBtn = document.getElementById('modalCopyCardAgainBtn');
 
 function openPaymentModal(appName, icon, url) {
   pendingPaymentUrl = url;
   if (modalAppIcon) modalAppIcon.textContent = icon;
-  if (modalAppTitle) modalAppTitle.textContent = `${appName} ilovasi ochilmoqda`;
+  if (modalAppTitle) modalAppTitle.textContent = `${appName} orqali to'lash`;
   if (modalAppAmount) modalAppAmount.textContent = `${selectedPackage.amount.toLocaleString()} so'm`;
   if (modalAppCoins) modalAppCoins.textContent = `${selectedPackage.coins} ta koin`;
 
+  // Karta raqamidan darhol xotiraga nusxa olish
+  try {
+    navigator.clipboard.writeText(CARD_NUMBER_RAW);
+    if (modalCopyBanner) {
+      modalCopyBanner.textContent = `✅ Karta raqami (${CARD_NUMBER_RAW}) xotiraga nusxalandi!`;
+      modalCopyBanner.classList.remove('hidden');
+    }
+  } catch (_) {}
+
   if (paymentModalOverlay) paymentModalOverlay.classList.remove('hidden');
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
+
+if (modalCopyCardAgainBtn) {
+  modalCopyCardAgainBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(CARD_NUMBER_RAW).then(() => {
+      modalCopyCardAgainBtn.textContent = '✅ Nusxa olindi!';
+      setTimeout(() => {
+        modalCopyCardAgainBtn.textContent = '📋 Karta raqamini qayta nusxalash';
+      }, 2000);
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    });
+  });
 }
 
 if (modalCancelBtn) {
@@ -548,9 +665,8 @@ if (modalCancelBtn) {
 
 if (modalConfirmBtn) {
   modalConfirmBtn.addEventListener('click', () => {
-    // Karta raqamidan buferga nusxa olib qo'yish (foydalanuvchiga qulay bo'lishi uchun)
     try {
-      navigator.clipboard.writeText('9860160142530080');
+      navigator.clipboard.writeText(CARD_NUMBER_RAW);
     } catch (_) {}
 
     if (paymentModalOverlay) paymentModalOverlay.classList.add('hidden');
@@ -569,7 +685,7 @@ if (modalConfirmBtn) {
 const btnPayPayme = document.getElementById('btnPayPayme');
 if (btnPayPayme) {
   btnPayPayme.addEventListener('click', () => {
-    const url = `https://payme.uz/fallback/transfer/9860160142530080`;
+    const url = `https://payme.uz/p2p/${CARD_NUMBER_RAW}`;
     openPaymentModal('Payme', '🟢', url);
   });
 }
@@ -578,7 +694,7 @@ if (btnPayPayme) {
 const btnPayClick = document.getElementById('btnPayClick');
 if (btnPayClick) {
   btnPayClick.addEventListener('click', () => {
-    const url = `https://my.click.uz/clickp2p/9860160142530080`;
+    const url = `https://my.click.uz/clickp2p/${CARD_NUMBER_RAW}`;
     openPaymentModal('Click Up', '🔵', url);
   });
 }
@@ -587,7 +703,7 @@ if (btnPayClick) {
 const btnPayUzum = document.getElementById('btnPayUzum');
 if (btnPayUzum) {
   btnPayUzum.addEventListener('click', () => {
-    const url = `https://bank.uzum.uz/p2p?pan=9860160142530080`;
+    const url = `https://app.uzumbank.uz/`;
     openPaymentModal('Uzum Bank', '🟣', url);
   });
 }
@@ -596,7 +712,7 @@ if (btnPayUzum) {
 const btnPayPaynet = document.getElementById('btnPayPaynet');
 if (btnPayPaynet) {
   btnPayPaynet.addEventListener('click', () => {
-    const url = `https://paynet.uz/transfer`;
+    const url = `https://paynet.uz/`;
     openPaymentModal('Paynet', '🟠', url);
   });
 }
@@ -803,11 +919,11 @@ if (btnCopyAdminUsername) {
   btnCopyAdminUsername.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(`@${ADMIN_USERNAME}`);
-      if (copyBtnLabel) copyBtnLabel.textContent = 'Olingan!';
+      if (copyBtnLabel) copyBtnLabel.textContent = '✅ Nusxalandi!';
       btnCopyAdminUsername.classList.add('copied');
       if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       setTimeout(() => {
-        if (copyBtnLabel) copyBtnLabel.textContent = 'Nusxa';
+        if (copyBtnLabel) copyBtnLabel.textContent = '@akhrorov18 nusxalash';
         btnCopyAdminUsername.classList.remove('copied');
       }, 2000);
     } catch (_) {
@@ -817,9 +933,9 @@ if (btnCopyAdminUsername) {
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      if (copyBtnLabel) copyBtnLabel.textContent = 'Olingan!';
+      if (copyBtnLabel) copyBtnLabel.textContent = '✅ Nusxalandi!';
       setTimeout(() => {
-        if (copyBtnLabel) copyBtnLabel.textContent = 'Nusxa';
+        if (copyBtnLabel) copyBtnLabel.textContent = '@akhrorov18 nusxalash';
       }, 2000);
     }
   });
@@ -828,9 +944,12 @@ if (btnCopyAdminUsername) {
 // Telegram orqali to'g'ridan-to'g'ri adminga yozish (@akhrorov18)
 if (btnOpenAdminTelegram) {
   btnOpenAdminTelegram.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = `https://t.me/${ADMIN_USERNAME}`;
     if (tg?.openTelegramLink) {
-      e.preventDefault();
-      tg.openTelegramLink(`https://t.me/${ADMIN_USERNAME}`);
+      tg.openTelegramLink(url);
+    } else {
+      window.open(url, '_blank');
     }
   });
 }
@@ -894,4 +1013,312 @@ function showFeedbackAlert(msg, type = 'success') {
     feedbackAlertBox.classList.add('hidden');
   }, 6000);
 }
+
+// ================================================================
+// 16. SLAYDLARNI JONLI KO'RISH KARUSELI (SLIDE PREVIEWER)
+// ================================================================
+let activePreviewIndex = 0;
+let activeSlidesList = [];
+
+const previewSlideCounter = document.getElementById('previewSlideCounter');
+const previewSlideNum = document.getElementById('previewSlideNum');
+const previewSlideTitle = document.getElementById('previewSlideTitle');
+const previewSlideBullets = document.getElementById('previewSlideBullets');
+const previewSlideHighlight = document.getElementById('previewSlideHighlight');
+const previewHighlightText = document.getElementById('previewHighlightText');
+const previewDotsContainer = document.getElementById('previewDotsContainer');
+const btnPrevSlide = document.getElementById('btnPrevSlide');
+const btnNextSlide = document.getElementById('btnNextSlide');
+
+function initSlidePreview(slides) {
+  if (!slides || !slides.length) return;
+  activeSlidesList = slides;
+  activePreviewIndex = 0;
+
+  // Dots yasash
+  if (previewDotsContainer) {
+    previewDotsContainer.innerHTML = '';
+    slides.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = `preview-dot ${idx === 0 ? 'active' : ''}`;
+      dot.addEventListener('click', () => {
+        activePreviewIndex = idx;
+        renderSlideCard(activePreviewIndex);
+      });
+      previewDotsContainer.appendChild(dot);
+    });
+  }
+
+  renderSlideCard(0);
+}
+
+function renderSlideCard(index) {
+  if (!activeSlidesList.length || index < 0 || index >= activeSlidesList.length) return;
+  const slide = activeSlidesList[index];
+
+  if (previewSlideCounter) {
+    previewSlideCounter.textContent = `${index + 1} / ${activeSlidesList.length}`;
+  }
+  if (previewSlideNum) {
+    previewSlideNum.textContent = `${index + 1}-slayd`;
+  }
+  if (previewSlideTitle) {
+    previewSlideTitle.textContent = slide.title || 'Slayd';
+  }
+
+  // Nuqtalar (Bullet points / Content)
+  if (previewSlideBullets) {
+    previewSlideBullets.innerHTML = '';
+    const points = slide.points || slide.bulletPoints || slide.content || [];
+    if (Array.isArray(points)) {
+      points.forEach(pt => {
+        const item = document.createElement('div');
+        item.className = 'preview-bullet-item';
+        if (pt && typeof pt === 'object') {
+          const heading = pt.heading ? `<b>${pt.heading}:</b> ` : '';
+          const desc = pt.description || '';
+          item.innerHTML = `<span class="bullet-ico">🔹</span><div>${heading}<span>${desc}</span></div>`;
+        } else {
+          item.innerHTML = `<span class="bullet-ico">🔹</span><span>${pt}</span>`;
+        }
+        previewSlideBullets.appendChild(item);
+      });
+    } else if (typeof points === 'string') {
+      const p = document.createElement('p');
+      p.className = 'preview-bullet-text';
+      p.textContent = points;
+      previewSlideBullets.appendChild(p);
+    }
+  }
+
+  // Xulosa (Highlight)
+  if (previewSlideHighlight && previewHighlightText) {
+    if (slide.highlight) {
+      previewHighlightText.textContent = slide.highlight;
+      previewSlideHighlight.classList.remove('hidden');
+    } else {
+      previewSlideHighlight.classList.add('hidden');
+    }
+  }
+
+  // Dots aktivlashtirish
+  if (previewDotsContainer) {
+    const dots = previewDotsContainer.querySelectorAll('.preview-dot');
+    dots.forEach((d, i) => {
+      if (i === index) d.classList.add('active');
+      else d.classList.remove('active');
+    });
+  }
+
+  // Tugmalar holati
+  if (btnPrevSlide) btnPrevSlide.disabled = index === 0;
+  if (btnNextSlide) btnNextSlide.disabled = index === activeSlidesList.length - 1;
+}
+
+if (btnPrevSlide) {
+  btnPrevSlide.addEventListener('click', () => {
+    if (activePreviewIndex > 0) {
+      activePreviewIndex--;
+      renderSlideCard(activePreviewIndex);
+      if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
+  });
+}
+
+if (btnNextSlide) {
+  btnNextSlide.addEventListener('click', () => {
+    if (activePreviewIndex < activeSlidesList.length - 1) {
+      activePreviewIndex++;
+      renderSlideCard(activePreviewIndex);
+      if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
+  });
+}
+
+// ================================================================
+// 17. HIMOYA NUTQI (SPEAKER SPEECH) AKKORDEON
+// ================================================================
+let activeSpeechNotes = [];
+let activePresentationTitle = '';
+
+const btnToggleSpeech = document.getElementById('btnToggleSpeech');
+const speechAccordionBody = document.getElementById('speechAccordionBody');
+const speechArrowIcon = document.getElementById('speechArrowIcon');
+const speechSlidesList = document.getElementById('speechSlidesList');
+const btnCopyAllSpeech = document.getElementById('btnCopyAllSpeech');
+const btnDownloadSpeechTxt = document.getElementById('btnDownloadSpeechTxt');
+
+if (btnToggleSpeech && speechAccordionBody) {
+  btnToggleSpeech.addEventListener('click', () => {
+    const isHidden = speechAccordionBody.classList.contains('hidden');
+    if (isHidden) {
+      speechAccordionBody.classList.remove('hidden');
+      if (speechArrowIcon) speechArrowIcon.textContent = '▲';
+    } else {
+      speechAccordionBody.classList.add('hidden');
+      if (speechArrowIcon) speechArrowIcon.textContent = '▼';
+    }
+    if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+  });
+}
+
+function initSpeechNotes(notes, title = 'Taqdimot') {
+  activePresentationTitle = title;
+  activeSpeechNotes = notes || [];
+
+  if (!speechSlidesList) return;
+  speechSlidesList.innerHTML = '';
+
+  activeSpeechNotes.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'speech-card-item';
+    const num = item.slideNumber || idx + 1;
+    const cardTitle = item.title || `${num}-slayd`;
+    const noteText = item.notes || item.speakerNotes || 'Ushbu slayd uchun asosiy tushuntirish va taqdimot nutqi.';
+
+    card.innerHTML = `
+      <div class="speech-card-top">
+        <span class="speech-badge">${num}-slayd</span>
+        <span class="speech-heading">${cardTitle}</span>
+      </div>
+      <p class="speech-text">"${noteText}"</p>
+    `;
+    speechSlidesList.appendChild(card);
+  });
+}
+
+// Barcha nutqdan nusxa olish
+if (btnCopyAllSpeech) {
+  btnCopyAllSpeech.addEventListener('click', async () => {
+    if (!activeSpeechNotes.length) return;
+
+    let fullText = `🎙 TAQDIMOT HIMOYA NUTQI:\n📌 Mavzu: ${activePresentationTitle}\n\n`;
+    activeSpeechNotes.forEach((item, idx) => {
+      const num = item.slideNumber || idx + 1;
+      const cardTitle = item.title || `${num}-slayd`;
+      const noteText = item.notes || item.speakerNotes || '';
+      fullText += `[${num}-slayd: ${cardTitle}]\n${noteText}\n\n`;
+    });
+
+    try {
+      await navigator.clipboard.writeText(fullText.trim());
+      btnCopyAllSpeech.textContent = '✅ Barcha nutq nusxalandi!';
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      setTimeout(() => {
+        btnCopyAllSpeech.textContent = '📋 Barcha nutqdan nusxa olish';
+      }, 2500);
+    } catch (_) {
+      const ta = document.createElement('textarea');
+      ta.value = fullText.trim();
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btnCopyAllSpeech.textContent = '✅ Barcha nutq nusxalandi!';
+      setTimeout(() => {
+        btnCopyAllSpeech.textContent = '📋 Barcha nutqdan nusxa olish';
+      }, 2500);
+    }
+  });
+}
+
+// Matn (.txt) yuklab olish
+if (btnDownloadSpeechTxt) {
+  btnDownloadSpeechTxt.addEventListener('click', () => {
+    if (!activeSpeechNotes.length) return;
+
+    let fullText = `🎙 TAQDIMOT HIMOYA NUTQI:\n📌 Mavzu: ${activePresentationTitle}\n\n`;
+    activeSpeechNotes.forEach((item, idx) => {
+      const num = item.slideNumber || idx + 1;
+      const cardTitle = item.title || `${num}-slayd`;
+      const noteText = item.notes || item.speakerNotes || '';
+      fullText += `[${num}-slayd: ${cardTitle}]\n${noteText}\n\n`;
+    });
+
+    const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `himoya_nutqi_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  });
+}
+
+// ================================================================
+// 18. TELEGRAM KANAL A'ZOLIGI BONUSA (+2 KOIN)
+// ================================================================
+const btnJoinChannelLink = document.getElementById('btnJoinChannelLink');
+if (btnJoinChannelLink) {
+  btnJoinChannelLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const chUrl = 'https://t.me/ahroriAI';
+    if (tg?.openTelegramLink) {
+      tg.openTelegramLink(chUrl);
+    } else {
+      window.open(chUrl, '_blank');
+    }
+  });
+}
+
+const btnVerifyChannel = document.getElementById('btnVerifyChannel');
+const channelBonusStatus = document.getElementById('channelBonusStatus');
+
+if (btnVerifyChannel) {
+  btnVerifyChannel.addEventListener('click', async () => {
+    if (!currentUserId) {
+      if (tg?.showAlert) tg.showAlert('Iltimos, Telegram orqali kiring!');
+      else alert('Iltimos, Telegram orqali kiring!');
+      return;
+    }
+
+    btnVerifyChannel.disabled = true;
+    btnVerifyChannel.textContent = '⏳ Tekshirilmoqda...';
+
+    try {
+      const res = await fetch('/api/check-channel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUserId }),
+      });
+
+      const data = await res.json();
+      if (channelBonusStatus) {
+        channelBonusStatus.classList.remove('hidden');
+        if (data.success) {
+          channelBonusStatus.className = 'channel-bonus-status success';
+          channelBonusStatus.textContent = '🎉 ' + data.message;
+          btnVerifyChannel.textContent = '✅ Bonus olingan (+2 koin)';
+          btnVerifyChannel.classList.add('claimed');
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          // Balansni yangilash
+          fetchUserData();
+        } else if (data.alreadyClaimed) {
+          channelBonusStatus.className = 'channel-bonus-status info';
+          channelBonusStatus.textContent = 'ℹ️ ' + data.message;
+          btnVerifyChannel.textContent = '✅ Bonus olingan (+2 koin)';
+          btnVerifyChannel.classList.add('claimed');
+        } else {
+          channelBonusStatus.className = 'channel-bonus-status error';
+          channelBonusStatus.textContent = '⚠️ ' + (data.message || 'Kanalga a\'zo bo\'lmadingiz.');
+          btnVerifyChannel.disabled = false;
+          btnVerifyChannel.textContent = '✅ A\'zolikni tekshirish';
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
+        }
+      }
+    } catch (err) {
+      if (channelBonusStatus) {
+        channelBonusStatus.classList.remove('hidden');
+        channelBonusStatus.className = 'channel-bonus-status error';
+        channelBonusStatus.textContent = '❌ Server bilan bog\'lanishda xatolik';
+      }
+      btnVerifyChannel.disabled = false;
+      btnVerifyChannel.textContent = '✅ A\'zolikni tekshirish';
+    }
+  });
+}
+
 

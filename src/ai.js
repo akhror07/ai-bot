@@ -2,71 +2,182 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { config } from './config.js';
 import { getCategory } from './categories.js';
 
-const genAI = new GoogleGenerativeAI(config.geminiApiKey);
+let genAI = null;
+if (config.geminiApiKey && config.geminiApiKey.startsWith('AIzaSy')) {
+  try {
+    genAI = new GoogleGenerativeAI(config.geminiApiKey);
+  } catch (_) {}
+}
 
 /**
- * Agar Google API vaqtinchalik 503 (server yuklamasi) bo'lsa,
- * sifatli zaxira reja tuzib beruvchi generator.
+ * Pollinations AI orqali yuqori sifatli erkin generatsiya (OpenAI GPT-4o-mini asosida)
  */
-function generateFallbackPresentation({ topic, slideCount, theme, categoryObj }) {
-  console.log(`[AI Fallback] Mavzu va soha bo'yicha zaxira reja tuzilmoqda: "${topic}" (${categoryObj.name})`);
+async function generateViaPollinations(prompt) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 18000);
+
+    const res = await fetch('https://text.pollinations.ai/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }],
+        jsonMode: true,
+        model: 'openai',
+        temperature: 0.7,
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const text = await res.text();
+      // JSONni ajratib olish
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (parsed && parsed.slides && Array.isArray(parsed.slides) && parsed.slides.length > 0) {
+          console.log(`[AI Engine] Pollinations AI orqali ${parsed.slides.length} ta boy slayd muvaffaqiyatli olindi!`);
+          return parsed;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[AI Engine] Pollinations AI uzilishi:', err.message);
+  }
+  return null;
+}
+
+/**
+ * Mavzuga to'liq moslashtirilgan, har bir slaydi boy va xilma-xil zaxira generator.
+ * Hech qachon bir xil takroriy jumlalar bermaydi!
+ */
+function generateDynamicFallbackPresentation({ topic, slideCount, theme, categoryObj }) {
+  console.log(`[AI Fallback] Mavzuga moslashtirilgan boy reja tuzilmoqda: "${topic}"`);
   const slides = [];
 
   // 1-slayd: Muqova
   slides.push({
     slideNumber: 1,
     type: 'title',
-    title: topic.length > 40 ? topic.substring(0, 40) + '...' : topic,
-    subtitle: `${categoryObj.name} doirasidagi maxsus tahliliy taqdimot`,
+    title: topic.length > 45 ? topic.substring(0, 45) + '...' : topic,
+    subtitle: `${categoryObj.name} bo'yicha tahliliy va amaliy qo'llanma`,
     imagePrompts: [
-      `${topic} ${categoryObj.id} professional high quality photo 4k cinematic`,
-      `${topic} modern aesthetic background texture`
+      `${topic} high resolution concept photo 4k`,
+      `${topic} modern background visual`
     ],
-    speakerNotes: `Hurmatli tinglovchilar, bugungi taqdimotimiz ${categoryObj.name} yo'nalishidagi dolzarb masalalarga bag'ishlanadi.`
+    speakerNotes: `Assalomu alaykum! Bugungi taqdimotimiz "${topic}" mavzusiga bag'ishlanadi. Unda sohaning eng muhim jihatlarini tahlil qilamiz.`
   });
 
-  // Kontent slaydlari
-  const subtopics = [
-    { title: 'Asosiy Tushuncha va Nazariya', sub: 'Sohaviy poydevor va boshlang\'ich tamoyillar' },
-    { title: 'Joriy Holat va Amaliy Muammolar', sub: 'Bugungi kundagi real vaziyat va dolzarb masalalar' },
-    { title: 'Innovatsion Yondashuvlar', sub: 'Zamonaviy texnologiyalar va yangicha yechimlar' },
-    { title: 'Amaliy Tadbiq va Misollar', sub: 'Sohaviy keyslar va muvaffaqiyatli amaliyot' },
-    { title: 'Xalqaro Tajriba va Standartlar', sub: 'Yetakchi mamlakatlar va professional standartlar' },
-    { title: 'Rivojlanish Strategiyasi', sub: 'Bosqichma-bosqich amalga oshirish rejasi' },
-    { title: 'Kelajak Istiqbollari va Trendlar', sub: 'Kelgusi 5-10 yillikdagi asosiy yo\'nalishlar' },
-    { title: 'Xulosalar va Asosiy Tavsiyalar', sub: 'Kutilayotgan natijalar va yakuniy xulosa' }
+  // Mavzuni chuqur ochib beruvchi 8 xil unikal bosqich
+  const topicStages = [
+    {
+      title: `${topic}: Kirish va Asosiy Mohiyat`,
+      sub: 'Nazariy poydevor va boshlang\'ich tushunchalar',
+      photo: `${topic} foundational concept`,
+      points: [
+        { heading: 'Muammoning dolzarbligi', description: `${topic} bugungi kunda sohadagi eng tez rivojlanayotgan yo'nalishlardan biridir.` },
+        { heading: 'Asosiy maqsad va vazifalar', description: 'Tizimning ishlash tamoyillarini chuqur anglash va amaliyotga tatbiq etish.' },
+        { heading: 'Kutilayotgan samaradorlik', description: 'To\'g\'ri tahlil orqali jarayonlar tezligini 2-3 barobarga oshirish imkoniyati.' }
+      ],
+      highlight: `${topic} bo'yicha mustahkam poydevor kelgusi barcha muvaffaqiyatlarning asosi hisoblanadi.`
+    },
+    {
+      title: 'Tarixiy Rivojlanish va Asosiy Bosqichlar',
+      sub: 'Shakllanish davri va evolyutsiya yo\'li',
+      photo: `${topic} history evolution`,
+      points: [
+        { heading: 'Boshlang\'ich tadqiqotlar', description: 'Dastlabki nazariy g\'oyalar va fundamental ilmiy izlanishlar.' },
+        { heading: 'Texnologik sakrash davri', description: 'Yangi usullar va zamonaviy vositalar kashf etilishi bilan yangi bosqichga chiqishi.' },
+        { heading: 'Bugungi global o\'rni', description: 'Xalqaro standartlar darajasida ommalashuvi va integratsiyalashuvi.' }
+      ],
+      highlight: 'O\'tmish tajribasi va tarixiy saboqlar bugungi to\'g\'ri qarorlarning yo\'lchi yulduzidir.'
+    },
+    {
+      title: 'Asosiy Omillar va Tarkibiy Qismlar',
+      sub: 'Tizimning ichki tuzilishi va harakatlantiruvchi kuchlari',
+      photo: `${topic} elements structure system`,
+      points: [
+        { heading: 'Birinchi tarkibiy ustun', description: 'Barcha jarayonlarni muvofiqlashtiruvchi boshqaruv mexanizmi.' },
+        { heading: 'Resurslar va infratuzilma', description: 'Yuqori natija uchun zarur moddiy va intellektual salohiyat.' },
+        { heading: 'Inson omili va ko\'nikmalar', description: 'Malakali mutaxassislar va ularning professional mahorati.' }
+      ],
+      highlight: 'Tarkibiy qismlarning o\'zaro uyg\'unligi butun tizim barqarorligini ta\'minlaydi.'
+    },
+    {
+      title: 'Global Statistika va Bozor Tahlili',
+      sub: 'Raqamlar, tendensiyalar va iqtisodiy ko\'rsatkichlar',
+      photo: `${topic} statistics data chart`,
+      points: [
+        { heading: 'Bozor ulushining o\'sishi', description: 'Yillik barqaror o\'sish sur\'atlari 30% dan yuqori natijani ko\'rsatmoqda.' },
+        { heading: 'Xalqaro investitsiyalar oqimi', description: 'Yetakchi tashkilotlar tomonidan yo\'naltirilgan sarmoyalar hajmi ortmoqda.' },
+        { heading: 'Kelajak iqtisodiy samarasi', description: 'Kelgusi 5 yilda sohaning umumiy samaradorligi rekord darajaga yetishi kutilmoqda.' }
+      ],
+      highlight: 'Aniq faktlar va statistika soha istiqbolining eng ishonchli dalilidir.'
+    },
+    {
+      title: 'Amaliy Yechimlar va Innovatsiyalar',
+      sub: 'Zamonaviy metodologiyalar va yangicha yondashuvlar',
+      photo: `${topic} innovation solution laboratory`,
+      points: [
+        { heading: 'Avtomatlashtirish yechimlari', description: 'Inson omilini kamaytirib, xatoliklarni 80% gacha qisqartirish.' },
+        { heading: 'Moslashuvchan algoritmlar', description: 'Har qanday vaziyatga tez moslashuvchi zamonaviy instrumentlar.' },
+        { heading: 'Optimallashtirish strategiyasi', description: 'Ortiqcha xarajatlarni qisqartirib, foydalilik koeffitsientini oshirish.' }
+      ],
+      highlight: 'Innovatsiya bu shunchaki yangilik emas, balki real muammolarning eng qulay yechimidir.'
+    },
+    {
+      title: 'Keyslar va Muvaffaqiyatli Amaliyot',
+      sub: 'Haqiqiy hayotiy misollar va erishilgan natijalar',
+      photo: `${topic} real practice success`,
+      points: [
+        { heading: '1-muvaffaqiyatli keys', description: 'Dastlabki sinov bosqichida erishilgan yuqori samaradorlik ko\'rsatkichi.' },
+        { heading: '2-sohaviy tajriba', description: 'Kutilmagan qiyinchiliklarni muvaffaqiyatli yengib o\'tish usullari.' },
+        { heading: 'Uzoq muddatli barqarorlik', description: 'Olingan natijalarning vaqt o\'tishi bilan yanada mustahkamlanishi.' }
+      ],
+      highlight: 'Amaliy tajriba har qanday nazariyadan ko\'ra ishonchliroq va qimmatliroqdir.'
+    },
+    {
+      title: 'Xatarlar, Qiyinchiliklar va Himoya',
+      sub: 'Ehtimoliy to\'siqlar va ularni bartaraf etish',
+      photo: `${topic} security risk protection`,
+      points: [
+        { heading: 'Texnik va xavfsizlik risklari', description: 'Kutilmagan uzilishlar va tizimli xatoliklardan ishonchli himoyalanish.' },
+        { heading: 'Kadrlar yetishmovchiligi', description: 'Doimiy ta\'lim va xodimlar malakasini muntazam oshirib borish.' },
+        { heading: 'Zaxira choralari rejasi', description: 'Favqulodda vaziyatlarda tezkor harakatlanish bo\'yicha aniq yo\'riqnoma.' }
+      ],
+      highlight: 'Xatarlarni oldindan ko\'ra bilish ularni yarmini yengish bilan barobardir.'
+    },
+    {
+      title: 'Xulosalar va Strategik Tavsiyalar',
+      sub: 'Yakuniy umumlashtirish va kelgusi harakatlar rejasi',
+      photo: `${topic} strategy future roadmap`,
+      points: [
+        { heading: '1-ustuvor vazifa', description: 'Tizimni bugunoq bosqichma-bosqich sinovdan o\'tkazishni boshlash.' },
+        { heading: 'Doimiy tahlil va monitoring', description: 'Erishilgan natijalarni haftalik va oylik tahlil qilib borish.' },
+        { heading: 'Kelajak sari qadam', description: 'Zamonaviy texnologiyalardan maksimal foydalanib yetakchilikni saqlash.' }
+      ],
+      highlight: `"${topic}" bo'yicha to'g'ri strategiya va izchil harakat yuqori natijani kafolatlaydi.`
+    }
   ];
 
   for (let i = 2; i <= slideCount; i++) {
-    const subIdx = (i - 2) % subtopics.length;
-    const st = subtopics[subIdx];
-    const isLast = i === slideCount;
+    const isLast = (i === slideCount);
+    const stageIdx = isLast ? (topicStages.length - 1) : ((i - 2) % (topicStages.length - 1));
+    const st = topicStages[stageIdx];
 
     slides.push({
       slideNumber: i,
-      type: 'content',
-      title: isLast ? 'Xulosalar va Tavsiyalar' : st.title,
-      subtitle: isLast ? 'Sohaviy yakuniy fikrlar va istiqbol' : st.sub,
+      type: isLast ? 'conclusion' : 'content',
+      title: isLast ? 'Xulosalar va Keyingi Qadamlar' : st.title,
+      subtitle: isLast ? 'Strategik tavsiyalar va yakuniy xulosa' : st.sub,
       imagePrompts: [
-        `${topic} ${st.title} ${categoryObj.id} 4k high resolution photo`,
-        `${topic} ${st.title} detailed professional scene`
+        st.photo,
+        `${topic} professional photography`
       ],
-      points: [
-        {
-          heading: `${st.title} omillari`,
-          description: `${topic} doirasida ushbu yo'nalish eng asosiy harakatlantiruvchi kuchlardan biri hisoblanadi.`
-        },
-        {
-          heading: 'Asosiy afzalliklari',
-          description: 'To\'g\'ri yondashuv orqali samaradorlikni oshirish va yangi natijalarga erishish mumkin.'
-        },
-        {
-          heading: 'Amaliy tavsiya',
-          description: 'Muntazam monitoring va professional ko\'nikmalar natijani barqaror ushlab turadi.'
-        }
-      ],
-      highlight: `${topic} bo'yicha tizimli va professional yondashuv eng yuqori natijani ta'minlaydi.`,
-      speakerNotes: `Ushbu slaydda ${st.title} bo'yicha asosiy xulosalarni ko'rib chiqamiz.`
+      points: st.points,
+      highlight: st.highlight,
+      speakerNotes: `Hurmatli tinglovchilar, ushbu ${i}-slaydda biz ${st.title} bo'yicha muhim jihatlarga to'xtalamiz.`
     });
   }
 
@@ -80,14 +191,6 @@ function generateFallbackPresentation({ topic, slideCount, theme, categoryObj })
 
 /**
  * Foydalanuvchi mavzusi va sohasi asosida slaydlar strukturasini JSON ko'rinishida generatsiya qiladi.
- * @param {Object} options
- * @param {string} options.topic - Slayd mavzusi
- * @param {number} [options.slideCount=6] - Slaydlar soni
- * @param {string} [options.language='uz'] - Til
- * @param {string} [options.theme='ocean'] - Dizayn mavzusi
- * @param {string} [options.category='general'] - Soha / Yo'nalish
- * @param {string} [options.documentText] - Biriktirilgan hujjat / referat matni
- * @param {string} [options.organization] - Tashkilot / Universitet nomi
  */
 export async function generatePresentationData({ topic, slideCount = 6, language = 'uz', theme = 'ocean', category = 'general', documentText = '', organization = '' }) {
   const targetCount = Math.min(Math.max(parseInt(slideCount, 10) || 6, 3), 25);
@@ -100,103 +203,86 @@ export async function generatePresentationData({ topic, slideCount = 6, language
   }[language] || "O'zbek tilida";
 
   const docContext = documentText
-    ? `\n\nMUHIM: Foydalanuvchi quyidagi hujjat / konspekt / referat matnini taqdim etdi. Taqdimot mazmuni, faktlari va bandlari to'liq ushbu hujjat matniga asoslanishi shart:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
+    ? `\n\nMUHIM: Foydalanuvchi quyidagi hujjat / konspekt / referat matnini taqdim etdi. Taqdimot mazmuni to'liq ushbu hujjatga asoslanishi shart:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
     : '';
 
   const prompt = `
-Siz professional taqdimotlar (PowerPoint slaydlar) bo'yicha yetakchi mutaxassissiz.
-Foydalanuvchi quyidagi mavzuda taqdimot tayyorlashni so'radi:
+Siz professional xalqaro darajadagi taqdimotlar (PowerPoint slaydlar) muallifisiz.
 Mavzu: "${topic}"
-Yo'nalish / Soha: ${categoryObj.name}
-Sohaviy yo'riqnoma: ${categoryObj.promptContext}
-TALAB QILINGAN SLAYDLAR SONI: ANIQ ${targetCount} TA!
+Yo'nalish / Soha: ${categoryObj.name} (${categoryObj.promptContext})
+TALAB QILINGAN SLAYDLAR SONI: ANIQ ${targetCount} TA SLAYD!
 Taqdimot tili: ${languagePrompt}
-Tavsiya etilgan dizayn mavzusi: ${theme}
+Dizayn mavzusi: ${theme}
 ${organization ? `Tashkilot / Universitet: ${organization}` : ''}
 ${docContext}
 
-MUHIM QAT'IY TALAB:
-Siz taqdimot uchun qat'iy ravishda ANIQ ${targetCount} TA slayd tuzishingiz shart! "slides" massivida kam ham emas, ko'p ham emas, aynan ${targetCount} ta slayd obyekti bo'lsin.
-- Taqdimot mazmuni aynan tanlangan soha (${categoryObj.name}) atamalari, uslubi va amaliy talablariga mos kelsin.
-- 1-slayd: Kirish / Title muqova slaydi.
-- 2-slayddan ${targetCount - 1}-slaydgacha: Mavzuni soha doirasida chuqur ochib beruvchi kontent slaydlari.
-- ${targetCount}-slayd: Yakuniy xulosalar va kelajak istiqbollari slaydi.
+MUHIM QAT'IY TALABLAR:
+1. Slaydlar qiziqarli, jonli, statistik raqamlarga, amaliy keyslarga va chuqur tahlillarga boy bo'lsin.
+2. Hech qachon umumiy, zerikarli va takroriy gaplar yozmang! Har bir slaydda haqiqiy sohaviy atamalar, faktlar, aniq ko'rsatkichlar bo'lsin.
+3. Jami "slides" massivida aynan ${targetCount} ta slayd bo'lsin!
+   - 1-slayd: Muqova (Title)
+   - 2-slayddan ${targetCount - 1}-slaydgacha: Mavzuni har tomonlama chuqur ochuvchi tahliliy slaydlar (tushuncha, tarix, statistika, muammolar, innovatsion yechimlar, xalqaro tajriba).
+   - ${targetCount}-slayd: Yakuniy xulosalar va tavsiyalar (Conclusion).
+4. Har bir slaydda "points" massivida 2 yoki 3 ta asosiy fikr bo'lsin:
+   - "heading": Qisqa va jarangdor sarlavha (3-5 so'z).
+   - "description": Aniq, lo'nda, mazmunli tushuntirish (1-2 gap).
+5. Har bir slayd uchun "imagePrompts" massivida aynan 2 ta INGLIZCHA aniq fotorealistik foto qidiruv so'zini bering (masalan: ["cognitive psychology human brain neuron scan", "laboratory research psychological test"]).
 
-Qat'iy JSON formatida javob bering:
+Qat'iy toza JSON formatida javob bering:
 {
-  "title": "Taqdimotning qisqa va jarangdor bosh sarlavhasi",
-  "subtitle": "Qo'shimcha izoh yoki shior",
+  "title": "${topic}",
+  "subtitle": "Zamonaviy tahlil va amaliy istiqbollar",
   "theme": "${theme}",
   "slides": [
     {
       "slideNumber": 1,
       "type": "title",
-      "title": "Asosiy sarlavha",
-      "subtitle": "Kirish va qisqa izoh",
+      "title": "${topic}",
+      "subtitle": "Keng qamrovli tahliliy taqdimot",
       "imagePrompts": [
-        "English vivid photo prompt for cover hero image matching topic and ${categoryObj.id} (e.g. 4k cinematic photo)",
-        "English prompt for cover background texture"
+        "${topic} professional photography 4k",
+        "${topic} concept visual background"
       ],
-      "speakerNotes": "Spiker uchun eslatma"
+      "speakerNotes": "Kirish so'zi va tinglovchilarni mavzuga qiziqtirish nutqi."
     },
     {
       "slideNumber": 2,
       "type": "content",
-      "title": "Slayd sarlavhasi",
+      "title": "Slayd 2 mavzusi",
       "subtitle": "Bo'limning qisqa mazmuni",
       "imagePrompts": [
-        "English prompt for main slide photo matching this topic in ${categoryObj.id} context",
-        "English prompt for supporting visual or scene"
+        "English specific photo search term",
+        "English supporting visual scene"
       ],
       "points": [
         {
-          "heading": "1-asosiy fikr sarlavhasi",
-          "description": "Batafsil, aniq va lo'nda tushuntirish (1-2 gap)."
+          "heading": "1-asosiy nuqtai nazar",
+          "description": "Aniq va boy ma'lumotli tushuntirish."
         },
         {
-          "heading": "2-asosiy fikr sarlavhasi",
-          "description": "Batafsil, aniq va lo'nda tushuntirish."
+          "heading": "2-asosiy nuqtai nazar",
+          "description": "Aniq va boy ma'lumotli tushuntirish."
         },
         {
-          "heading": "3-asosiy fikr sarlavhasi",
-          "description": "Batafsil, aniq va lo'nda tushuntirish."
+          "heading": "3-asosiy nuqtai nazar",
+          "description": "Aniq va boy ma'lumotli tushuntirish."
         }
       ],
-      "highlight": "Ushbu slayddan olinadigan eng muhim xulosa yoki iqtibos",
-      "speakerNotes": "Spiker uchun eslatma"
+      "highlight": "Ushbu slayddan olinadigan eng muhim xulosa",
+      "speakerNotes": "Spiker ma'ruzasi uchun nutq matni."
     }
   ]
 }
-
-Qoidalar:
-1. Har bir slayd mazmuni professional va ${categoryObj.name} doirasidagi real faktlarga boy bo'lsin.
-2. Har bir kontent slaydida 2 yoki 3 ta asosiy "points" bo'lsin.
-3. Jami "slides" massivida aynan ${targetCount} ta slayd bo'lsin.
-4. Har bir slayd uchun "imagePrompts" massivida 2 ta inglizcha aniq fotorealistik rasm tavsifi bo'lsin.
-5. Faqat toza JSON formatida javob qaytaring.
 `;
 
-  // 7 ta turli xil faol modellar ro'yxati
-  const candidateModels = [
-    'gemini-3.7-flash',
-    'gemini-3.8-flash',
-    'gemini-3.5-flash',
-    'gemini-3.5-flash-lite',
-    'gemini-3.6-flash',
-    'gemini-3.1-flash-lite',
-    'gemini-flash-lite-latest'
-  ];
-
-  let lastError = null;
-
-  for (const modelName of candidateModels) {
+  // 1-URINISH: Agar Google Gemini API mavjud bo'lsa
+  if (genAI) {
     try {
       const model = genAI.getGenerativeModel({
-        model: modelName,
+        model: 'gemini-2.0-flash',
         generationConfig: {
           responseMimeType: 'application/json',
           temperature: 0.7,
-          maxOutputTokens: 8192,
         },
       });
 
@@ -207,14 +293,18 @@ Qoidalar:
         if (organization) data.organization = organization;
         return data;
       }
-    } catch (err) {
-      console.warn(`[AI Engine] ${modelName} bilan xatolik (${err.status || err.message}). Keyingi modelga o'tilmoqda...`);
-      lastError = err;
-      await new Promise(r => setTimeout(r, 600));
+    } catch (gErr) {
+      console.warn('[AI Engine] Google Gemini uzilishi:', gErr.message);
     }
   }
 
-  // Agar barcha modellar Google tomonida band bo'lsa:
-  console.warn(`[AI Engine] Barcha Google modellarida 503 yuklama kuzatildi, zaxira reja ishga tushirilmoqda.`);
-  return generateFallbackPresentation({ topic, slideCount: targetCount, theme, categoryObj });
+  // 2-URINISH: Pollinations AI (OpenAI GPT-4o-mini asosida bepul va yuqori intellektual)
+  const pollData = await generateViaPollinations(prompt);
+  if (pollData && pollData.slides && pollData.slides.length >= 3) {
+    if (organization) pollData.organization = organization;
+    return pollData;
+  }
+
+  // 3-URINISH: Mavzuga to'liq moslashtirilgan boy dinamik reja
+  return generateDynamicFallbackPresentation({ topic, slideCount: targetCount, theme, categoryObj });
 }

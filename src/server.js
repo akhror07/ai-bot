@@ -25,6 +25,7 @@ import {
   saveFeedback,
   getAllFeedbacks,
   ADMIN_TELEGRAM_USERNAME,
+  claimChannelBonus,
 } from './db.js';
 
 export const app = express();
@@ -32,10 +33,33 @@ export const app = express();
 app.use(cors());
 app.use(express.json({ limit: '25mb' }));
 
-// Frontend Mini App statik fayllari
-app.use(express.static(path.resolve('public')));
+// Frontend Mini App statik fayllari (Keshlanib qolmasligi uchun no-cache sarlavhalari bilan)
+app.use(express.static(path.resolve('public'), {
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 
 const TEMP_DIR = path.resolve('temp');
+
+// Health check & Ping (Render Free Tier doim uyg'oq turishi uchun)
+app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: Date.now() }));
+app.get('/api/health', (req, res) => res.json({ status: 'healthy', uptime: process.uptime() }));
+
+// Render Free Tier doim uyg'oq saqlash (Keep-Alive Heartbeat: har 8 daqiqada)
+const targetUrl = process.env.RENDER_EXTERNAL_URL || config.miniAppUrl;
+if (targetUrl && typeof targetUrl === 'string' && targetUrl.startsWith('http') && !targetUrl.includes('localhost')) {
+  const cleanPingUrl = `${targetUrl.replace(/\/$/, '')}/api/ping`;
+  console.log(`[Keep-Alive] Render uyg'otish xizmati ishga tushdi: ${cleanPingUrl}`);
+  setInterval(async () => {
+    try {
+      await fetch(cleanPingUrl);
+      console.log(`[Keep-Alive] Render uyg'oq saqlandi (${new Date().toLocaleTimeString()})`);
+    } catch (_) {}
+  }, 8 * 60 * 1000);
+}
 
 // 0. API: Foydalanuvchi balansi va holatini olish
 app.get('/api/user/:userId', (req, res) => {
@@ -48,6 +72,8 @@ app.get('/api/user/:userId', (req, res) => {
     presentationsCount: myPresentations.length,
     isAdmin: String(userId) === config.adminId,
     adminUsername: ADMIN_TELEGRAM_USERNAME,
+    channelBonusClaimed: userRecord.user.channelBonusClaimed || false,
+    channelUsername: config.channelUsername || 'akhrorov18',
     cardNumber: CARD_NUMBER,
     pricePerSlide: PRICE_PER_SLIDE,
   });
@@ -98,8 +124,12 @@ app.post('/api/generate', async (req, res) => {
       organization: organization || '',
     });
 
-    // PPTX fayl yasash
-    const { filePath, fileName, speakerNotesList } = await createPptx(presentationData);
+    // PPTX fayl yasash (viral brending slaydi bilan)
+    const { filePath, fileName, speakerNotesList } = await createPptx({
+      ...presentationData,
+      includeBranding: true,
+      botUsername: config.botUsername || 'ai_slide_bot',
+    });
     const downloadUrl = `/api/download/${fileName}`;
 
     // Taqdimotni bazaga saqlash
@@ -351,4 +381,103 @@ app.post('/api/feedback', async (req, res) => {
     res.status(500).json({ success: false, error: error.message || 'Xatolik yuz berdi' });
   }
 });
+
+// 9. API: Telegram kanal a'zoligini tekshirish va bonus koin berish
+app.post('/api/check-channel', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'userId kiritilishi shart' });
+    }
+
+    const userRecord = getOrCreateUser(userId);
+    const user = userRecord.user;
+
+    if (user.channelBonusClaimed) {
+      return res.json({
+        success: false,
+        alreadyClaimed: true,
+        message: 'Siz ushbu kanal bonusini allaqachon olgansiz!',
+      });
+    }
+
+    let isMember = false;
+    const channelRaw = config.channelUsername || 'akhrorov18';
+    const channelClean = channelRaw.replace('@', '');
+
+    try {
+      const member = await bot.api.getChatMember(`@${channelClean}`, Number(userId));
+      if (['creator', 'administrator', 'member', 'restricted'].includes(member.status)) {
+        isMember = true;
+      }
+    } catch (checkErr) {
+      console.warn('[Check Channel Error]:', checkErr.message);
+      // Agar bot kanalda admin bo'lmasa yoki kanal tekshiruvida xatolik bo'lsa, qulaylik uchun ruxsat beramiz
+      isMember = true;
+    }
+
+    if (!isMember) {
+      return res.json({
+        success: false,
+        message: `Iltimos, avval @${channelClean} kanalimizga a'zo bo'ling va so'ngra tekshirish tugmasini bosing!`,
+        channelUrl: `https://t.me/${channelClean}`,
+      });
+    }
+
+    const result = claimChannelBonus(userId, 2);
+    if (result.success) {
+      // Foydalanuvchiga Telegramda ham xabar yuborish
+      try {
+        await bot.api.sendMessage(
+          userId,
+          `🎁 *Tabriklaymiz!*\n\nKanalimizga a'zo bo'lganingiz uchun hisobingizga **+2 ta bepul taqdimot (koin)** qo'shildi! 🪙\n\nJoriy balansingiz: *${result.coins} ta* taqdimot.`,
+          { parse_mode: 'Markdown' }
+        );
+      } catch (_) {}
+
+      res.json({
+        success: true,
+        message: 'Ajoyib! Kanalimizga a\'zo bo\'lganingiz uchun hisobingizga +2 ta bepul koin berildi! 🪙',
+        newBalance: result.coins,
+      });
+    } else {
+      res.json({
+        success: false,
+        message: result.error || 'Bonusni berishda xatolik',
+      });
+    }
+  } catch (err) {
+    console.error('[Check Channel Route Error]', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 10. API: Mini App ichidan Telegram Stars to'lov linki yaratish
+app.post('/api/create-stars-invoice', async (req, res) => {
+  try {
+    const { userId, packageCoins, packageStars } = req.body;
+    if (!userId || !packageCoins || !packageStars) {
+      return res.status(400).json({ success: false, error: 'Parametrlar yetarli emas' });
+    }
+
+    const coinsNum = Number(packageCoins);
+    const starsNum = Number(packageStars);
+
+    const invoiceLink = await bot.api.createInvoiceLink(
+      `${coinsNum} ta Taqdimot Koini`,
+      `AI Slayd Bot uchun ${coinsNum} ta professional PowerPoint taqdimot yaratish imkoniyati.`,
+      JSON.stringify({ userId: String(userId), coins: coinsNum, stars: starsNum, time: Date.now() }),
+      "", // Telegram Stars (XTR) uchun provider_token bo'sh bo'ladi
+      "XTR",
+      [{ label: `${coinsNum} ta koin`, amount: starsNum }]
+    );
+
+    res.json({ success: true, invoiceLink });
+  } catch (err) {
+    console.error('[Create Stars Invoice Error]', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
 

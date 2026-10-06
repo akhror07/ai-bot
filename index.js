@@ -63,6 +63,7 @@ async function main() {
   // 3. Telegram Botni ishga tushirish
   try {
     const botInfo = await bot.api.getMe();
+    config.botUsername = botInfo.username;
     console.log(`🤖 Telegram bot: @${botInfo.username} (${botInfo.first_name})`);
 
     // Telegram Chat Menu Button sozlash

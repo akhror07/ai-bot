@@ -156,6 +156,7 @@ Men sun'iy intellekt yordamida **PowerPoint (.pptx)** taqdimotlarini tayyorlab b
 2️⃣ **Word (.docx) yoki PDF fayl yuboring** — AI konspekt asosida slayd yasaydi!
 3️⃣ **Har 3 ta do'stingizni taklif qiling** — cheksiz bepul taqdimotlar yutib oling!
 4️⃣ **Taqdimot bilan birga himoya uchun tayyor nutq (Speaker notes)** beriladi!
+5️⃣ **Kanalimizga a'zo bo'ling** — qo'shimcha +2 ta bepul koin oling!
 
 👉 *Boshlash uchun mavzuni yozing, ovozli xabar yuboring yoki quyidagi tugma orqali Mini App ni oching!*
   `;
@@ -223,6 +224,100 @@ bot.callbackQuery('action_pay', async (ctx) => {
   await showPaymentInfo(ctx);
 });
 
+bot.command('stars', async (ctx) => {
+  await sendStarsInvoiceMenu(ctx);
+});
+
+bot.callbackQuery('action_stars_menu', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await sendStarsInvoiceMenu(ctx);
+});
+
+async function sendStarsInvoiceMenu(ctx) {
+  const kb = new InlineKeyboard()
+    .text('⭐️ 1 ta koin (15 Stars)', 'buy_stars_1_15')
+    .text('⭐️ 3 ta koin (40 Stars)', 'buy_stars_3_40').row()
+    .text('🔥 5 ta koin (60 Stars)', 'buy_stars_5_60')
+    .text('💎 10 ta koin (100 Stars)', 'buy_stars_10_100').row()
+    .text('💳 Karta orqali to\'lash', 'action_pay');
+
+  const text = `
+⭐️ *Telegram Stars (Yulduzlar) orqali to'lov:*
+
+Karta ma'lumotlarini kiritmasdan, to'g'ridan-to'g'ri Telegram hisobingizdan 1 bosishda koin sotib oling!
+
+📦 *Stars tariflari:*
+• **1 ta taqdimot** — 15 ⭐️ Stars
+• **3 ta taqdimot** — 40 ⭐️ Stars
+• **5 ta taqdimot** — 60 ⭐️ Stars _(Aksiya)_
+• **10 ta taqdimot** — 100 ⭐️ Stars _(Eng arzon)_
+
+👇 *Kerakli paketni tanlang (darhol to'lov oynasi chiqadi):*
+  `;
+  await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: kb });
+}
+
+bot.callbackQuery(/^buy_stars_(\d+)_(\d+)$/, async (ctx) => {
+  const coins = Number(ctx.match[1]);
+  const stars = Number(ctx.match[2]);
+  await ctx.answerCallbackQuery();
+
+  await ctx.replyWithInvoice(
+    `${coins} ta Taqdimot Koini`,
+    `AI Slayd Bot orqali ${coins} ta professional PowerPoint taqdimot yaratish imkoniyati.`,
+    JSON.stringify({ userId: String(ctx.chat.id), coins, stars, time: Date.now() }),
+    'XTR', // Stars valyutasi
+    [{ label: `${coins} ta koin`, amount: stars }]
+  );
+});
+
+// Pre-checkout so'rovini qabul qilish (Telegram Stars)
+bot.on('pre_checkout_query', async (ctx) => {
+  try {
+    await ctx.answerPreCheckoutQuery(true);
+  } catch (err) {
+    console.error('[PreCheckout Error]', err);
+  }
+});
+
+// Muvaffaqiyatli to'lov (Telegram Stars orqali)
+bot.on('message:successful_payment', async (ctx) => {
+  try {
+    const sp = ctx.message.successful_payment;
+    let coins = 1;
+    let userId = String(ctx.chat.id);
+
+    try {
+      const payload = JSON.parse(sp.invoice_payload);
+      if (payload.coins) coins = Number(payload.coins);
+      if (payload.userId) userId = String(payload.userId);
+    } catch (_) {}
+
+    addCoins(userId, coins);
+    const user = getUser(userId);
+
+    const payment = createPayment(userId, sp.total_amount, coins, null, `stars_${sp.telegram_payment_charge_id}`);
+    payment.status = 'approved';
+
+    await ctx.reply(
+      `🎉 *To'lov muvaffaqiyatli qabul qilindi!*\n\n⭐️ *${sp.total_amount} Stars* to'landi.\n🪙 Hisobingizga: *+${coins} ta koin* qo'shildi!\n\nJoriy balansingiz: *${user?.coins || coins} ta* taqdimot. Tashakkur!`,
+      { parse_mode: 'Markdown' }
+    );
+
+    if (config.adminId && String(ctx.chat.id) !== String(config.adminId)) {
+      try {
+        await bot.api.sendMessage(
+          config.adminId,
+          `💰 *Yangi Telegram Stars to'lovi!*\n\n👤 *Foydalanuvchi:* ${ctx.from.first_name || ''} (@${ctx.from.username || 'yoq'})\n🆔 *ID:* \`${userId}\`\n⭐️ *Summa:* ${sp.total_amount} Stars\n🪙 *Koinlar:* +${coins} ta\n🧾 *Charge ID:* \`${sp.telegram_payment_charge_id}\``,
+          { parse_mode: 'Markdown' }
+        );
+      } catch (_) {}
+    }
+  } catch (err) {
+    console.error('[Successful Payment Error]', err);
+  }
+});
+
 async function showPaymentInfo(ctx) {
   const text = `
 💳 *Hisobni to'ldirish (Taqdimot sotib olish):*
@@ -230,9 +325,9 @@ async function showPaymentInfo(ctx) {
 1 ta to'liq taqdimot narxi: **5 000 so'm**
 
 📦 *Tariflar:*
-• **1 ta taqdimot** — 5 000 so'm
-• **5 ta taqdimot** — 20 000 so'm _(4 000 so'm/dona)_
-• **10 ta taqdimot** — 35 000 so'm _(3 500 so'm/dona)_
+• **1 ta taqdimot** — 5 000 so'm (yoki 15 ⭐️)
+• **5 ta taqdimot** — 20 000 so'm (yoki 60 ⭐️)
+• **10 ta taqdimot** — 35 000 so'm (yoki 100 ⭐️)
 
 🏦 *To'lov uchun karta raqami:*
 \`${CARD_NUMBER}\`
@@ -241,10 +336,13 @@ _(Humo / Uzcard)_
 📌 *To'lov tartibi:*
 1. Yuqoridagi karta raqamiga kerakli summani o'tkazing (Payme, Click, Uzum).
 2. To'lov cheki (screenshot yoki rasm)ni **to'g'ridan-to'g'ri ushbu chatga rasm qilib yuboring!**
-3. Chek tekshirilgach, hisobingizga darhol taqdimot imkoniyatlari (coin) qo'shiladi.
+3. Yoki pastdagi tugma orqali darhol **Telegram Stars (Yulduzlar)** bilan to'lang!
   `;
 
-  await ctx.reply(text, { parse_mode: 'Markdown' });
+  const kb = new InlineKeyboard()
+    .text('⭐️ Telegram Stars orqali to\'lash', 'action_stars_menu');
+
+  await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: kb });
 }
 
 // Chek rasmi yuborilganda (message:photo) - FIRIBGARLIKDAN 100% HIMOYA
@@ -311,17 +409,17 @@ Iltimos, kuting...`,
 });
 
 // Admin to'lovni tasdiqlaganda (Callback query)
-bot.callbackQuery(/^pay_ok_([^_]+)_(\d+)$/, async (ctx) => {
+bot.callbackQuery(/^pay_ok_(.+)_(.+)$/, async (ctx) => {
   if (String(ctx.from.id) !== String(config.adminId)) {
     return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
   }
 
   const paymentId = ctx.match[1];
-  const coinsAmount = parseInt(ctx.match[2], 10);
+  const coinsAmount = parseInt(ctx.match[2], 10) || 1;
   const updated = approvePayment(paymentId, coinsAmount);
 
   if (!updated) {
-    return ctx.answerCallbackQuery({ text: '⚠️ Bu to\'lov allaqachon ko\'rib chiqilgan!', show_alert: true });
+    return ctx.answerCallbackQuery({ text: '⚠️ Bu to\'lov allaqachon ko\'rib chiqilgan yoki topilmadi!', show_alert: true });
   }
 
   await ctx.answerCallbackQuery({ text: `✅ Tasdiqlandi! +${coinsAmount} coin berildi.` });
@@ -330,11 +428,15 @@ bot.callbackQuery(/^pay_ok_([^_]+)_(\d+)$/, async (ctx) => {
 
   // Admindagi xabarni yangilash (tugmalarni olib tashlash va tasdiq yozuvini qo'shish)
   try {
+    const prevCaption = ctx.callbackQuery.message?.caption || '💳 To\'lov cheki';
     await ctx.editMessageCaption({
-      caption: `${ctx.callbackQuery.message.caption}\n\n━━━━━━━━━━━━━━━━━━━━\n✅ *ADMIN TOMONIDAN TASDIQLANDI!*\n🎁 *Berilgan coin:* +${coinsAmount} ta\n🪙 *Yangi balansi:* ${targetUser?.coins || coinsAmount} ta`,
+      caption: `${prevCaption}\n\n━━━━━━━━━━━━━━━━━━━━\n✅ *ADMIN TOMONIDAN TASDIQLANDI!*\n🎁 *Berilgan coin:* +${coinsAmount} ta\n🪙 *Yangi balansi:* ${targetUser?.coins || coinsAmount} ta`,
       parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [] },
     });
-  } catch (_) {}
+  } catch (err) {
+    console.warn('[Edit Caption Failed]', err.message);
+  }
 
   // Foydalanuvchiga tantanali xabar yuborish
   try {
@@ -349,7 +451,7 @@ bot.callbackQuery(/^pay_ok_([^_]+)_(\d+)$/, async (ctx) => {
 });
 
 // Admin to'lovni rad etganda (Callback query)
-bot.callbackQuery(/^pay_no_([^_]+)$/, async (ctx) => {
+bot.callbackQuery(/^pay_no_(.+)$/, async (ctx) => {
   if (String(ctx.from.id) !== String(config.adminId)) {
     return ctx.answerCallbackQuery({ text: 'Faqat admin uchun!', show_alert: true });
   }
@@ -358,17 +460,21 @@ bot.callbackQuery(/^pay_no_([^_]+)$/, async (ctx) => {
   const updated = rejectPayment(paymentId);
 
   if (!updated) {
-    return ctx.answerCallbackQuery({ text: '⚠️ Bu to\'lov allaqachon ko\'rib chiqilgan!', show_alert: true });
+    return ctx.answerCallbackQuery({ text: '⚠️ Bu to\'lov allaqachon ko\'rib chiqilgan yoki topilmadi!', show_alert: true });
   }
 
   await ctx.answerCallbackQuery({ text: '❌ To\'lov rad etildi.' });
 
   try {
+    const prevCaption = ctx.callbackQuery.message?.caption || '💳 To\'lov cheki';
     await ctx.editMessageCaption({
-      caption: `${ctx.callbackQuery.message.caption}\n\n━━━━━━━━━━━━━━━━━━━━\n❌ *ADMIN TOMONIDAN RAD ETILDI* (Soxta yoki mablag' tushmagan)`,
+      caption: `${prevCaption}\n\n━━━━━━━━━━━━━━━━━━━━\n❌ *ADMIN TOMONIDAN RAD ETILDI* (Soxta yoki mablag' tushmagan)`,
       parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [] },
     });
-  } catch (_) {}
+  } catch (err) {
+    console.warn('[Edit Caption Failed]', err.message);
+  }
 
   try {
     await bot.api.sendMessage(

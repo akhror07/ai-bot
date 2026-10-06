@@ -6,7 +6,7 @@
   <title>AI Slayd Generatori</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261005_5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -208,10 +208,72 @@
 
         <!-- Natija ekrani (Result) -->
         <div id="resultBox" class="result-box hidden">
-          <div class="success-icon">🎉</div>
-          <h2 class="result-title" id="resultTitle">Taqdimot tayyor!</h2>
-          <p class="result-sub" id="resultSubtitle">PowerPoint (.pptx) formati</p>
+          <div class="result-header-badge">
+            <span class="success-icon">🎉</span>
+            <div>
+              <h2 class="result-title" id="resultTitle">Taqdimot tayyor!</h2>
+              <p class="result-sub" id="resultSubtitle">PowerPoint (.pptx) formati</p>
+            </div>
+          </div>
 
+          <!-- 1. SLAYDLARNI JONLI KO'RISH (CAROUSEL) -->
+          <div class="slide-preview-wrapper" id="slidePreviewWrapper">
+            <div class="preview-top-bar">
+              <span class="preview-badge-lbl">👁 Jonli Slayd Ko'rish</span>
+              <span class="preview-counter-badge" id="previewSlideCounter">1 / 8</span>
+            </div>
+
+            <div class="preview-slide-card" id="previewSlideCard">
+              <div class="preview-card-inner">
+                <div class="preview-slide-num" id="previewSlideNum">1-slayd</div>
+                <h3 class="preview-slide-title" id="previewSlideTitle">Slayd Sarlavhasi</h3>
+                <div class="preview-slide-bullets" id="previewSlideBullets">
+                  <!-- Nuqtalar -->
+                </div>
+                <div class="preview-slide-highlight hidden" id="previewSlideHighlight">
+                  <span class="hl-icon">💡</span>
+                  <span id="previewHighlightText">Xulosa</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Karusel Boshqaruvi -->
+            <div class="preview-controls-row">
+              <button type="button" class="preview-btn" id="btnPrevSlide">← Oldingi</button>
+              <div class="preview-dots-container" id="previewDotsContainer"></div>
+              <button type="button" class="preview-btn" id="btnNextSlide">Keyingi →</button>
+            </div>
+          </div>
+
+          <!-- 2. HIMOYA NUTQI (SPEAKER SPEECH) AKKORDEON -->
+          <div class="speech-accordion-box" id="speechAccordionBox">
+            <button type="button" class="speech-accordion-header" id="btnToggleSpeech">
+              <div class="speech-header-left">
+                <span class="speech-mic-icon">🎙</span>
+                <div class="speech-header-text">
+                  <span class="speech-title">Himoya Nutqi (Speaker speech)</span>
+                  <span class="speech-subtitle">Sahnada nima gapirish bo'yicha tayyor matn</span>
+                </div>
+              </div>
+              <span class="speech-arrow-icon" id="speechArrowIcon">▼</span>
+            </button>
+
+            <div class="speech-accordion-body hidden" id="speechAccordionBody">
+              <div class="speech-action-bar">
+                <button type="button" class="copy-speech-all-btn" id="btnCopyAllSpeech">
+                  📋 Butun nutqdan nusxa olish
+                </button>
+                <button type="button" class="download-speech-txt-btn" id="btnDownloadSpeechTxt">
+                  📄 Matn (.txt) yuklab olish
+                </button>
+              </div>
+              <div class="speech-slides-list" id="speechSlidesList">
+                <!-- Har bir slayd nutqi -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. HARAKAT TUGMALARI -->
           <div class="result-action-buttons">
             <a href="#" id="downloadBtn" class="primary-btn">⬇️ Yuklab olish (.pptx)</a>
             <button type="button" id="sendChatBtn" class="secondary-btn">📤 Telegram chatga yuborish</button>
@@ -261,37 +323,54 @@
         <div class="packages-section">
           <h3 class="section-subtitle">📦 Taqdimot paketini tanlang:</h3>
           <div class="package-cards-grid">
-            <div class="pkg-card" data-coins="1" data-amount="5000">
+            <div class="pkg-card" data-coins="1" data-amount="5000" data-stars="15">
               <span class="pkg-badge">Start</span>
               <span class="pkg-coins">1 ta koin</span>
               <span class="pkg-price">5 000 so'm</span>
+              <span class="pkg-stars-lbl">⭐️ 15 Stars</span>
             </div>
-            <div class="pkg-card" data-coins="3" data-amount="15000">
+            <div class="pkg-card" data-coins="3" data-amount="15000" data-stars="40">
               <span class="pkg-badge">Optimal</span>
               <span class="pkg-coins">3 ta koin</span>
               <span class="pkg-price">15 000 so'm</span>
+              <span class="pkg-stars-lbl">⭐️ 40 Stars</span>
             </div>
-            <div class="pkg-card active" data-coins="5" data-amount="20000">
+            <div class="pkg-card active" data-coins="5" data-amount="20000" data-stars="60">
               <span class="pkg-badge pop">Aksiya</span>
               <span class="pkg-coins">5 ta koin</span>
               <span class="pkg-price">20 000 so'm</span>
-              <span class="pkg-discount">-20% chegirma</span>
+              <span class="pkg-stars-lbl">⭐️ 60 Stars</span>
             </div>
-            <div class="pkg-card" data-coins="10" data-amount="35000">
+            <div class="pkg-card" data-coins="10" data-amount="35000" data-stars="100">
               <span class="pkg-badge hot">Eng arzon</span>
               <span class="pkg-coins">10 ta koin</span>
               <span class="pkg-price">35 000 so'm</span>
-              <span class="pkg-discount">3 500 so'm/dona</span>
+              <span class="pkg-stars-lbl">⭐️ 100 Stars</span>
             </div>
           </div>
         </div>
 
         <!-- 2. To'lov ilovalari orqali 1-bosishda o'tish -->
         <div class="pay-apps-section">
-          <h3 class="section-subtitle">📲 To'lov ilovasini tanlang:</h3>
-          <p class="pay-apps-note">Ilovani ochganda karta raqami va summa avtomatik joylanadi:</p>
+          <h3 class="section-subtitle">📲 To'lov usulini tanlang:</h3>
+          <p class="pay-apps-note">Telegram Stars bilan yoki milliy ilovalar orqali to'lang:</p>
 
           <div class="pay-buttons-list">
+            <!-- Telegram Stars (1-bosishda to'lash) -->
+            <button type="button" class="pay-app-btn stars-btn" id="btnPayStars">
+              <div class="app-btn-left">
+                <span class="app-icon">⭐️</span>
+                <div class="app-text">
+                  <div class="stars-title-row">
+                    <span class="app-title">Telegram Stars orqali xarid</span>
+                    <span class="stars-rec-badge">Tezkor</span>
+                  </div>
+                  <span class="app-desc" id="starsAmountText">60 ⭐️ Stars (5 ta koin)</span>
+                </div>
+              </div>
+              <span class="app-arrow">⚡️</span>
+            </button>
+
             <!-- Payme -->
             <button type="button" class="pay-app-btn payme-btn" id="btnPayPayme">
               <div class="app-btn-left">
@@ -392,6 +471,26 @@
             <button type="button" class="share-ref-btn" id="shareRefLinkBtn">📤 Do'stlarga ulashish</button>
           </div>
         </div>
+
+        <!-- 6. Telegram kanalga a'zo bo'lib +2 ta bepul koin olish -->
+        <div class="channel-bonus-card" id="channelBonusCard">
+          <div class="channel-bonus-header">
+            <span class="bonus-badge-pill">📢 Kanal Bonusi</span>
+            <span class="bonus-coins-pill">+2 ta koin</span>
+          </div>
+          <h3 class="channel-bonus-title">Rasmiy kanalimizga a'zo bo'ling!</h3>
+          <p class="channel-bonus-desc">Kanalimizga a'zo bo'ling va hisobingizga <b>+2 ta bepul taqdimot (koin)</b> sovg'asini oling!</p>
+
+          <div class="channel-bonus-actions">
+            <a href="https://t.me/ahroriAI" target="_blank" rel="noopener noreferrer" class="btn-channel-join" id="btnJoinChannelLink">
+              📢 Kanalga o'tish (@ahroriAI)
+            </a>
+            <button type="button" class="btn-channel-verify" id="btnVerifyChannel">
+              ✅ A'zolikni tekshirish
+            </button>
+          </div>
+          <p id="channelBonusStatus" class="channel-bonus-status hidden"></p>
+        </div>
       </section>
 
       <!-- ========================================== -->
@@ -414,24 +513,26 @@
           </div>
 
           <!-- ADMIN BILAN TO'G'RIDAN-TO'G'RI TELEGRAM ALOQA -->
-          <div class="admin-contact-banner">
-            <div class="admin-contact-left">
-              <div class="admin-contact-avatar">👨‍💻</div>
-              <div class="admin-contact-text">
-                <span class="admin-contact-lbl">Admin bilan to'g'ridan-to'g'ri aloqa:</span>
-                <div class="admin-username-row">
-                  <span class="admin-username-badge" id="adminUsernameBadge">@akhrorov18</span>
-                  <span class="status-online-dot"></span>
-                </div>
+          <div class="admin-contact-card">
+            <div class="admin-contact-header">
+              <div class="admin-avatar-wrap">
+                <div class="admin-contact-avatar">👨‍💻</div>
+                <span class="status-online-dot"></span>
               </div>
+              <div class="admin-contact-info">
+                <span class="admin-contact-title">Bot Asoschisi & Admin</span>
+                <span class="admin-contact-handle">@akhrorov18</span>
+              </div>
+              <span class="admin-status-badge">🟢 Aloqada</span>
             </div>
-            <div class="admin-contact-btns">
-              <button type="button" class="admin-btn-action btn-copy-username" id="btnCopyAdminUsername" title="Username nusxalash">
-                <span class="btn-copy-icon">📋</span>
-                <span id="copyBtnLabel">Nusxa</span>
+            <div class="admin-contact-actions">
+              <button type="button" class="admin-action-btn copy-btn" id="btnCopyAdminUsername">
+                <span class="btn-icon">📋</span>
+                <span id="copyBtnLabel">@akhrorov18 nusxalash</span>
               </button>
-              <a href="https://t.me/akhrorov18" target="_blank" rel="noopener noreferrer" class="admin-btn-action btn-open-telegram" id="btnOpenAdminTelegram">
-                <span>✈️ Yozish</span>
+              <a href="https://t.me/akhrorov18" target="_blank" rel="noopener noreferrer" class="admin-action-btn write-btn" id="btnOpenAdminTelegram">
+                <span class="btn-icon">✈️</span>
+                <span>Telegramda yozish</span>
               </a>
             </div>
           </div>
@@ -536,11 +637,13 @@
             <h3 class="modal-title" id="modalAppTitle">Payme ilovasi ochilmoqda</h3>
           </div>
           <div class="modal-body-content">
-            <p class="modal-text">To'lov ilovasiga o'tib karta raqamini avtomatik kiritishga ruxsat berasizmi?</p>
+            <div id="modalCopyBanner" class="modal-copy-banner">
+              <span>✅ Karta raqami xotiraga nusxalandi!</span>
+            </div>
             <div class="modal-info-box">
               <div class="info-row">
                 <span>💳 Karta:</span>
-                <b>9860 1601 4253 0080</b>
+                <b id="modalCardNumberDisplay">9860 1601 4253 0080</b>
               </div>
               <div class="info-row">
                 <span>👤 Qabul qiluvchi:</span>
@@ -555,11 +658,16 @@
                 <b id="modalAppCoins">5 ta koin</b>
               </div>
             </div>
-            <p class="modal-tip">💡 O'tkazmani bajargach, chekni ushbu xonada yuklang — koinlar darhol biriktiriladi!</p>
+            <div class="modal-quick-copy-row">
+              <button type="button" class="modal-quick-copy-btn" id="modalCopyCardAgainBtn">
+                📋 Karta raqamini qayta nusxalash
+              </button>
+            </div>
+            <p class="modal-tip">💡 Ilova ochilgach, kartaga o'tkazish joyiga nusxalangan raqamni qo'ying (Paste). To'lovdan so'ng chekni yuklang!</p>
           </div>
           <div class="modal-actions-row">
             <button type="button" class="modal-cancel-btn" id="modalCancelBtn">Bekor qilish</button>
-            <button type="button" class="modal-confirm-btn" id="modalConfirmBtn">Ha, ochilsin →</button>
+            <button type="button" class="modal-confirm-btn" id="modalConfirmBtn">Ilovani ochish →</button>
           </div>
         </div>
       </div>
@@ -597,6 +705,6 @@
 
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20261005_5"></script>
 </body>
 </html>

@@ -118,6 +118,7 @@ export function getOrCreateUser(userId, info = {}, referrerId = null) {
     referrerId: null,
     referralsCount: 0,
     referralProgress: 0, // Har 3 taga yetganda 1 coin beriladi
+    channelBonusClaimed: false, // Telegram kanalga a'zo bo'lganlik bonusi
     createdAt: new Date().toISOString(),
     lastActive: new Date().toISOString(),
   };
@@ -188,6 +189,20 @@ export function giveCoins(userId, amount) {
   return addCoins(userId, amount);
 }
 
+export function claimChannelBonus(userId, bonusAmount = 2) {
+  const idStr = String(userId);
+  const user = users.get(idStr);
+  if (!user) return { success: false, error: 'Foydalanuvchi topilmadi' };
+  if (user.channelBonusClaimed) {
+    return { success: false, error: 'Siz allaqachon kanal uchun bonus koinlarni olgansiz!' };
+  }
+
+  user.channelBonusClaimed = true;
+  user.coins = (user.coins || 0) + bonusAmount;
+  saveUsers();
+  return { success: true, coins: user.coins, bonusAmount };
+}
+
 // ================================================================
 // TAQDIMOTLAR TARIXI VA HISOBOTLAR (ADMIN VA SLAYDLARIM)
 // ================================================================
@@ -248,7 +263,7 @@ export function hasPendingPayment(userId) {
 
 export function createPayment(userId, amount, coins, receiptFileId = null, fileUniqueId = null) {
   const payment = {
-    id: `pay_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+    id: `pay${Date.now()}${Math.floor(Math.random() * 1000)}`,
     userId: String(userId),
     amount,
     coins,
