@@ -536,91 +536,145 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       {
         layout: 'split_hero',
         title: `${topic}: Суть и Стратегические Цели`,
-        sub: 'Концептуальные основы и приоритетные задачи',
+        sub: 'Концептуальные основы, теоретический базис и приоритетные задачи',
         photo: `${enKeywords} concept analysis professional`,
         points: [
-          { heading: 'Актуальность и важность', description: `Новейшие подходы и современные системные практики по направлению "${topic}".` },
-          { heading: 'Стратегическая цель', description: 'Принципы максимально эффективного использования имеющихся возможностей.' },
-          { heading: 'Ожидаемый результат', description: 'Многократное повышение скорости процессов и общей результативности.' }
+          {
+            heading: 'Актуальность и системная трансформация',
+            description: `Современные динамичные условия требуют глубокого переосмысления устоявшихся подходов по направлению "${topic}". Внедрение передовых стандартов повышает общую результативность на 35-50% и гарантирует устойчивость к внешним факторам.`
+          },
+          {
+            heading: 'Стратегический вектор и целеполагание',
+            description: 'Построение сбалансированной модели развития позволяет задействовать скрытый внутренний потенциал. Рациональное планирование исключает неоправданные риски и формирует надежный фундамент для долгосрочного прогресса.'
+          },
+          {
+            heading: 'Ожидаемый экономический и качественный эффект',
+            description: 'Системная модернизация процессов обеспечивает кратное сокращение операционных задержек. В результате достигается качественно новый уровень надежности и масштабируемости ключевых процессов.'
+          }
         ],
-        highlight: 'Правильно заложенный фундамент — залог успешного развития и долгосрочных побед.'
+        highlight: 'Правильно заложенный системный фундамент — ключевой залог успешного долгосрочного развития.'
       },
       {
         layout: 'comparison',
         title: 'Сравнительный Анализ и Подходы',
-        sub: 'Сопоставление традиционных методов и современных решений',
+        sub: 'Сопоставление традиционных методов и современных инновационных решений',
         photo: `${enKeywords} research comparison analytics`,
         leftHeading: 'Традиционный подход',
         rightHeading: 'Инновационное решение',
         points: [
-          { heading: 'Затраты ресурсов', description: 'Устаревшие методы требуют больше времени и несут риски ошибок.' },
-          { heading: 'Современная оптимизация', description: 'Новые технологии ускоряют процессы на 70% и гарантируют стабильность.' }
+          {
+            heading: 'Затраты времени и ресурсов',
+            description: 'Устаревшие консервативные методы требуют больших трудозатрат, страдают от фрагментарности данных и несут повышенный риск операционных ошибок.'
+          },
+          {
+            heading: 'Современная оптимизация процессов',
+            description: 'Передовые технологии ускоряют выполнение ключевых задач более чем на 70%, обеспечивая автоматический контроль точности и абсолютную прозрачность.'
+          }
         ],
-        highlight: 'Переход на передовые стандарты кратно сокращает издержки и исключает риски.'
+        highlight: 'Переход на передовые стандарты кратно сокращает издержки и исключает вероятность системных сбоев.'
       },
       {
         layout: 'kpi_metrics',
         title: 'Ключевые Показатели и Результаты',
-        sub: 'Количественные индикаторы, динамика роста и статистика',
+        sub: 'Количественные индикаторы, динамика роста и отраслевая статистика',
         photo: `${enKeywords} data chart growth statistics`,
         metrics: [
-          { val: '+85%', label: 'Рост эффективности', desc: 'Прирост за счет оптимизации процессов' },
-          { val: '3.5x', label: 'Скорость процессов', desc: 'Ускорение использования ключевых ресурсов' },
-          { val: 'TOP 1', label: 'Лидирующая позиция', desc: 'Ведущие показатели по международным стандартам' }
+          { val: '+85%', label: 'Рост эффективности', desc: 'Прирост производительности за счет комплексной оптимизации процессов' },
+          { val: '3.5x', label: 'Скорость процессов', desc: 'Многократное ускорение цикла использования ключевых ресурсов' },
+          { val: 'TOP 1', label: 'Лидирующая позиция', desc: 'Высший стандарт качества и надежности в профессиональной среде' }
         ],
         points: [
-          { heading: 'Отраслевые показатели', description: 'Стабильный ежегодный рост демонстрирует высокую динамику развития.' }
+          {
+            heading: 'Отраслевые ориентиры и динамика',
+            description: 'Стабильные количественные показатели наглядно демонстрируют высокую эффективность выбранной траектории развития. Измеримые метрики подтверждают правильность инвестиций и системных изменений.'
+          }
         ],
-        highlight: 'Фактические данные и объективные цифры подтверждают точность выбранного курса.'
+        highlight: 'Фактические эмпирические данные и объективные цифры подтверждают точность стратегического курса.'
       },
       {
         layout: 'process_timeline',
         title: 'Поэтапная Дорожная Карта',
-        sub: 'Цепочка действий: от планирования до измеримого результата',
+        sub: 'Цепочка последовательных действий: от планирования до измеримого результата',
         photo: `${enKeywords} steps process roadmap development`,
         points: [
-          { heading: 'Этап 1: Анализ и Диагностика', description: 'Комплексная оценка текущего состояния и выявление потребностей.' },
-          { heading: 'Этап 2: Практическое Внедрение', description: 'Интеграция проверенных инструментов и передовых методик.' },
-          { heading: 'Этап 3: Масштабирование', description: 'Закрепление достигнутых результатов и обеспечение устойчивого роста.' }
+          {
+            heading: 'Этап 1: Анализ и Комплексная Диагностика',
+            description: 'Глубокий аудит текущего состояния, аудит потребностей и формирование детального технического задания с оценкой возможных рисков.'
+          },
+          {
+            heading: 'Этап 2: Практическая Интеграция',
+            description: 'Поэтапное внедрение передовых инструментов, обучение ключевых специалистов и пилотное тестирование в реальных условиях.'
+          },
+          {
+            heading: 'Этап 3: Масштабирование и Контроль',
+            description: 'Распространение проверенной методики на всю систему, непрерывный мониторинг KPI и адаптация под новые вызовы.'
+          }
         ],
-        highlight: 'Четкий план и последовательные действия являются основой любого успеха.'
+        highlight: 'Четкая дорожная карта и последовательная реализация являются гарантией достижения запланированного результата.'
       },
       {
         layout: 'matrix_grid',
         title: 'Ключевые Столпы Системы',
-        sub: 'Четыре ключевых драйвера успешного развития',
+        sub: 'Четыре ключевых системных драйвера успешного устойчивого развития',
         photo: `${enKeywords} system structure innovation modern`,
         points: [
-          { heading: 'Инфраструктура и Технологии', description: 'Надежная технологическая база и современные инструменты.' },
-          { heading: 'Человеческий Капитал', description: 'Высококвалифицированные специалисты и сильная экспертиза.' },
-          { heading: 'Управление и Стандарты', description: 'Прозрачные правила и соблюдение международных стандартов.' },
-          { heading: 'Инновационный Поток', description: 'Постоянный поиск новых решений и внедрение свежих идей.' }
+          {
+            heading: 'Инфраструктура и Технологии',
+            description: 'Создание отказоустойчивой материально-технической базы и использование современного надежного инструментария.'
+          },
+          {
+            heading: 'Человеческий Капитал',
+            description: 'Привлечение специалистов высокой квалификации, непрерывное развитие компетенций и формирование культуры лидерства.'
+          },
+          {
+            heading: 'Управление и Стандарты',
+            description: 'Внедрение прозрачных регламентов работы и строгое следование международным отраслевым стандартам качества.'
+          },
+          {
+            heading: 'Инновационный Поток',
+            description: 'Постоянный поиск перспективных идей, исследовательская деятельность и быстрое прототипирование решений.'
+          }
         ],
-        highlight: 'Синергия всех четырех компонентов гарантирует абсолютную устойчивость всей системы.'
+        highlight: 'Синергия всех четырех фундаментальных опор гарантирует абсолютную устойчивость всей системы.'
       },
       {
         layout: 'spotlight',
         title: 'Практические Кейсы и Опыт',
-        sub: 'Анализ успешной практики и реальных достижений',
+        sub: 'Анализ успешной прикладной практики и реальных отраслевых достижений',
         photo: `${enKeywords} real practice experience case study`,
-        spotlightText: `Лучшие практики в области "${topic}" достигаются на стыке глубокой теории и проверенного опыта.`,
+        spotlightText: `В направлении "${topic}" наибольший прорыв достигается на стыке глубокой академической теории и проверенного практического опыта.`,
         points: [
-          { heading: 'Кейс 1: Быстрая адаптация', description: 'Уже на начальном этапе зафиксирован прирост на 40% выше ожидаемого.' },
-          { heading: 'Кейс 2: Устойчивый рост', description: 'Все риски были своевременно нивелированы, динамика полностью сохранена.' }
+          {
+            heading: 'Кейс 1: Быстрая адаптация и результат',
+            description: 'Уже в рамках первого пилотного периода зафиксирован прирост ключевых показателей на 40% выше первоначального прогноза.'
+          },
+          {
+            heading: 'Кейс 2: Долгосрочная устойчивость',
+            description: 'Все потенциальные риски были своевременно нивелированы, что позволило сохранить восходящую динамику роста.'
+          }
         ],
-        highlight: 'Практический опыт ценнее любой отвлеченной теории.'
+        highlight: 'Практический проверенный опыт ценнее любых абстрактных теоретических гипотез.'
       },
       {
         layout: 'cinematic',
         title: 'Перспективы и Тренды Будущего',
-        sub: 'Новые возможности, глобальные ориентиры и цифровая трансформация',
+        sub: 'Новые горизонты, глобальные ориентиры развития и цифровая трансформация',
         photo: `${enKeywords} future perspective technology vision`,
         points: [
-          { heading: 'Глобальная интеграция', description: 'Активное внедрение международного опыта и мировых практик.' },
-          { heading: 'Цифровая трансформация', description: 'Использование алгоритмов искусственного интеллекта и автоматизации.' },
-          { heading: 'Непрерывное лидерство', description: 'Укрепление завоеванных позиций и формирование новых отраслевых стандартов.' }
+          {
+            heading: 'Глобальная интеграция и партнерство',
+            description: 'Активный обмен передовым международным опытом и интеграция в ведущие мировые профессиональные сообщества.'
+          },
+          {
+            heading: 'Цифровая трансформация',
+            description: 'Широкое применение интеллектуальных алгоритмов обработки данных и автоматизация рутинных операций.'
+          },
+          {
+            heading: 'Укрепление долгосрочного лидерства',
+            description: 'Формирование новых стандартов в своей отрасли и непрерывное закрепление конкурентных преимуществ.'
+          }
         ],
-        highlight: 'Будущее создается сегодня смелыми и дальновидными решениями.'
+        highlight: 'Будущее создается сегодня смелыми, дальновидными и научно обоснованными решениями.'
       }
     ];
   }
@@ -629,92 +683,146 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
     return [
       {
         layout: 'split_hero',
-        title: `${topic}: Core Concept & Objectives`,
-        sub: 'Conceptual framework and primary strategic goals',
+        title: `${topic}: Core Concept & Strategic Imperatives`,
+        sub: 'Conceptual foundation, theoretical basis, and priority objectives',
         photo: `${enKeywords} concept analysis professional`,
         points: [
-          { heading: 'Relevance & Significance', description: `Cutting-edge approaches and systematic practices in "${topic}".` },
-          { heading: 'Strategic Vision', description: 'Principles of maximizing high-impact capabilities and potential.' },
-          { heading: 'Expected Impact', description: 'Substantial acceleration of workflow speed and overall performance.' }
+          {
+            heading: 'Strategic Relevance & Systemic Shift',
+            description: `Dynamic environmental shifts demand a thorough re-evaluation of established practices regarding "${topic}". Adopting modern benchmarks elevates operational performance by 35-50% while guaranteeing structural resilience against disruption.`
+          },
+          {
+            heading: 'Long-term Strategic Vision',
+            description: 'Formulating a balanced operational architecture enables organizations to activate dormant capabilities. Disciplined planning mitigates vulnerabilities and constructs an enduring springboard for scalable expansion.'
+          },
+          {
+            heading: 'Measurable Value Creation',
+            description: 'Modernizing core processes dramatically reduces friction across operational channels. As a result, teams achieve superior execution consistency and institutional agility.'
+          }
         ],
-        highlight: 'A strong foundational framework is the key to scalable long-term achievement.'
+        highlight: 'A sound structural foundation is the essential cornerstone of enduring long-term competitive advantage.'
       },
       {
         layout: 'comparison',
-        title: 'Comparative Analysis & Methodology',
-        sub: 'Contrasting conventional methods with modern innovative practices',
+        title: 'Comparative Methodology & Paradigms',
+        sub: 'Contrasting legacy operational models with modern innovative breakthroughs',
         photo: `${enKeywords} research comparison analytics`,
-        leftHeading: 'Conventional Methods',
-        rightHeading: 'Modern Innovation',
+        leftHeading: 'Conventional Paradigm',
+        rightHeading: 'Innovative Solution',
         points: [
-          { heading: 'Resource Consumption', description: 'Outdated practices demand more manual effort and carry higher error rates.' },
-          { heading: 'Optimized Efficiency', description: 'Modern solutions accelerate core operations by up to 70% with high reliability.' }
+          {
+            heading: 'Resource Drain & Manual Overhead',
+            description: 'Legacy workflows carry heavy manual friction, suffer from siloed information, and present unacceptably high operational error rates.'
+          },
+          {
+            heading: 'Modern Systematic Optimization',
+            description: 'Modern architectures accelerate turnaround cycles by over 70%, embedding automated precision checks and end-to-end accountability.'
+          }
         ],
-        highlight: 'Adopting modern paradigms significantly reduces friction and maximizes output.'
+        highlight: 'Migrating to advanced operational standards substantially reduces overhead while eliminating systemic failures.'
       },
       {
         layout: 'kpi_metrics',
-        title: 'Key Metrics & Measurable Impact',
-        sub: 'Quantitative indicators, benchmark growth, and core performance stats',
+        title: 'Key Benchmarks & Measurable Impact',
+        sub: 'Quantitative performance indicators, market benchmarks, and growth trajectory',
         photo: `${enKeywords} data chart growth statistics`,
         metrics: [
-          { val: '+85%', label: 'Efficiency Surge', desc: 'Performance boost delivered through systematic workflow optimization' },
-          { val: '3.5x', label: 'Execution Velocity', desc: 'Significant enhancement in resource turnaround times' },
-          { val: 'TOP 1', label: 'Industry Benchmark', desc: 'Leading position conforming to international quality standards' }
+          { val: '+85%', label: 'Efficiency Gain', desc: 'Substantial output surge driven by end-to-end workflow optimization' },
+          { val: '3.5x', label: 'Execution Velocity', desc: 'Turnaround acceleration across key critical operational resources' },
+          { val: 'TOP 1', label: 'Benchmark Status', desc: 'Highest standard of excellence and reliability across modern benchmarks' }
         ],
         points: [
-          { heading: 'Market Benchmarks', description: 'Steady continuous growth proves strong structural momentum.' }
+          {
+            heading: 'Empirical Metrics & Industry Standing',
+            description: 'Rigorous quantitative indicators confirm the robust momentum of the strategic roadmap. Measurable metrics validate the underlying investment and architectural transformation.'
+          }
         ],
-        highlight: 'Clear empirical data and measurable metrics demonstrate strategic excellence.'
+        highlight: 'Transparent empirical evidence and concrete data confirm the accuracy of our strategic trajectory.'
       },
       {
         layout: 'process_timeline',
-        title: 'Implementation Roadmap',
-        sub: 'A cohesive action plan from initial strategy to verified outcomes',
+        title: 'Comprehensive Implementation Roadmap',
+        sub: 'A disciplined execution sequence from discovery to verified outcomes',
         photo: `${enKeywords} steps process roadmap development`,
         points: [
-          { heading: 'Phase 1: Discovery & Assessment', description: 'Thorough evaluation of the baseline status and strategic requirements.' },
-          { heading: 'Phase 2: Execution & Deployment', description: 'Seamless integration of validated tools and best-in-class workflows.' },
-          { heading: 'Phase 3: Scaling & Optimization', description: 'Continuous refinement ensuring long-term resilience and growth.' }
+          {
+            heading: 'Phase 1: Discovery & Comprehensive Diagnosis',
+            description: 'Rigorous baseline auditing, stakeholder requirement alignment, and thorough risk-impact assessment.'
+          },
+          {
+            heading: 'Phase 2: Phased Execution & Integration',
+            description: 'Staged deployment of validated toolchains, specialized talent upskilling, and controlled pilot validation.'
+          },
+          {
+            heading: 'Phase 3: Systemic Scaling & Governance',
+            description: 'Enterprise-wide rollout of verified methodologies, ongoing KPI monitoring, and iterative performance refinement.'
+          }
         ],
-        highlight: 'Disciplined execution of a well-defined plan ensures outstanding results.'
+        highlight: 'A structured roadmap and disciplined milestone execution guarantee outstanding strategic results.'
       },
       {
         layout: 'matrix_grid',
-        title: 'Core Pillars & Architecture',
-        sub: 'The four structural drivers powering sustainable success',
+        title: 'Core Pillars of the Operational System',
+        sub: 'The four structural drivers powering resilient organizational success',
         photo: `${enKeywords} system structure innovation modern`,
         points: [
-          { heading: 'Infrastructure & Tools', description: 'Resilient technical foundation equipped with modern capabilities.' },
-          { heading: 'Human Expertise', description: 'Talented individuals with deep functional knowledge and execution skills.' },
-          { heading: 'Governance & Standards', description: 'Transparent workflows built upon globally proven benchmarks.' },
-          { heading: 'Continuous Innovation', description: 'Proactive experimentation and integration of novel ideas.' }
+          {
+            heading: 'Infrastructure & Tooling',
+            description: 'Engineering an ultra-reliable technical foundation equipped with modern, resilient analytical instruments.'
+          },
+          {
+            heading: 'Human Expertise & Talent',
+            description: 'Attracting high-caliber specialists, fostering continuous learning, and nurturing an empowering culture of leadership.'
+          },
+          {
+            heading: 'Governance & Standards',
+            description: 'Establishing transparent operating protocols aligned with internationally validated benchmarks and regulatory standards.'
+          },
+          {
+            heading: 'Continuous Innovation Pipeline',
+            description: 'Cultivating proactive research, rapid prototyping capabilities, and systematic integration of emerging solutions.'
+          }
         ],
-        highlight: 'The harmony between all core pillars provides unmatched organizational strength.'
+        highlight: 'The synergy of all four structural pillars provides unmatched organizational durability and stability.'
       },
       {
         layout: 'spotlight',
-        title: 'Case Studies & Real-World Validation',
-        sub: 'Practical observations and verified execution breakthroughs',
+        title: 'Empirical Case Studies & Validated Insights',
+        sub: 'Analysis of real-world deployments and verified breakthrough outcomes',
         photo: `${enKeywords} real practice experience case study`,
-        spotlightText: `In the field of "${topic}", the greatest breakthroughs occur where solid theory meets validated execution.`,
+        spotlightText: `In the domain of "${topic}", the greatest breakthroughs emerge precisely where rigorous academic theory converges with proven real-world execution.`,
         points: [
-          { heading: 'Case 1: Rapid Adaptation', description: 'Delivered 40% higher efficiency than original targets within early milestones.' },
-          { heading: 'Case 2: Sustainable Expansion', description: 'Effectively mitigated potential risks while maintaining upward growth.' }
+          {
+            heading: 'Case Study 1: Rapid Adoption & Early Impact',
+            description: 'The initial rollout milestone demonstrated a 40% performance gain exceeding conservative baseline projections.'
+          },
+          {
+            heading: 'Case Study 2: Long-Term Operational Durability',
+            description: 'Systemic vulnerabilities were proactively mitigated, safeguarding steady compounding growth.'
+          }
         ],
-        highlight: 'Empirical practice provides the most reliable foundation for durable innovation.'
+        highlight: 'Validated empirical practice provides far greater value and security than ungrounded theoretical assumptions.'
       },
       {
         layout: 'cinematic',
-        title: 'Future Outlook & Emerging Trends',
-        sub: 'Upcoming opportunities, industry shifts, and digital transformation',
+        title: 'Future Horizons & Strategic Frontiers',
+        sub: 'Emerging opportunities, global industry trajectories, and digital evolution',
         photo: `${enKeywords} future perspective technology vision`,
         points: [
-          { heading: 'Global Synergy', description: 'Active alignment with international standards and progressive networks.' },
-          { heading: 'Digital Evolution', description: 'Leveraging advanced automation and intelligent AI-driven systems.' },
-          { heading: 'Market Leadership', description: 'Cementing competitive advantages to drive future industry standards.' }
+          {
+            heading: 'Global Synergy & Ecosystem Networks',
+            description: 'Active cross-border collaboration and strategic integration with leading international professional networks.'
+          },
+          {
+            heading: 'Digital Transformation & Automation',
+            description: 'Deep integration of intelligent data-driven algorithms to streamline complex workflows and accelerate decision-making.'
+          },
+          {
+            heading: 'Sustained Sector Leadership',
+            description: 'Setting progressive benchmarks and institutionalizing durable competitive advantages across the landscape.'
+          }
         ],
-        highlight: 'The future belongs to proactive leaders making decisive, forward-thinking moves today.'
+        highlight: 'The future is actively forged today through courageous, visionary, and data-backed decisions.'
       }
     ];
   }
@@ -724,96 +832,295 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       {
         layout: 'split_hero',
         title: `${topic}: Моҳият ва Ҳадафҳои Стратегӣ`,
-        sub: 'Асосҳои консептуалӣ ва вазифаҳои асосӣ',
+        sub: 'Асосҳои консептуалӣ, заминаи назариявӣ ва вазифаҳои афзалиятнок',
         photo: `${enKeywords} concept analysis professional`,
         points: [
-          { heading: 'Аҳамият ва мубрамият', description: `Равишҳои навтарин ва таҷрибаҳои муосир дар самти "${topic}".` },
-          { heading: 'Ҳадафи стратегӣ', description: 'Усулҳои истифодаи беҳтарини имкониятҳои мавҷуда.' },
-          { heading: 'Самаранокии чашмдошт', description: 'Баланд бардоштани суръати равандҳо ва натиҷабахшии умумӣ.' }
+          {
+            heading: 'Аҳамият ва таҳаввулоти низомманд',
+            description: `Шароити муосир таҷдиди назари амиқи усулҳои пешинаро дар самти "${topic}" тақозо мекунад. Татбиқи стандартҳои пешрафта самаранокиро 35-50% боло бурда, устувориро дар баробари омилҳои беруна кафолат медиҳад.`
+          },
+          {
+            heading: 'Самти стратегӣ ва ҳадафгузорӣ',
+            description: 'Бунёди модели мутавозини рушд имкон медиҳад, ки тамоми иқтидори дохилӣ ба кор андохта шавад. Банақшагирии дақиқ хавфҳои идоравиро бартараф сохта, пояи мустаҳками пешравиро мегузорад.'
+          },
+          {
+            heading: 'Самаранокии чашмдошти иқтисодӣ ва сифатӣ',
+            description: 'Таҷдиди низомманди равандҳо суръати иҷрои вазифаҳоро ба таври назаррас меафзояд. Дар натиҷа сатҳи сифат ва эътимоднокии тамоми сохтор боло меравад.'
+          }
         ],
-        highlight: 'Пойдевори дуруст гузошташуда кафили тамоми комёбиҳо мебошад.'
+        highlight: 'Пойдевори дурусти назариявӣ кафили асосии комёбиҳои дарозмуддат ва устувор мебошад.'
       },
       {
         layout: 'comparison',
         title: 'Таҳлили Муқоисавӣ ва Равишҳо',
-        sub: 'Муқоисаи усулҳои анъанавӣ бо роҳҳои ҳалли инноватсионӣ',
+        sub: 'Муқоисаи усулҳои анъанавӣ бо роҳҳои ҳалли инноватсионӣ ва муосир',
         photo: `${enKeywords} research comparison analytics`,
         leftHeading: 'Усули анъанавӣ',
         rightHeading: 'Роҳи ҳалли инноватсионӣ',
         points: [
-          { heading: 'Сарфи захираҳо', description: 'Усулҳои кӯҳна вақти зиёд ва хавфи баланди хатогиро талаб мекарданд.' },
-          { heading: 'Оптимизатсияи муосир', description: 'Технологияҳои нав равандҳоро 70% тезонида, устувориро таъмин мекунанд.' }
+          {
+            heading: 'Сарфи зиёди вақт ва захираҳо',
+            description: 'Усулҳои кӯҳна меҳнати зиёди дастиро талаб мекарданд ва хавфи хатогиҳои инсониро хеле зиёд менамуданд.'
+          },
+          {
+            heading: 'Оптимизатсияи муосири равандҳо',
+            description: 'Технологияҳои пешқадам суръати иҷрои вазифаҳоро беш аз 70% тезонида, шаффофияти комил ва назорати сифатро фароҳам меоранд.'
+          }
         ],
-        highlight: 'Гузариш ба усулҳои муосир хароҷотро якбора кам карда, сифатро меафзояд.'
+        highlight: 'Гузариш ба стандартҳои муосир хароҷотро якбора кам карда, хатогиҳои эҳтимолиро пешгирӣ мекунад.'
       },
       {
         layout: 'kpi_metrics',
         title: 'Нишондиҳандаҳои Асосӣ ва Натиҷаҳо',
-        sub: 'Нишондиҳандаҳои миқдорӣ, суръати рушд ва омор',
+        sub: 'Нишондиҳандаҳои миқдорӣ, суръати рушд ва омори соҳавӣ',
         photo: `${enKeywords} data chart growth statistics`,
         metrics: [
-          { val: '+85%', label: 'Афзоиши самаранокӣ', desc: 'Рушди бадастомада аз оптимизатсияи равандҳо' },
-          { val: '3.5x', label: 'Суръат ва маҳсулнокӣ', desc: 'Тезонидани истифодаи захираҳо' },
-          { val: 'TOP 1', label: 'Ҷойи аввал дар соҳа', desc: 'Нишондиҳандаи пешсаф аз рӯи стандартҳо' }
+          { val: '+85%', label: 'Афзоиши самаранокӣ', desc: 'Рушди маҳсулнокӣ аз ҳисоби оптимизатсияи пурраи равандҳо' },
+          { val: '3.5x', label: 'Суръати амалиёт', desc: 'Тезонидани давраи истифодаи захираҳои калидӣ' },
+          { val: 'TOP 1', label: 'Ҷойи аввал дар соҳа', desc: 'Баландтарин нишондиҳандаи сифат аз рӯи меъёрҳо' }
         ],
         points: [
-          { heading: 'Нишондиҳандаи соҳа', description: 'Рушди устувори солона динамикаи баландро нишон медиҳад.' }
+          {
+            heading: 'Нишондиҳандаҳои соҳавӣ ва динамика',
+            description: 'Омори дақиқи миқдорӣ дурустии самти интихобшударо ба таври равшан нишон медиҳад. Нишондиҳандаҳои ченшаванда самаранокии тағйироти воридшударо собит месозанд.'
+          }
         ],
-        highlight: 'Далелҳои оморӣ ва рақамҳои дақиқ дурустии стратегияро исбот мекунанд.'
+        highlight: 'Далелҳои оморӣ ва рақамҳои воқеӣ дурустии қарорҳои қабулшударо тасдиқ мекунанд.'
       },
       {
         layout: 'process_timeline',
         title: 'Татбиқи Зина ба Зинаи Нақша',
-        sub: 'Занҷири амалҳо: аз тарҳрезӣ то ба даст овардани натиҷа',
+        sub: 'Занҷири амалҳои пайдарпай: аз тарҳрезӣ то ба даст овардани натиҷаи амалӣ',
         photo: `${enKeywords} steps process roadmap development`,
         points: [
-          { heading: 'Зинаи 1: Ташхис ва Таҳлил', description: 'Омӯзиши ҳамаҷонибаи вазъи мавҷуда ва муайян кардани ниёзҳо.' },
-          { heading: 'Зинаи 2: Татбиқи Амалӣ', description: 'Истифодаи воситаҳои озмудашуда ва усулҳои пешқадам.' },
-          { heading: 'Зинаи 3: Рушд ва Мониторинг', description: 'Баҳодиҳии натиҷаҳо ва таъмини рушди устувор.' }
+          {
+            heading: 'Зинаи 1: Ташхис ва Таҳлили Ҳамаҷониба',
+            description: 'Омӯзиши амиқи вазъи мавҷуда, муайян кардани ниёзҳо ва таҳияи нақшаи муфассали корӣ бо баҳодиҳии хатарҳо.'
+          },
+          {
+            heading: 'Зинаи 2: Татбиқи Амалии Усулҳо',
+            description: 'Ҷорисозии зина ба зинаи воситаҳои озмудашуда, омӯзонидани мутахассисон ва санҷиши аввалия дар амал.'
+          },
+          {
+            heading: 'Зинаи 3: Густариш ва Мониторинг',
+            description: 'Фарогирии тамоми низом бо усулҳои нав, назорати доимии сифат ва мутобиқсозӣ ба талаботи замон.'
+          }
         ],
-        highlight: 'Қадамҳои пайгирона ва нақшаи дақиқ асоси комёбӣ мебошанд.'
+        highlight: 'Нақшаи дақиқ ва амалҳои пайгирона кафили боэътимоди расидан ба мақсад мебошанд.'
       },
       {
         layout: 'matrix_grid',
         title: 'Сутунҳои Асосии Низом',
-        sub: 'Чор омили асосии пешбарандаи низом',
+        sub: 'Чор омили калидии пешбарандаи рушди устувор ва дарозмуддат',
         photo: `${enKeywords} system structure innovation modern`,
         points: [
-          { heading: 'Инфрасохтор ва Технология', description: 'Пойдевори боэътимод ва асбобҳои муосири корӣ.' },
-          { heading: 'Сармояи Инсонӣ', description: 'Мутахассисони дорои дониши баланди касбӣ.' },
-          { heading: 'Идоракунӣ ва Стандартҳо', description: 'Қоидаҳои шаффоф ва таҷрибаи байналмилалӣ.' },
-          { heading: 'Ҷараёни Инноватсияҳо', description: 'Ҷустуҷӯи доимӣ ва дастгирии ғояҳои нав.' }
+          {
+            heading: 'Инфрасохтор ва Технология',
+            description: 'Таъсиси заминаи мустаҳками моддию техникӣ ва истифодаи асбобҳои муосиру боэътимоди корӣ.'
+          },
+          {
+            heading: 'Сармояи Инсонӣ',
+            description: 'Ҷалби мутахассисони дорои ихтисоси баланд, такмили пайвастаи дониш ва ташаккули фарҳанги пешсафӣ.'
+          },
+          {
+            heading: 'Идоракунӣ ва Стандартҳо',
+            description: 'Татбиқи қоидаҳои шаффофи корӣ ва риояи қатъии стандартҳои байналмилалии соҳавӣ.'
+          },
+          {
+            heading: 'Ҷараёни Инноватсияҳо',
+            description: 'Ҷустуҷӯи доимии ғояҳои тоза, корҳои таҳқиқотӣ ва татбиқи фаврии қарорҳои судманд.'
+          }
         ],
-        highlight: 'Ҳамоҳангии ҳамаи чор рукн устувории тамоми низомро кафолат медиҳад.'
+        highlight: 'Ҳамоҳангии комили тамоми чор рукн устувории бебозгашти низомро таъмин мекунад.'
       },
       {
         layout: 'spotlight',
-        title: 'Кейсҳои Амалӣ ва Намунаҳои Ҳаётӣ',
-        sub: 'Таҳлили таҷрибаи бомуваффақият ва натиҷаҳои бадастомада',
+        title: 'Кейсҳои Амалӣ ва Таҷрибаи Воқеӣ',
+        sub: 'Таҳлили таҷрибаи бомуваффақияти соҳавӣ ва дастовардҳои мушаххас',
         photo: `${enKeywords} real practice experience case study`,
-        spotlightText: `Дар самти "${topic}" беҳтарин натиҷа вақте ба даст меояд, ки назария ва таҷрибаи воқеӣ пайваст шаванд.`,
+        spotlightText: `Дар самти "${topic}" комёбии беҳтарин вақте ба даст меояд, ки назарияи амиқи илмӣ бо таҷрибаи амалӣ пайваст гардад.`,
         points: [
-          { heading: 'Кейси 1: Мутобиқшавии фаврӣ', description: 'Дар марҳилаи аввал натиҷа нисбат ба чашмдошт 40% баландтар ба қайд гирифта шуд.' },
-          { heading: 'Кейси 2: Рушди устувор', description: 'Тамоми хатарҳо сари вақт пешгирӣ карда шуданд.' }
+          {
+            heading: 'Кейси 1: Мутобиқшавии фаврӣ ва натиҷа',
+            description: 'Дар давраи аввали санҷиш натиҷаҳои асосӣ нисбат ба чашмдошт 40% баландтар ба қайд гирифта шуданд.'
+          },
+          {
+            heading: 'Кейси 2: Рушди устувори дарозмуддат',
+            description: 'Тамоми хатарҳои эҳтимолӣ сари вақт пешгирӣ карда шуда, динамикаи рушд пурра нигоҳ дошта шуд.'
+          }
         ],
-        highlight: 'Таҷрибаи амалӣ нисбат ба ҳар гуна назария боэътимодтар ва арзишмандтар аст.'
+        highlight: 'Таҷрибаи амалии озмудашуда нисбат ба ҳар гуна назарияи хушк боэътимодтар ва судмандтар аст.'
       },
       {
         layout: 'cinematic',
-        title: 'Дурнамои Оянда ва Равандҳо',
-        sub: 'Имкониятҳои нав, тамоюлҳои ҷаҳонӣ ва таҳаввулоти рақамӣ',
+        title: 'Дурнамои Оянда ва Равандҳои Асосӣ',
+        sub: 'Имкониятҳои нав, тамоюлҳои ҷаҳонии рушд ва таҳаввулоти рақамӣ',
         photo: `${enKeywords} future perspective technology vision`,
         points: [
-          { heading: 'Интегратсияи ҷаҳонӣ', description: 'Ҳамкории фаъол бо шарикони байналмилалӣ.' },
-          { heading: 'Табдили рақамӣ', description: 'Татбиқи зеҳни сунъӣ ва равандҳои автоматӣ.' },
-          { heading: 'Пешвоии доимӣ', description: 'Таҳкими дастовардҳо ва расидан ба сатҳи пешсаф.' }
+          {
+            heading: 'Интегратсия ва Ҳамкории Ҷаҳонӣ',
+            description: 'Ҳамкории фаъол бо марказҳои байналмилалии илмию касбӣ ва омӯзиши таҷрибаи пешқадам.'
+          },
+          {
+            heading: 'Табдили Рақамӣ',
+            description: 'Татбиқи алгоритмҳои зеҳнӣ барои коркарди иттилоот ва автоматӣ намудани равандҳои душвор.'
+          },
+          {
+            heading: 'Таҳкими Пешвоӣ дар Соҳа',
+            description: 'Муқаррар кардани стандартҳои нав ва нигоҳ доштани бартарии доимии рақобатпазирӣ.'
+          }
         ],
-        highlight: 'Оянда бо қарорҳои далер ва инноватсионии имрӯза сохта мешавад.'
+        highlight: 'Ояндаи дурахшон имрӯз бо қарорҳои далер, дақиқ ва илман асоснокшуда сохта мешавад.'
       }
     ];
   }
 
-  return null;
+  // Uzbek (Default Generic)
+  return [
+    {
+      layout: 'split_hero',
+      title: `${topic}: Fundamental Mohiyat va Strategik Maqsadlar`,
+      sub: 'Nazariy poydevor, konseptual asoslar va ustuvor vazifalar',
+      photo: `${enKeywords} fundamental research concept`,
+      points: [
+        {
+          heading: 'Mavzuning dolzarbligi va tizimli zarurat',
+          description: `Bugungi tezkor davr "${topic}" yo'nalishidagi an'anaviy qarashlarni qayta ko'rib chiqishni talab etmoqda. Zamonaviy yondashuvlarni tatbiq etish unumdorlikni 35-50% ga oshiradi va tashqi xatarlarga chidamlilikni kafolatlaydi.`
+        },
+        {
+          heading: 'Strategik maqsad va uzoq muddatli reja',
+          description: 'Mavjud imkoniyatlarni chuqur tahlil qilish orqali barcha resurslarni to\'g\'ri yo\'naltirish lozim. Aniq strategiya noaniqliklarni bartaraf etadi va uzoq muddatli yutuqlar uchun mustahkam poydevor yaratadi.'
+        },
+        {
+          heading: 'Kutilayotgan amaliy va iqtisodiy samara',
+          description: 'Ilg\'or metodologiyalarni qo\'llash jarayonlar tezligini oshirib, sifat ko\'rsatkichlarini yangi bosqichga olib chiqadi. Natijada xarajatlar tejalib, tizimning umumiy ishonchliligi ta\'minlanadi.'
+        }
+      ],
+      highlight: 'Mustahkam nazariy poydevor va izchil harakatlar strategiyasi yuqori natijalarga erishishning asosiy kalitidir.'
+    },
+    {
+      layout: 'comparison',
+      title: 'Taqqoslama Tahlil va Metodologiyalar',
+      sub: 'An\'anaviy konservativ usullar va zamonaviy innovatsion yechimlar qiyosi',
+      photo: `${enKeywords} analysis research comparison`,
+      leftHeading: 'An\'anaviy Yondashuv',
+      rightHeading: 'Zamonaviy Yechim',
+      points: [
+        {
+          heading: 'Vaqt va resurslarning yuqori sarfi',
+          description: 'Eski usullarda ko\'p qo\'l mehnati talab qilinib, jarayonlar sekin kechgan va inson omili sabab xatoliklar darajasi yuqori bo\'lgan.'
+        },
+        {
+          heading: 'Zamonaviy tizimli optimallashtirish',
+          description: 'Yangi texnologiyalar bilan jarayonlar 70% ga tezlashadi, avtomatik nazorat yo\'lga qo\'yiladi va shaffoflik to\'liq ta\'minlanadi.'
+        }
+      ],
+      highlight: 'Ilg\'or standartlarga o\'tish orqali xarajatlar va kutilmagan tizimli xatolar xavfi keskin kamayadi.'
+    },
+    {
+      layout: 'kpi_metrics',
+      title: 'Asosiy Ko\'rsatkichlar va Natijadorlik',
+      sub: 'Miqdoriy ko\'rsatkichlar, o\'sish sur\'atlari va sohaviy statistika',
+      photo: `${enKeywords} statistics data growth chart`,
+      metrics: [
+        { val: '+85%', label: 'Samaradorlik O\'sishi', desc: 'Jarayonlarni kompleks optimallashtirish hisobiga olingan o\'sish sur\'ati' },
+        { val: '3.5x', label: 'Tezlik va Unumdorlik', desc: 'Resurslardan foydalanish davrining bir necha barobar qisqarishi' },
+        { val: 'TOP 1', label: 'Sohaviy Yetakchilik', desc: 'Xalqaro mezonlar va sifat standartlari bo\'yicha yetakchi ko\'rsatkich' }
+      ],
+      points: [
+        {
+          heading: 'Sohaviy dinamika va empirik dalillar',
+          description: 'Aniq statistik raqamlar tanlangan rivojlanish yo\'nalishining to\'g\'riligini yaqqol ko\'rsatmoqda. O\'lchanadigan natijalar kiritilgan investitsiyalar samarasini to\'liq oqlaydi.'
+        }
+      ],
+      highlight: 'Statistik dalillar va ishonchli raqamlar qabul qilingan strategik qarorlarning to\'g\'riligini isbotlaydi.'
+    },
+    {
+      layout: 'process_timeline',
+      title: 'Bosqichma-bosqich Amalga Oshirish',
+      sub: 'Rejadan amaliy natijagacha bo\'lgan izchil harakatlar zanjiri',
+      photo: `${enKeywords} steps process roadmap development`,
+      points: [
+        {
+          heading: '1-Bosqich: Diagnostika va Tahlil',
+          description: 'Mavjud holatni to\'liq inventarizatsiya qilish, ehtiyojlarni baholash va xatarlarni oldindan hisobga olgan reja tuzish.'
+        },
+        {
+          heading: '2-Bosqich: Amaliy Tatbiq va Sinov',
+          description: 'Sinovdan o\'tgan vositalarni joriy qilish, mutaxassislarni o\'qitish va tajriba-sinov jarayonlarini o\'tkazish.'
+        },
+        {
+          heading: '3-Bosqich: Monitoring va Kengaytirish',
+          description: 'Olingan natijalarni baholash, tizimni to\'liq kengaytirish va yangi o\'zgarishlarga doimiy moslashtirib borish.'
+        }
+      ],
+      highlight: 'Aniq yo\'l xaritasi va izchil intizomli harakatlar muvaffaqiyatning asosiy garovidir.'
+    },
+    {
+      layout: 'matrix_grid',
+      title: 'Tarkibiy Ustunlar va Yo\'nalishlar',
+      sub: 'Tizimning barqaror rivojlanishini ta\'minlovchi to\'rtta asosiy harakatlantiruvchi kuchi',
+      photo: `${enKeywords} system structure innovation modern`,
+      points: [
+        {
+          heading: 'Infratuzilma va Texnologiya',
+          description: 'Mustahkam moddiy-texnik baza, barqaror arxitektura va zamonaviy professional vositalar.'
+        },
+        {
+          heading: 'Inson Kapitali va Malaka',
+          description: 'Yuqori salohiyatli mutaxassislar jamoasi, doimiy malaka oshirish va liderlik muhiti.'
+        },
+        {
+          heading: 'Boshqaruv va Standartlar',
+          description: 'Shaffof ish qoidalari, aniq reglamentlar va xalqaro sifat talablariga qat\'iy amal qilish.'
+        },
+        {
+          heading: 'Innovatsiyalar Oqimi',
+          description: 'Doimiy ilmiy izlanish, yangi ilg\'or g\'oyalarni sinab ko\'rish va amaliyotga tez tatbiq etish.'
+        }
+      ],
+      highlight: 'Barcha to\'rtta ustunning uyg\'unligi butun tizimning uzoq yillik mustahkamligini kafolatlaydi.'
+    },
+    {
+      layout: 'spotlight',
+      title: 'Amaliy Keyslar va Hayotiy Misollar',
+      sub: 'Muvaffaqiyatli amaliyot va erishilgan natijalar tahlili',
+      photo: `${enKeywords} real practice experience case study`,
+      spotlightText: `"${topic}" yo'nalishidagi eng yuksak natijalar chuqur nazariya va boy amaliy tajriba birlashgandagina qo'lga kiritiladi.`,
+      points: [
+        {
+          heading: '1-keys: Tezkor moslashuv va natija',
+          description: 'Dastlabki sinov bosqichidayoq kutilgan prognozlardan 40% yuqori unumdorlik qayd etildi.'
+        },
+        {
+          heading: '2-keys: Barqaror uzoq muddatli o\'sish',
+          description: 'Barcha yuzaga kelishi mumkin bo\'lgan xatarlar oldindan bartaraf etilib, rivojlanish sur\'ati saqlandi.'
+        }
+      ],
+      highlight: 'Amaliy tajribada sinalgan bilimlar har qanday mavhum nazariyadan ko\'ra ishonchliroqdir.'
+    },
+    {
+      layout: 'cinematic',
+      title: 'Kelajak Istiqbollari va Global Trendlar',
+      sub: 'Yangi imkoniyatlar, global tendensiyalar va raqamli transformatsiya sari yo\'l',
+      photo: `${enKeywords} future perspective technology vision`,
+      points: [
+        {
+          heading: 'Global integratsiya va hamkorlik',
+          description: 'Xalqaro tajriba va jahon darajasidagi professional standartlar bilan faol integratsiyalashuv.'
+        },
+        {
+          heading: 'Raqamli transformatsiya',
+          description: 'Ma\'lumotlarni tahlil qilish algoritmlari va jarayonlarni avtomatlashtirish yechimlarini keng tatbiq etish.'
+        },
+        {
+          heading: 'Barqaror yetakchilikni mustahkamlash',
+          description: 'O\'z sohasida yangi standartlarni belgilab, raqobatbardosh ustunliklarni doimiy mustahkamlash.'
+        }
+      ],
+      highlight: 'Kelajak bugun qabul qilinayotgan to\'g\'ri, dadil va ilmiy asoslangan qarorlar bilan yaratiladi.'
+    }
+  ];
 }
 
 /**
@@ -826,66 +1133,111 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
 
   const localizedMeta = {
     uz: {
-      sub: `${categoryObj.name} doirasidagi maxsus tahliliy taqdimot`,
-      notes: `Assalomu alaykum! Bugungi taqdimotimiz "${topic}" mavzusiga bag'ishlanadi.`,
-      concTitle: 'Xulosalar va Keyingi Qadamlar',
-      concSub: 'Strategik tavsiyalar va yakuniy xulosa',
+      sub: `${categoryObj.name} doirasidagi maxsus ilmiy-tahliliy tadqiqot`,
+      notes: `Assalomu alaykum, hurmatli qatnashchilar! Bugungi taqdimotimiz "${topic}" mavzusining konseptual asoslari, amaliy ahamiyati va istiqboldagi vazifalariga bag'ishlanadi.`,
+      concTitle: 'Xulosalar va Strategik Tavsiyalar',
+      concSub: 'Tizimli tahlil natijalari va istiqboldagi ustuvor yo\'nalishlar',
       concPoints: [
-        { heading: '1-ustuvor qadam', description: 'Mavjud metodologiyani bugunoq bosqichma-bosqich amaliyotga joriy etish.' },
-        { heading: 'Doimiy monitoring va nazorat', description: 'Barcha ko\'rsatkichlarni muntazam tahlil qilib, o\'zgarishlarga tez moslashish.' },
-        { heading: 'Resurslarni optimallashtirish', description: 'Eng yuqori samara beruvchi asosiy yo\'nalishlarga ko\'proq e\'tibor qaratish.' }
+        {
+          heading: 'Amaliy integratsiya va joriy etish',
+          description: 'Tavsiya etilgan metodologiya va tizimli yechimlarni bosqichma-bosqich amaliyotga tatbiq etish lozim. Bu jarayon operatsion xatarlarni kamaytiradi va umumiy unumdorlikni 30-40% ga oshirishga xizmat qiladi.'
+        },
+        {
+          heading: 'Doimiy monitoring va sifat nazorati',
+          description: 'Belgilangan mezonlar va asosiy ko\'rsatkichlarni (KPI) muntazam o\'lchab borish zarur. Bu dinamikani to\'liq nazorat qilish hamda bozor va muhitdagi o\'zgarishlarga tezkor moslashish imkonini beradi.'
+        },
+        {
+          heading: 'Resurslarni strategik optimallashtirish',
+          description: 'Mavjud moddiy, texnologik va inson resurslarini eng yuqori daromad va samara keltiruvchi yo\'nalishlarga yo\'naltirish talab etiladi. Natijada xarajatlar tejaladi va barqaror rivojlanish ta\'minlanadi.'
+        }
       ],
       concHighlight: `"${topic}" bo'yicha to'g'ri strategiya va izchil harakat eng yuqori natijani kafolatlaydi.`,
-      concNotes: 'Hurmatli tinglovchilar, e\'tiboringiz uchun katta rahmat! Savollaringiz bo\'lsa bajonidil javob beraman.'
+      concNotes: 'Hurmatli tinglovchilar, e\'tiboringiz uchun katta rahmat! Mavzu yuzasidan barcha savollaringiz bo\'lsa, bajonidil javob berishga tayyorman.'
     },
     ru: {
-      sub: `Аналитическая презентация в сфере: ${categoryObj.name}`,
-      notes: `Здравствуйте! Сегодняшняя наша презентация посвящена теме "${topic}".`,
-      concTitle: 'Выводы и Следующие Шаги',
-      concSub: 'Стратегические рекомендации и ключевые итоги',
+      sub: `Аналитическое исследование в сфере: ${categoryObj.name}`,
+      notes: `Здравствуйте, уважаемые коллеги! Сегодняшняя презентация посвящена глубокому рассмотрению темы "${topic}", ее стратегических аспектов и практических механизмов реализации.`,
+      concTitle: 'Выводы и Стратегические Рекомендации',
+      concSub: 'Ключевые итоги исследования и следующие шаги развития',
       concPoints: [
-        { heading: 'Первоочередной шаг', description: 'Поэтапное внедрение методологии и практических инструментов в текущие процессы.' },
-        { heading: 'Непрерывный мониторинг', description: 'Регулярная оценка ключевых показателей эффективности и контроль динамики.' },
-        { heading: 'Оптимизация ресурсов', description: 'Концентрация внимания на направлениях, обеспечивающих максимальный результат.' }
+        {
+          heading: 'Практическая интеграция решений',
+          description: 'Поэтапное внедрение предложенной методологии и практических инструментов в операционную деятельность. Это позволяет снизить риски системных сбоев и повысить общую результативность на 30–45%.'
+        },
+        {
+          heading: 'Непрерывный мониторинг и контроль качества',
+          description: 'Регулярный аудит ключевых показателей эффективности (KPI) и контроль точности процессов. Систематический анализ гарантирует гибкую адаптацию к любым изменениям рыночной конъюнктуры.'
+        },
+        {
+          heading: 'Стратегическая оптимизация ресурсов',
+          description: 'Концентрация материального, технологического и кадрового потенциала на приоритетных точках роста. Данный подход исключает неоправданные издержки и обеспечивает устойчивое масштабирование.'
+        }
       ],
-      concHighlight: `Грамотная стратегия и системный подход гарантируют успешное достижение поставленных целей.`,
-      concNotes: 'Уважаемые слушатели, спасибо за внимание! Буду рад ответить на ваши вопросы.'
+      concHighlight: 'Грамотная стратегия и системный подход гарантируют успешное достижение поставленных целей.',
+      concNotes: 'Уважаемые слушатели, спасибо за внимание! Буду рад ответить на ваши вопросы и обсудить детали реализации.'
     },
     en: {
-      sub: `Comprehensive analytical presentation on ${categoryObj.name}`,
-      notes: `Welcome! Today's presentation is dedicated to the topic "${topic}".`,
-      concTitle: 'Conclusions & Next Steps',
-      concSub: 'Strategic recommendations and key takeaways',
+      sub: `Comprehensive analytical briefing on ${categoryObj.name}`,
+      notes: `Welcome, distinguished colleagues! Today's presentation provides an in-depth strategic analysis of "${topic}", examining operational frameworks, key metrics, and implementation roadmaps.`,
+      concTitle: 'Strategic Conclusions & Next Steps',
+      concSub: 'Executive takeaways and critical recommendations',
       concPoints: [
-        { heading: 'Immediate Priority', description: 'Step-by-step implementation of modern methodologies into operational workflows.' },
-        { heading: 'Continuous Monitoring', description: 'Regular evaluation of KPIs and proactive performance tracking.' },
-        { heading: 'Resource Optimization', description: 'Focusing key capabilities on high-impact strategic initiatives.' }
+        {
+          heading: 'Operational Execution & Integration',
+          description: 'Phased implementation of validated methodologies and technical frameworks directly into standard workflows. This reduces critical friction points while accelerating overall throughput by 30–45%.'
+        },
+        {
+          heading: 'Continuous Performance Auditing',
+          description: 'Systematic monitoring of measurable KPIs and benchmark milestones across every operational layer. Real-time feedback loops enable swift adaptation to market and environmental dynamics.'
+        },
+        {
+          heading: 'Strategic Resource Alignment',
+          description: 'Targeted allocation of financial, technical, and human capital toward the highest-leverage initiatives. This eliminates redundancies and establishes a durable engine for long-term scalability.'
+        }
       ],
-      concHighlight: `A well-defined strategy and consistent execution ensure sustainable success.`,
-      concNotes: 'Thank you very much for your time and attention! I welcome any questions or discussion.'
+      concHighlight: 'A well-defined strategy and consistent milestone execution ensure sustainable competitive advantage.',
+      concNotes: 'Thank you very much for your time and engagement! I look forward to your questions and strategic discussion.'
     },
     tg: {
-      sub: `Муаррифии махсуси таҳлилӣ дар самти: ${categoryObj.name}`,
-      notes: `Салом! Муаррифии имрӯзаи мо ба мавзӯи "${topic}" бахшида шудааст.`,
-      concTitle: 'Хулосаҳо ва Қадамҳои Минбаъда',
-      concSub: 'Тавсияҳои стратегӣ ва натиҷагирии ниҳоӣ',
+      sub: `Таҳқиқоти махсуси илмию амалӣ дар самти: ${categoryObj.name}`,
+      notes: `Салом, ҳамкасбони гиромӣ! Муаррифии имрӯзаи мо ба таҳлили амиқи мавзӯи "${topic}", самтҳои стратегӣ ва тарҳрезии амалии он бахшида шудааст.`,
+      concTitle: 'Хулосаҳо ва Тавсияҳои Стратегӣ',
+      concSub: 'Натиҷагирии ниҳоӣ ва самтҳои афзалиятноки рушд',
       concPoints: [
-        { heading: 'Қадами аввалиндараҷа', description: 'Татбиқи зина ба зинаи усулҳои муосир ва воситаҳои амалӣ дар равандҳои корӣ.' },
-        { heading: 'Мониторинги доимӣ', description: 'Баҳодиҳии мунтазами нишондиҳандаҳо ва назорати рушд.' },
-        { heading: 'Оптимизатсияи захираҳо', description: 'Таваҷҷуҳ ба самтҳое, ки самаранокии баландтаринро таъмин мекунанд.' }
+        {
+          heading: 'Татбиқи амалии усулҳо ва қарорҳо',
+          description: 'Ҷорисозии зина ба зинаи усулҳои пешниҳодшуда ва воситаҳои амалӣ дар равандҳои корӣ. Ин раванд хавфҳои идоравиро коҳиш дода, маҳсулнокиро 30-45% меафзояд.'
+        },
+        {
+          heading: 'Мониторинги доимӣ ва назорати сифат',
+          description: 'Баҳодиҳии пайвастаи нишондиҳандаҳои калидӣ (KPI) ва назорати дақиқи самтҳо. Таҳлили мунтазам имкон медиҳад, ки ба ҳама тағйирот зуд мутобиқ шавем.'
+        },
+        {
+          heading: 'Оптимизатсияи стратегии захираҳо',
+          description: 'Тамаркузи захираҳои моддӣ, техникӣ ва инсонӣ ба самтҳои асосие, ки натиҷаи баландтаринро медиҳанд. Дар натиҷа хароҷот сарфа шуда, рушди устувор таъмин мегардад.'
+        }
       ],
-      concHighlight: `Стратегияи дуруст ва фаъолияти пайгирона натиҷаи баландро кафолат медиҳад.`,
-      concNotes: 'Шунавандагони гиромӣ, ташаккури зиёд барои диққататон! Агар саволе бошад, бо камоли майл посух медиҳам.'
+      concHighlight: 'Стратегияи дуруст ва фаъолияти пайгирона ноил шудан ба натиҷаҳои баландтаринро кафолат медиҳад.',
+      concNotes: 'Шунавандагони гиромӣ, барои таваҷҷуҳатон сипосгузорам! Агар саволе бошад, бо камоли майл посух медиҳам.'
     }
   }[language] || {
-    sub: `${categoryObj.name} doirasidagi maxsus tahliliy taqdimot`,
+    sub: `${categoryObj.name} doirasidagi maxsus ilmiy-tahliliy tadqiqot`,
     notes: `Assalomu alaykum! Bugungi taqdimotimiz "${topic}" mavzusiga bag'ishlanadi.`,
-    concTitle: 'Xulosalar va Keyingi Qadamlar',
-    concSub: 'Strategik tavsiyalar va yakuniy xulosa',
+    concTitle: 'Xulosalar va Strategik Tavsiyalar',
+    concSub: 'Tizimli tahlil natijalari va istiqboldagi ustuvor yo\'nalishlar',
     concPoints: [
-      { heading: '1-ustuvor qadam', description: 'Mavjud metodologiyani bugunoq bosqichma-bosqich amaliyotga joriy etish.' },
-      { heading: 'Doimiy monitoring va nazorat', description: 'Barcha ko\'rsatkichlarni muntazam tahlil qilib, o\'zgarishlarga tez moslashish.' },
-      { heading: 'Resurslarni optimallashtirish', description: 'Eng yuqori samara beruvchi asosiy yo\'nalishlarga ko\'proq e\'tibor qaratish.' }
+      {
+        heading: 'Amaliy integratsiya va joriy etish',
+        description: 'Tavsiya etilgan metodologiya va tizimli yechimlarni bosqichma-bosqich amaliyotga tatbiq etish lozim. Bu jarayon operatsion xatarlarni kamaytiradi va unumdorlikni oshiradi.'
+      },
+      {
+        heading: 'Doimiy monitoring va sifat nazorati',
+        description: 'Belgilangan mezonlar va asosiy ko\'rsatkichlarni (KPI) muntazam o\'lchab borish orqali jarayonlar ustidan to\'liq nazorat o\'rnatiladi.'
+      },
+      {
+        heading: 'Resurslarni strategik optimallashtirish',
+        description: 'Mavjud resurslarni eng yuqori daromad va samara keltiruvchi yo\'nalishlarga yo\'naltirish orqali barqaror rivojlanish ta\'minlanadi.'
+      }
     ],
     concHighlight: `"${topic}" bo'yicha to'g'ri strategiya va izchil harakat eng yuqori natijani kafolatlaydi.`,
     concNotes: 'Hurmatli tinglovchilar, e\'tiboringiz uchun katta rahmat! Savollaringiz bo\'lsa bajonidil javob beraman.'
@@ -905,8 +1257,8 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
     speakerNotes: localizedMeta.notes
   });
 
-  // Mavzuga moslashtirilgan 7 ta boy va unikal bosqichlar
-  const stageTemplates = getLocalizedGenericStages(topic, enKeywords, language) || getDomainStages(topic, enKeywords);
+  // Mavzuga moslashtirilgan boy va unikal bosqichlar (chet tillarda faqat sof o'sha til ishlatiladi!)
+  const stageTemplates = (language === 'uz' ? (getDomainStages(topic, enKeywords) || getLocalizedGenericStages(topic, enKeywords, 'uz')) : getLocalizedGenericStages(topic, enKeywords, language)) || getLocalizedGenericStages(topic, enKeywords, 'uz');
 
   for (let i = 2; i <= slideCount; i++) {
     const isLast = (i === slideCount);
@@ -946,12 +1298,12 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
         spotlightText: st.spotlightText,
         highlight: st.highlight,
         speakerNotes: language === 'ru'
-          ? `На данном слайде ${i} мы подробно рассмотрим тему "${st.title}".`
+          ? `Уважаемые слушатели! На данном слайде ${i} мы подробно проанализируем ключевые аспекты темы "${st.title}". Особое внимание следует обратить на практическую реализацию и измеримые результаты.`
           : language === 'en'
-          ? `On this slide ${i}, we explore the key aspects of "${st.title}".`
+          ? `Distinguished colleagues, on slide ${i} we explore the critical dimensions of "${st.title}". It is essential to focus on operational execution and measurable outcomes.`
           : language === 'tg'
-          ? `Дар ин слайди ${i} мо ҷанбаҳои муҳими мавзӯи "${st.title}"-ро баррасӣ мекунем.`
-          : `Ushbu ${i}-slaydda biz ${st.title} mavzusidagi muhim jihatlarga to'xtalamiz.`
+          ? `Шунавандагони гиромӣ! Дар ин слайди ${i} мо ҷанбаҳои муҳимтарини мавзӯи "${st.title}"-ро ба таври муфассал баррасӣ менамоем. Таваҷҷуҳи асосӣ бояд ба татбиқи амалӣ ва натиҷаҳои мушаххас равона шавад.`
+          : `Hurmatli tinglovchilar! Ushbu ${i}-slaydda biz "${st.title}" bo'yicha eng muhim strategik jihatlarni ko'rib chiqamiz. Asosiy e'tiborni amaliy tatbiq va kutilayotgan natijadorlikka qaratishimiz lozim.`
       });
     }
   }
@@ -965,52 +1317,54 @@ function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz
 }
 
 /**
- * Foydalanuvchi mavzusi va sohasi asosida slaydlar strukturasini JSON ko'rinishida generatsiya qiladi.
+ * Har bir til uchun 100% o'sha tildagi mukammal prompt quruvchi
  */
-export async function generatePresentationData({ topic, slideCount = 6, language = 'uz', theme = 'ocean', category = 'general', documentText = '', organization = '' }) {
-  const targetCount = Math.min(Math.max(parseInt(slideCount, 10) || 6, 3), 25);
-  const categoryObj = getCategory(category);
-  const enKeywords = extractCleanKeywords(topic);
-
-  const languagePrompt = {
-    uz: "O'zbek tilida (barcha slayd sarlavhalari, matnlari, tushuntirishlari, xulosalari va nutq matni toza o'zbek adabiy tilida bo'lsin)",
-    ru: "Русском языке (на грамотном, профессиональном русском языке: ВСЕ заголовки, подзаголовки, тезисы, аналитика, ключевые выводы и заметки докладчика speakerNotes должны быть строго на русском языке)",
-    en: "English (in professional, high-impact English: ALL slide titles, subtitles, bullet points, descriptions, highlights, and speakerNotes must be strictly in English)",
-    tg: "Забони тоҷикӣ (бо забони шево ва адабии тоҷикӣ: ҲАМАИ сарлавҳаҳо, зерсарлавҳаҳо, нуктаҳои асосӣ, таҳлилҳо, хулосаҳо ва қайдҳои баромадкунанда speakerNotes бояд комилан ба забони тоҷикӣ бошанд)",
-  }[language] || "O'zbek tilida";
-
+function buildPresentationPrompt({ topic, targetCount, language = 'uz', theme = 'ocean', categoryObj, enKeywords, organization = '', documentText = '' }) {
   const docContext = documentText
-    ? `\n\nMUHIM: Foydalanuvchi quyidagi hujjat / konspekt / referat matnini taqdim etdi. Taqdimot mazmuni to'liq ushbu hujjatga asoslanishi shart:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
+    ? `\n\n${
+        language === 'ru'
+          ? `ВАЖНО: Пользователь предоставил исходный материал/конспект. Содержимое слайдов должно строго опираться на этот документ:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
+          : language === 'en'
+          ? `IMPORTANT: The user provided source material. The presentation content must strictly derive from this text:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
+          : language === 'tg'
+          ? `МУҲИМ: Корбар матни асосӣ/конспектро пешниҳод кардааст. Мазмуни муаррифӣ бояд пурра бар асоси ин матн таҳия шавад:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
+          : `MUHIM: Foydalanuvchi quyidagi hujjat / konspekt matnini taqdim etdi. Taqdimot mazmuni to'liq ushbu hujjatga asoslansin:\n"""\n${documentText.substring(0, 10000)}\n"""\n`
+      }`
     : '';
 
-  const prompt = `
-Siz professional xalqaro darajadagi taqdimotlar (PowerPoint slaydlar) muallifisiz.
-Mavzu: "${topic}"
-Yo'nalish / Soha: ${categoryObj.name} (${categoryObj.promptContext})
-TALAB QILINGAN SLAYDLAR SONI: ANIQ ${targetCount} TA SLAYD!
-Taqdimot tili: ${languagePrompt}
-Dizayn mavzusi: ${theme}
-${organization ? `Tashkilot / Universitet: ${organization}` : ''}
+  if (language === 'ru') {
+    return `
+Вы — ведущий международный эксперт и создатель высококлассных аналитических презентаций уровня McKinsey, BCG и ведущих академических институтов.
+Тема презентации: "${topic}"
+Отрасль / Направление: ${categoryObj.name} (${categoryObj.promptContext})
+ТРЕБУЕМОЕ КОЛИЧЕСТВО СЛАЙДОВ: РОВНО ${targetCount} СЛАЙДОВ!
+Язык презентации: ИСКЛЮЧИТЕЛЬНО РУССКИЙ ЯЗЫК (богатый, академический, профессиональный русский язык).
+Тема оформления: ${theme}
+${organization ? `Организация / Университет: ${organization}` : ''}
 ${docContext}
 
-MUHIM QAT'IY TALABLAR:
-1. Slaydlar qiziqarli, jonli, statistik raqamlarga, amaliy keyslarga va chuqur tahlillarga boy bo'lsin.
-2. Slaydlar formati va stili bir xil bo'lib qolmasligi uchun har bir slaydga unikal "layoutType" bering:
-   - "split_hero" (chapda rasm, o'ngda tahlil)
-   - "comparison" (ikki ustunli taqqoslash)
-   - "kpi_metrics" (katta statistik raqamlar va ko'rsatkichlar)
-   - "process_timeline" (bosqichma-bosqich jarayon)
-   - "matrix_grid" (4 ta kartochkali matritsa)
-   - "spotlight" (bosh iqtibos + tahlil)
-   - "cinematic" (kinematik rasm + vizual)
-   - "conclusion" (yakuniy tavsiyalar)
-3. Har bir slayd uchun "imagePrompts" massivida aynan 2 ta INGLIZCHA aniq fotorealistik foto qidiruv so'zini bering (masalan: ["${enKeywords} laboratory research", "${enKeywords} digital technology"]).
-4. Jami "slides" massivida aynan ${targetCount} ta slayd bo'lsin!
+СТРОЖАЙШИЕ ТРЕБОВАНИЯ И ПРАВИЛА:
+1. 100% ЧИСТЫЙ РУССКИЙ ЯЗЫК:
+   - ВСЕ заголовки (title), подзаголовки (subtitle), названия тезисов (heading), подробные описания (description), ключевые выводы (highlight), метрики и заметки докладчика (speakerNotes) должны быть ИСКЛЮЧИТЕЛЬНО НА РУССКОМ ЯЗЫКЕ!
+   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО использовать слова на узбекском или любых других языках (никаких "1-nuqta", "Xulosa", "Kirish so'zi", "Zamonaviy", "tushuntirish" и т.п.)! Исключение — только поисковые запросы в imagePrompts (они должны быть на английском).
+2. ВЫСОКАЯ ИНФОРМАТИВНОСТЬ И БОЛЬШОЙ ОБЪЕМ (ОТСУТСТВИЕ ВОДЫ И ШАБЛОНОВ):
+   - В каждом пункте слайда поле "description" ОБЯЗАНО содержать минимум 2–4 развернутых, содержательных предложения (от 35 до 60 слов)!
+   - Приводите реальные факты, профессиональную терминологию, причинно-следственные связи, аналитические механизмы и практические аспекты.
+   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНЫ пустые шаблонные отписки («Пункт 1», «Введение», «Описание сути» и 1-строчные общие фразы)!
+3. ПОЛНЫЙ ЗАПРЕТ НА УПОМИНАНИЕ ИСКУССТВЕННОГО ИНТЕЛЛЕКТА (ИИ):
+   - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО писать, что презентация создана с помощью ИИ, упоминать слова «ИИ», «AI», «нейросеть», «бот», «промпт», «сгенерировано». Презентация должна выглядеть так, как будто её создал опытный эксперт-исследователь или топ-аналитик вручную.
+4. РАЗНООБРАЗИЕ МАКЕТОВ (layoutType):
+   - Распределяйте слайды по разнообразным структурам: "split_hero", "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion".
+5. ЗАПРОСЫ ДЛЯ ИЗОБРАЖЕНИЙ:
+   - В поле "imagePrompts" ровно 2 англоязычных фотореалистичных запроса (например: ["${enKeywords} professional laboratory analysis", "${enKeywords} modern business conference"]).
+6. ЗАМЕТКИ ДОКЛАДЧИКА (speakerNotes):
+   - Для каждого слайда напишите живой, готовый для выступления текст речи докладчика из 3–5 предложений.
+7. Общее количество слайдов в массиве "slides" ДОЛЖНО БЫТЬ РОВНО ${targetCount}!
 
-Qat'iy toza JSON formatida javob bering:
+Строго верните ЧИСТЫЙ JSON следующей структуры:
 {
   "title": "${topic}",
-  "subtitle": "Zamonaviy tahlil va amaliy istiqbollar",
+  "subtitle": "Комплексный аналитический обзор и стратегические решения",
   "theme": "${theme}",
   "slides": [
     {
@@ -1018,30 +1372,367 @@ Qat'iy toza JSON formatida javob bering:
       "type": "title",
       "layoutType": "title",
       "title": "${topic}",
-      "subtitle": "Keng qamrovli tahliliy taqdimot",
-      "imagePrompts": [
-        "${enKeywords} concept photography",
-        "${enKeywords} modern visual"
-      ],
-      "speakerNotes": "Kirish so'zi."
+      "subtitle": "Аналитическое исследование в сфере: ${categoryObj.name}",
+      "imagePrompts": ["${enKeywords} professional concept", "${enKeywords} modern visual"],
+      "speakerNotes": "Здравствуйте, уважаемые участники! Сегодня мы подробно рассмотрим ключевые аспекты и стратегические перспективы темы ${topic}."
     },
     {
       "slideNumber": 2,
       "type": "content",
       "layoutType": "split_hero",
-      "title": "Slayd sarlavhasi",
-      "subtitle": "Bo'lim mazmuni",
-      "imagePrompts": ["${enKeywords} analysis", "${enKeywords} practical"],
+      "title": "Концептуальные основы и актуальность",
+      "subtitle": "Теоретический базис и предпосылки практического применения",
+      "imagePrompts": ["${enKeywords} analysis research", "${enKeywords} practical innovation"],
       "points": [
-        { "heading": "1-nuqta", "description": "Tushuntirish." },
-        { "heading": "2-nuqta", "description": "Tushuntirish." }
+        {
+          "heading": "Системная трансформация процессов",
+          "description": "Современные вызовы требуют кардинального пересмотра традиционных подходов и внедрения комплексных моделей развития. Использование передовых отраслевых стандартов повышает общую продуктивность на 35-50% и гарантирует гибкую адаптацию к изменениям внешней среды."
+        },
+        {
+          "heading": "Оптимизация ресурсного потенциала",
+          "description": "Интеграция инновационных решений обеспечивает рациональное распределение ключевых ресурсов и снижение сопутствующих рисков. Поэтапное масштабирование формирует прочный фундамент для достижения измеримых долгосрочных показателей."
+        }
       ],
-      "highlight": "Xulosa",
-      "speakerNotes": "Nutq matni."
+      "highlight": "Фундаментальный системный подход и точная диагностика гарантируют максимальную эффективность практической реализации.",
+      "speakerNotes": "На данном слайде мы анализируем базовые предпосылки и ключевые точки роста, определяющие высокую актуальность рассматриваемого вопроса."
     }
   ]
 }
 `;
+  }
+
+  if (language === 'en') {
+    return `
+You are a world-class strategic consultant and presentation designer (McKinsey, BCG, TED-caliber executive briefings).
+Presentation Topic: "${topic}"
+Domain / Industry: ${categoryObj.name} (${categoryObj.promptContext})
+REQUIRED SLIDE COUNT: EXACTLY ${targetCount} SLIDES!
+Language: 100% PROFESSIONAL, FLUENT ENGLISH.
+Design Theme: ${theme}
+${organization ? `Organization / University: ${organization}` : ''}
+${docContext}
+
+STRICT MANDATORY REQUIREMENTS:
+1. 100% PURE ENGLISH CONTENT:
+   - ALL titles, subtitles, point headings, detailed descriptions, metric labels, highlights, and speakerNotes MUST be strictly in English!
+   - ABSOLUTELY NO foreign words or phrases (especially no Uzbek or Russian words like "1-nuqta", "Xulosa", "Kirish", etc.).
+2. IN-DEPTH, SUBSTANTIVE CONTENT (HIGH INFORMATION DENSITY):
+   - Every bullet point "description" MUST contain at least 2–4 complete, informative sentences (35 to 60 words)!
+   - Include concrete domain terminology, real-world mechanisms, analytical depth, industry benchmarks, and cause-and-effect reasoning.
+   - Generic filler, superficial phrases, and 1-line bullet points are STRICTLY FORBIDDEN!
+3. ZERO MENTION OF ARTIFICIAL INTELLIGENCE (AI):
+   - Do NOT mention "AI", "artificial intelligence", "generated by AI", "bot", or "prompt" anywhere in titles, descriptions, subtitles, or speaker notes. The deck must look 100% human-crafted by a seasoned industry expert.
+4. RICH DIVERSITY OF LAYOUTS (layoutType):
+   - Rotate strategically through: "split_hero", "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion".
+5. HIGH-QUALITY IMAGE SEARCH PROMPTS:
+   - In "imagePrompts", provide exactly 2 precise photorealistic English search keywords (e.g., ["${enKeywords} professional research", "${enKeywords} technology architecture"]).
+6. COMPREHENSIVE SPEAKER NOTES (speakerNotes):
+   - Provide a natural, polished 3–5 sentence verbal script for the presenter on every slide.
+7. The "slides" array MUST contain EXACTLY ${targetCount} slides!
+
+Strictly return CLEAN JSON of this structure:
+{
+  "title": "${topic}",
+  "subtitle": "Comprehensive Strategic Analysis & Practical Frameworks",
+  "theme": "${theme}",
+  "slides": [
+    {
+      "slideNumber": 1,
+      "type": "title",
+      "layoutType": "title",
+      "title": "${topic}",
+      "subtitle": "Executive Research Briefing on ${categoryObj.name}",
+      "imagePrompts": ["${enKeywords} concept photography", "${enKeywords} modern visual"],
+      "speakerNotes": "Welcome everyone. Today we are presenting a comprehensive analytical evaluation of ${topic}, highlighting structural dynamics and strategic execution paths."
+    },
+    {
+      "slideNumber": 2,
+      "type": "content",
+      "layoutType": "split_hero",
+      "title": "Fundamental Concepts & Strategic Imperatives",
+      "subtitle": "Theoretical framework and modern operational drivers",
+      "imagePrompts": ["${enKeywords} analysis research", "${enKeywords} practical innovation"],
+      "points": [
+        {
+          "heading": "Systemic Operational Transformation",
+          "description": "Rapid market evolution demands a fundamental shift away from legacy workflows toward integrated modern practices. Applying standardized methodologies accelerates operational velocity by 35-50% while mitigating core execution risks."
+        },
+        {
+          "heading": "Strategic Resource Maximization",
+          "description": "Deploying data-driven solutions ensures optimal capital and talent deployment across critical touchpoints. Phased scaling establishes a resilient foundation capable of delivering durable competitive advantages."
+        }
+      ],
+      "highlight": "A disciplined foundational architecture is the cornerstone of sustainable long-term excellence.",
+      "speakerNotes": "On this slide, we examine the baseline theoretical foundations and critical levers that drive operational success in this domain."
+    }
+  ]
+}
+`;
+  }
+
+  if (language === 'tg') {
+    return `
+Шумо коршиноси сатҳи байналмилалӣ ва муаллифи муаррифиҳои касбӣ (PowerPoint) дар сатҳи олии илмӣ, донишгоҳӣ ва таҳлилӣ мебошед.
+Мавзӯи муаррифӣ: "${topic}"
+Соҳа / Самт: ${categoryObj.name} (${categoryObj.promptContext})
+ШУМОРАИ ТАЛАБШУДАИ СЛАЙДҲО: ДАҚИҚАН ${targetCount} СЛАЙД!
+Забони муаррифӣ: 100% ЗАБОНИ ТОҶИКӢ (забони адабӣ, равон ва касбӣ).
+Услуби тарҳрезӣ: ${theme}
+${organization ? `Муассиса / Донишгоҳ: ${organization}` : ''}
+${docContext}
+
+ТАЛАБОТИ ҚАТЪӢ ВА ҚОИДАҲОИ АСОСӢ:
+1. 100% ЗАБОНИ ШЕВО ВА ТОЗАИ ТОҶИКӢ:
+   - ҲАМАИ сарлавҳаҳо (title), зерсарлавҳаҳо (subtitle), номи бандҳо (heading), шарҳҳои муфассал (description), нишондиҳандаҳо, хулосаҳои асосӣ (highlight) ва қайдҳои баромадкунанда (speakerNotes) бояд ТАНҲО ВА СОФ БА ЗАБОНИ ТОҶИКӢ бошанд!
+   - Истифодаи калимаҳои ӯзбекӣ, русӣ ё дигар забонҳо (ба мисли "1-nuqta", "Xulosa", "Kirish so'zi", "Zamonaviy", "tushuntirish") ҚАТЪИЯН МАНЪ АСТ! Танҳо дар imagePrompts бояд ибораҳои англисӣ истифода шаванд.
+2. МАЪЛУМОТИ АМИҚ, ПУРРА ВА СЕРМАЗМУН (ШУМОРАИ ЗИЁДИ КАЛИМАҲОИ ФОЙДАНОК):
+   - Дар ҳар як банди слайд қисмати "description" (шарҳ) БОЯД ҳатман аз 2 то 4 ҷумлаи мукаммал ва пурмазмун (аз 35 то 60 калима) иборат бошад!
+   - Далелҳои мушаххас, мафҳумҳои илмию соҳавӣ, таҳлилҳои амиқи сабабу натиҷа ва равандҳои амалиро зикр намоед.
+   - Ибораҳои умумӣ, хушк ва кӯтоҳи яксатра («Банди 1», «Муқаддима», «Шарҳи кӯтоҳ») ҚАТЪИЯН МАНЪ АСТ!
+3. МАНЪИ ҚАТЪИИ ЗИКРИ ЗЕҲНИ СУНЪӢ (AI):
+   - Дар ягон ҷойи муаррифӣ навиштани он, ки ин муаррифӣ бо зеҳни сунъӣ омода шудааст, ё истифодаи калимаҳои «зеҳни сунъӣ», «AI», «бот», «промпт» ҚАТЪИЯН МАНЪ АСТ! Муаррифӣ бояд тавре бошад, ки гӯё онро олими барҷаста ё мутахассиси варзида худаш навишта бошад.
+4. ГУНОГУНИИ ТАРҲҲОИ СЛАЙД (layoutType):
+   - Аз тарҳҳои "split_hero", "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion" самаранок истифода баред.
+5. ҶУСТУҶӮИ АКСҲО (imagePrompts):
+   - Барои ҳар слайд дар "imagePrompts" дақиқан 2 ибораи ҷустуҷӯи акс ба забони англисӣ диҳед (масалан: ["${enKeywords} professional laboratory analysis", "${enKeywords} modern conference"]).
+6. ҚАЙДҲОИ БАРОМАДКУНАНДА (speakerNotes):
+   - Барои ҳар як слайд матни нутқи зинда ва касбии баромадкунандаро (3–5 ҷумла) бо забони тоҷикӣ омода кунед.
+7. Дар маҷмӯъ шумораи слайдҳо дар массиви "slides" ДАҚИҚАН ${targetCount} адад бошад!
+
+Қатъиян дар формати JSON посух диҳед:
+{
+  "title": "${topic}",
+  "subtitle": "Таҳлили ҳамаҷониба ва дурнамои стратегӣ",
+  "theme": "${theme}",
+  "slides": [
+    {
+      "slideNumber": 1,
+      "type": "title",
+      "layoutType": "title",
+      "title": "${topic}",
+      "subtitle": "Таҳқиқоти илмӣ ва амалӣ дар самти: ${categoryObj.name}",
+      "imagePrompts": ["${enKeywords} professional concept", "${enKeywords} modern visual"],
+      "speakerNotes": "Салом, ҳозирини гиромӣ! Имрӯз мо ҷанбаҳои асосӣ ва дурнамои рушди мавзӯи ${topic}-ро ба таври муфассал мавриди баррасӣ қарор медиҳем."
+    },
+    {
+      "slideNumber": 2,
+      "type": "content",
+      "layoutType": "split_hero",
+      "title": "Асосҳои назариявӣ ва мубрамияти мавзӯъ",
+      "subtitle": "Пойдевори консептуалӣ ва заминаҳои татбиқи амалӣ",
+      "imagePrompts": ["${enKeywords} analysis research", "${enKeywords} practical innovation"],
+      "points": [
+        {
+          "heading": "Дигаргунсозии низомманди равандҳо",
+          "description": "Шароити муосир таҷдиди назар кардани усулҳои анъанавӣ ва ҷорисозии моделҳои навро тақозо мекунад. Татбиқи стандартҳои пешрафта маҳсулнокиро 35-50% боло бурда, мутобиқшавии фавриро ба тағйирот таъмин месозад."
+        },
+        {
+          "heading": "Истифодаи мақсадноки захираҳо",
+          "description": "Ҳамгироии роҳҳои ҳалли инноватсионӣ тақсимоти дурусти захираҳои моддию инсониро кафолат медиҳад. Ин раванд хавфҳои идоравиро ба ҳадди ақал расонида, заминаи рушди устуворро фароҳам меорад."
+        }
+      ],
+      "highlight": "Пойдевори мустаҳками назариявӣ кафили комёбиҳои амалӣ ва рушди устувор мебошад.",
+      "speakerNotes": "Дар ин слайд мо омилҳои асосии пешбаранда ва нуқтаҳои муҳими рушдро, ки мубрамияти мавзӯъро таъмин менамоянд, таҳлил мекунем."
+    }
+  ]
+}
+`;
+  }
+
+  // Uzbek (Default)
+  return `
+Siz xalqaro darajadagi professional taqdimotlar (PowerPoint slaydlar) muallifi va sohaning yetakchi tahlilchisiz.
+Mavzu: "${topic}"
+Yo'nalish / Soha: ${categoryObj.name} (${categoryObj.promptContext})
+TALAB QILINGAN SLAYDLAR SONI: ANIQ ${targetCount} TA SLAYD!
+Taqdimot tili: Toza, adabiy o'zbek tili.
+Dizayn mavzusi: ${theme}
+${organization ? `Tashkilot / Universitet: ${organization}` : ''}
+${docContext}
+
+MUHIM QAT'IY TALABLAR VA CHEKLOVLAR:
+1. HAR BIR BANDDA CHUQUR, KENG QAMROVLI VA MAZMUNDOR MA'LUMOT (SO'ZLAR SONI BOY BO'LSIN):
+   - Har bir slayd punktidagi "description" (tushuntirish) kamida 2-4 ta to'liq, mazmundor gapdan (kamida 35-60 so'z) iborat bo'lishi SHART!
+   - Mavzuga doir aniq sohaviy tushunchalar, real faktlar, amaliy mexanizmlar, sabab-oqibat tahlillari va professional atamalarni keltiring.
+   - Qisqa, 1 qatorli umumiy gaplar, "1-nuqta", "Kirish", "Xulosa", "Tushuntirish" kabi quruq va zerikarli iboralarni ishlatish QAT'IYAN TAQIQLANADI!
+2. SUN'IY INTELLEKT (AI) HAQIDA HECH QANDAY SO'Z YOZILMASIN:
+   - Slayd ichida, sarlavhada, bandlarda yoki spiker nutqida "bu taqdimot AI yordamida qilindi", "Sun'iy intellekt", "AI", "bot" kabi iboralarni MUTLAQO ISHLATMANG! Taqdimot inson mutaxassisi yoki professor tomonidan chuqur tayyorlangan ilmiy-amaliy taqdimotdek bo'lsin.
+3. HAR BIR SLAYD UNIKAL BO'LISHI UCHUN "layoutType" TURLARIDAN UNUMLI FOYDALANING:
+   - "split_hero": chapda asosiy vizual, o'ngda chuqur tahliliy fikrlar
+   - "comparison": an'anaviy yondashuv va innovatsion yechimlarni taqqoslash ("leftHeading", "rightHeading", "points")
+   - "kpi_metrics": katta statistik raqamlar va aniq o'lchovlar ("metrics": [{"val": "+85%", "label": "...", "desc": "..."}])
+   - "process_timeline": bosqichma-bosqich yo'l xaritasi va harakatlar zanjiri
+   - "matrix_grid": tizimning 4 ta mustahkam ustuni yoki bloklari (aniq 4 ta point)
+   - "spotlight": bosh analitik iqtibos / insight ("spotlightText") va tahlillar
+   - "cinematic": strategik kelajak ko'rinishi va transformatsiya
+   - "conclusion": yakuniy xulosalar va amaliy tavsiyalar
+4. RASMLAR UCHUN:
+   - Har bir slayd uchun "imagePrompts" massivida aynan 2 ta INGLIZCHA aniq fotorealistik foto qidiruv so'zini bering (masalan: ["${enKeywords} laboratory research", "${enKeywords} modern professional workspace"]).
+5. SPIKER NUTQI (speakerNotes):
+   - Har bir slayd uchun spiker minbardan turib gapirib berishi mumkin bo'lgan 3-5 gapdan iborat jonli, qiziqarli nutq matnini yozing.
+6. Jami "slides" massivida AYNAN ${targetCount} ta slayd bo'lsin!
+
+Qat'iy toza JSON formatida javob bering:
+{
+  "title": "${topic}",
+  "subtitle": "Keng qamrovli tahliliy tadqiqot va amaliy yechimlar",
+  "theme": "${theme}",
+  "slides": [
+    {
+      "slideNumber": 1,
+      "type": "title",
+      "layoutType": "title",
+      "title": "${topic}",
+      "subtitle": "${categoryObj.name} doirasidagi maxsus ilmiy-tahliliy taqdimot",
+      "imagePrompts": [
+        "${enKeywords} concept photography",
+        "${enKeywords} modern visual"
+      ],
+      "speakerNotes": "Assalomu alaykum, hurmatli anjuman ishtirokchilari! Bugun biz ${topic} mavzusining fundamental asoslari va amaliy istiqbollarini atroflicha tahlil qilamiz."
+    },
+    {
+      "slideNumber": 2,
+      "type": "content",
+      "layoutType": "split_hero",
+      "title": "Mavzuning Dolzarbligi va Nazariy Asoslari",
+      "subtitle": "Fundamental tamoyillar va sohaviy rivojlanish omillari",
+      "imagePrompts": ["${enKeywords} analysis research", "${enKeywords} practical innovation"],
+      "points": [
+        {
+          "heading": "Tizimli Transformatsiya Zarurati",
+          "description": "Bugungi kunda sohadagi tezkor o'zgarishlar an'anaviy yondashuvlardan voz kechib, kompleks va integratsiyalashgan boshqaruv modellariga o'tishni taqozo etmoqda. Zamonaviy standartlarni joriy qilish amaliy samaradorlikni 35-50% ga oshirish bilan birga, yuzaga kelishi mumkin bo'lgan xatarlarni sezilarli darajada kamaytiradi."
+        },
+        {
+          "heading": "Resurslar Imkoniyatini Optimallashtirish",
+          "description": "Innovatsion uslublar va ilg'or tajribalarni qo'llash moddiy hamda inson kapitalidan maksimal darajada oqilona foydalanish kafolatini beradi. Bosqichma-bosqich takomillashtirish uzoq muddatli istiqbolda barqaror o'sish sur'atlarini ta'minlovchi mustahkam poydevor yaratadi."
+        }
+      ],
+      "highlight": "Mukammal nazariy poydevor va izchil harakatlar strategiyasi yuqori natijalarga erishishning asosiy kalitidir.",
+      "speakerNotes": "Ushbu slaydda biz sohaning bugungi kundagi holati, mavzuni dolzarb qilayotgan asosiy omillar hamda kelgusidagi transformatsiya yo'nalishlariga chuqur to'xtalamiz."
+    }
+  ]
+}
+`;
+}
+
+/**
+ * AI belgilari, suv belgisi va chet tillarga o'tib ketgan o'zbekcha so'zlarni tozalovchi filtr
+ */
+function sanitizePresentationData(data, language = 'uz') {
+  if (!data || typeof data !== 'object') return data;
+
+  const aiSelfRegex = /(taqdimot\s*(sun['']iy\s*intellekt|ai)\s*(yordamida|tomonidan)\s*(tayyorlandi|tuzildi|yaratildi)|sun['']iy\s*intellekt\s*tomonidan\s*tayyorlandi|презентация\s*(создана|сгенерирована)\s*(с\s*помощью\s*ии|искусственным\s*интеллектом)|сгенерировано\s*ии|создано\s*ии|generated\s*by\s*ai|created\s*by\s*ai|prepared\s*with\s*ai|муаррифӣ\s*бо\s*зеҳни\s*сунъӣ\s*омода\s*шудааст|бо\s*зеҳни\s*сунъӣ\s*омода\s*шудааст|✨\s*ai\s*taqdimot|ai\s*presentation\s*bot)/gi;
+
+  const cleanText = (str, fallback = '') => {
+    if (!str || typeof str !== 'string') return fallback;
+    const cleaned = str.replace(aiSelfRegex, '').trim();
+    return cleaned || fallback;
+  };
+
+  const defaultSubtitles = {
+    uz: 'Keng qamrovli tahliliy tadqiqot va amaliy yechimlar',
+    ru: 'Комплексный аналитический обзор и практические выводы',
+    en: 'Comprehensive strategic analysis and operational frameworks',
+    tg: 'Таҳлили ҳамаҷониба ва дурнамои стратегӣ',
+  };
+
+  data.subtitle = cleanText(data.subtitle, defaultSubtitles[language] || defaultSubtitles.uz);
+
+  const isNonUzbek = language !== 'uz';
+
+  if (Array.isArray(data.slides)) {
+    data.slides.forEach((slide, idx) => {
+      slide.title = cleanText(slide.title, `Slide ${idx + 1}`);
+      slide.subtitle = cleanText(slide.subtitle, '');
+      if (slide.highlight) slide.highlight = cleanText(slide.highlight, '');
+      if (slide.spotlightText) slide.spotlightText = cleanText(slide.spotlightText, '');
+      if (slide.speakerNotes) slide.speakerNotes = cleanText(slide.speakerNotes, '');
+
+      // Chet tillarda o'zbekcha qolib ketgan shablon so'zlarni almashtirish
+      if (isNonUzbek) {
+        if (/zamonaviy\s*tahlil/i.test(slide.subtitle) || /keng\s*qamrovli/i.test(slide.subtitle)) {
+          slide.subtitle = defaultSubtitles[language] || '';
+        }
+        if (/bo['']lim\s*mazmuni/i.test(slide.subtitle)) {
+          slide.subtitle = language === 'ru' ? 'Ключевые направления и анализ' : language === 'en' ? 'Core dimensions and analysis' : 'Самтҳои асосӣ ва таҳлил';
+        }
+        if (/slayd\s*sarlavhasi/i.test(slide.title)) {
+          slide.title = language === 'ru' ? `Тематический раздел ${idx + 1}` : language === 'en' ? `Strategic Focus ${idx + 1}` : `Бахши мавзӯъии ${idx + 1}`;
+        }
+        if (/kirish\s*so['']zi/i.test(slide.speakerNotes) || /nutq\s*matni/i.test(slide.speakerNotes)) {
+          slide.speakerNotes = language === 'ru'
+            ? `Здравствуйте, уважаемые коллеги! На данном слайде мы подробно рассмотрим тему "${slide.title}".`
+            : language === 'en'
+            ? `Welcome everyone. On this slide, we explore the essential dimensions of "${slide.title}".`
+            : `Салом, ҳозирини гиромӣ! Дар ин слайд мо ҷанбаҳои муҳимтарини "${slide.title}"-ро баррасӣ мекунем.`;
+        }
+        if (/xulosa/i.test(slide.highlight) && slide.highlight.length < 15) {
+          slide.highlight = language === 'ru'
+            ? 'Системный подход и выверенная стратегия гарантируют достижение высоких показателей.'
+            : language === 'en'
+            ? 'A disciplined strategic framework ensures optimal performance and sustainable growth.'
+            : 'Равиши низомманд ва стратегияи дақиқ ноил шудан ба натиҷаҳои баландро кафолат медиҳад.';
+        }
+      }
+
+      if (Array.isArray(slide.points)) {
+        slide.points.forEach((pt, pIdx) => {
+          pt.heading = cleanText(pt.heading, '');
+          pt.description = cleanText(pt.description, '');
+
+          if (isNonUzbek) {
+            if (/^\d+[-_]nuqta$/i.test(pt.heading) || /^nuqta\s*\d+$/i.test(pt.heading)) {
+              pt.heading = language === 'ru'
+                ? `Ключевой фактор ${pIdx + 1}`
+                : language === 'en'
+                ? `Core Factor ${pIdx + 1}`
+                : `Омили калидии ${pIdx + 1}`;
+            }
+            if (/tushuntirish/i.test(pt.description)) {
+              pt.description = language === 'ru'
+                ? 'Глубокий анализ данного направления позволяет выявить ключевые закономерности и внедрить эффективные отраслевые решения.'
+                : language === 'en'
+                ? 'Detailed analysis of this dimension reveals critical structural patterns and enables high-impact operational solutions.'
+                : 'Таҳлили амиқи ин самт имкон медиҳад, ки қонуниятҳои асосӣ муайян гардида, роҳҳои ҳалли муассир татбиқ карда шаванд.';
+            }
+          }
+
+          // Qisqa bo'lib qolgan gaplarni boyitish
+          if (pt.description.length < 25) {
+            pt.description += language === 'ru'
+              ? ' Практическая реализация данных мер существенно повышает общую эффективность процессов и снижает риски.'
+              : language === 'en'
+              ? ' Practical execution of these measures substantially boosts overall workflow productivity and resilience.'
+              : language === 'tg'
+              ? ' Татбиқи амалии ин тадбирҳо самаранокии умумии равандҳоро ба таври назаррас меафзояд ва хавфҳоро коҳиш медиҳад.'
+              : ' Ushbu choralarni amaliyotga joriy etish jarayonlar samaradorligini sezilarli darajada oshiradi va xatarlarni kamaytiradi.';
+          }
+        });
+      }
+    });
+  }
+
+  return data;
+}
+
+/**
+ * Foydalanuvchi mavzusi va sohasi asosida slaydlar strukturasini JSON ko'rinishida generatsiya qiladi.
+ */
+export async function generatePresentationData({ topic, slideCount = 6, language = 'uz', theme = 'ocean', category = 'general', documentText = '', organization = '' }) {
+  const targetCount = Math.min(Math.max(parseInt(slideCount, 10) || 6, 3), 25);
+  const categoryObj = getCategory(category, language);
+  const enKeywords = extractCleanKeywords(topic);
+
+  const prompt = buildPresentationPrompt({
+    topic,
+    targetCount,
+    language,
+    theme,
+    categoryObj,
+    enKeywords,
+    organization,
+    documentText,
+  });
 
   // 1-URINISH: Agar Google Gemini API mavjud bo'lsa
   if (genAI) {
@@ -1059,7 +1750,7 @@ Qat'iy toza JSON formatida javob bering:
       const data = JSON.parse(text);
       if (data && data.slides && data.slides.length > 0) {
         if (organization) data.organization = organization;
-        return data;
+        return sanitizePresentationData(data, language);
       }
     } catch (gErr) {
       console.warn('[AI Engine] Google Gemini uzilishi:', gErr.message);
@@ -1070,9 +1761,11 @@ Qat'iy toza JSON formatida javob bering:
   const pollData = await generateViaPollinations(prompt);
   if (pollData && pollData.slides && pollData.slides.length >= 3) {
     if (organization) pollData.organization = organization;
-    return pollData;
+    return sanitizePresentationData(pollData, language);
   }
 
   // 3-URINISH: Mavzuga to'liq moslashtirilgan boy dinamik reja
-  return generateDynamicFallbackPresentation({ topic, slideCount: targetCount, language, theme, categoryObj });
+  const fallbackData = generateDynamicFallbackPresentation({ topic, slideCount: targetCount, language, theme, categoryObj });
+  if (organization) fallbackData.organization = organization;
+  return sanitizePresentationData(fallbackData, language);
 }

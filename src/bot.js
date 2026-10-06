@@ -928,13 +928,17 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
 
   const themeName = THEME_NAMES[theme] || theme;
-  const langName = LANG_NAMES[session.language || 'uz'] || session.language || 'uz';
-  const catObj = getCategory(session.category || 'general');
+  const langKey = session.language || 'uz';
+  const langName = LANG_NAMES[langKey] || langKey;
+  const catObj = getCategory(session.category || 'general', langKey);
 
-  const statusMsg = await ctx.reply(
-    `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n🌐 Til: *${langName}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${user.coins} ta*\n\n_AI slaydlar rejasini tuzmoqda, rasmlar yuklanmoqda va PowerPoint (.pptx) shakllantirilmoqda..._`,
-    { parse_mode: 'Markdown' }
-  );
+  const statusText = {
+    ru: `⏳ *" ${session.topic} "*\n\n🎯 Направление: *${catObj.name}*\n🌐 Язык: *${langName}*\n📊 Слайды: *${session.slideCount}*\n🎨 Стиль: *${themeName}*\n🪙 Баланс: *${user.coins}*\n\n_Формирование структуры слайдов, подбор визуалов и создание PowerPoint (.pptx)..._`,
+    en: `⏳ *" ${session.topic} "*\n\n🎯 Field: *${catObj.name}*\n🌐 Language: *${langName}*\n📊 Slides: *${session.slideCount}*\n🎨 Theme: *${themeName}*\n🪙 Balance: *${user.coins}*\n\n_Structuring slide architecture, selecting visuals, and generating PowerPoint (.pptx)..._`,
+    tg: `⏳ *" ${session.topic} "*\n\n🎯 Самт: *${catObj.name}*\n🌐 Забон: *${langName}*\n📊 Слайдҳо: *${session.slideCount}*\n🎨 Тарҳ: *${themeName}*\n🪙 Бақия: *${user.coins}*\n\n_Таҳияи нақшаи слайдҳо, интихоби аксҳо ва ташаккули PowerPoint (.pptx)..._`,
+  }[langKey] || `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n🌐 Til: *${langName}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${user.coins} ta*\n\n_Slaydlar rejasi tuzilmoqda, rasmlar yuklanmoqda va PowerPoint (.pptx) shakllantirilmoqda..._`;
+
+  const statusMsg = await ctx.reply(statusText, { parse_mode: 'Markdown' });
 
   try {
     // 1. AI orqali generatsiya
@@ -982,23 +986,47 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
     } catch (_) {}
 
     // 3. Foydalanuvchiga yuborish
+    const docCaption = {
+      ru: `✅ *${data.title}*\n\n🎯 Направление: ${catObj.name}\n🌐 Язык: ${langName}\n📄 Слайды: ${data.slides?.length || session.slideCount}\n🎨 Стиль: ${themeName}\n🪙 Оставшийся баланс: *${user.coins}*\n\n_Файл можно открыть и редактировать в программе PowerPoint._`,
+      en: `✅ *${data.title}*\n\n🎯 Field: ${catObj.name}\n🌐 Language: ${langName}\n📄 Slides: ${data.slides?.length || session.slideCount}\n🎨 Theme: ${themeName}\n🪙 Remaining balance: *${user.coins}*\n\n_You can open and present this file in PowerPoint._`,
+      tg: `✅ *${data.title}*\n\n🎯 Самт: ${catObj.name}\n🌐 Забон: ${langName}\n📄 Слайдҳо: ${data.slides?.length || session.slideCount}\n🎨 Тарҳ: ${themeName}\n🪙 Бақияи шумо: *${user.coins}*\n\n_Шумо метавонед файлро дар барномаи PowerPoint кушоед._`,
+    }[langKey] || `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${user.coins} ta*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`;
+
     await ctx.replyWithDocument(
       new InputFile(filePath, `${data.title || 'prezentatsiya'}.pptx`),
       {
-        caption: `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${user.coins} ta*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`,
+        caption: docCaption,
         parse_mode: 'Markdown',
       }
     );
 
     // 4. Spiker uchun nutq matni (Speaker Notes)
     if (speakerNotesList && speakerNotesList.length > 0) {
-      let notesText = `🎙 *Himoya va ma'ruza uchun tayyor spiker nutqi (Speaker Notes):*\n\n`;
+      const notesHeader = {
+        ru: `🎙 *Готовая речь докладчика для защиты (Speaker Notes):*\n\n`,
+        en: `🎙 *Presenter Speech & Talking Points (Speaker Notes):*\n\n`,
+        tg: `🎙 *Матни нутқи баромадкунанда барои ҳимоя (Speaker Notes):*\n\n`,
+      }[langKey] || `🎙 *Himoya va ma'ruza uchun tayyor spiker nutqi (Speaker Notes):*\n\n`;
+
+      const slidePrefix = {
+        ru: (num) => `*Слайд ${num}:*`,
+        en: (num) => `*Slide ${num}:*`,
+        tg: (num) => `*Слайди ${num}:*`,
+      }[langKey] || ((num) => `*${num}-slayd:*`);
+
+      const notesFooter = {
+        ru: `\n_(Полный текст речи для всех слайдов также встроен в файл PowerPoint!)_`,
+        en: `\n_(Complete speaker notes for all slides are also embedded inside the PowerPoint file!)_`,
+        tg: `\n_(Матни пурраи нутқ дар дохили худи файли PowerPoint низ ҷойгир шудааст!)_`,
+      }[langKey] || `\n_(Barcha slaydlar nutqi PowerPoint faylining o'zida ham saqlangan!)_`;
+
+      let notesText = notesHeader;
       speakerNotesList.slice(0, 5).forEach((sn, i) => {
         if (sn.notes) {
-          notesText += `*${i + 1}-slayd:* ${sn.notes}\n\n`;
+          notesText += `${slidePrefix(i + 1)} ${sn.notes}\n\n`;
         }
       });
-      notesText += `_(Barcha slaydlar nutqi PowerPoint faylining o'zida ham saqlangan!)_`;
+      notesText += notesFooter;
 
       await ctx.reply(notesText, { parse_mode: 'Markdown' });
     }

@@ -183,11 +183,17 @@ app.post('/api/generate', async (req, res) => {
 
       // Foydalanuvchiga Telegram orqali faylni yuborish
       try {
+        const miniAppCaption = {
+          ru: `📊 *${presentationData.title}*\n\n📄 Слайды: ${presentationData.slides?.length || slideCount}\n🎨 Стиль: ${theme || 'ocean'}\n🪙 Оставшийся баланс: *${remainingCoins}*\n\n_Файл можно открыть и редактировать в программе PowerPoint._`,
+          en: `📊 *${presentationData.title}*\n\n📄 Slides: ${presentationData.slides?.length || slideCount}\n🎨 Theme: ${theme || 'ocean'}\n🪙 Remaining balance: *${remainingCoins}*\n\n_You can open and present this file directly in PowerPoint._`,
+          tg: `📊 *${presentationData.title}*\n\n📄 Слайдҳо: ${presentationData.slides?.length || slideCount}\n🎨 Тарҳ: ${theme || 'ocean'}\n🪙 Бақияи шумо: *${remainingCoins}*\n\n_Шумо метавонед файлро дар барномаи PowerPoint кушоед._`,
+        }[language] || `📊 *${presentationData.title}*\n\n📄 Slaydlar: ${presentationData.slides?.length || slideCount} ta\n🎨 Uslub: ${theme || 'ocean'}\n🪙 Qolgan imkoniyatlaringiz: *${remainingCoins} ta*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`;
+
         await bot.api.sendDocument(
           chatId,
           new InputFile(filePath, `${presentationData.title || 'taqdimot'}.pptx`),
           {
-            caption: `📊 *${presentationData.title}*\n\n✨ Mini App orqali yaratildi.\n📄 Slaydlar: ${presentationData.slides?.length || slideCount} ta\n🎨 Uslub: ${theme || 'ocean'}\n🪙 Qolgan imkoniyatlaringiz: *${remainingCoins} ta*\n\n_Do'stlaringizga ulashing: har 3 ta do'st uchun +1 ta bepul taqdimot!_`,
+            caption: miniAppCaption,
             parse_mode: 'Markdown',
           }
         );
