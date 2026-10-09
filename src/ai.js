@@ -49,7 +49,7 @@ async function generateViaPollinations(prompt) {
   try {
     console.log('[AI Engine] Pollinations AI ga so\'rov yuborilmoqda...');
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 45000);
+    const timeout = setTimeout(() => controller.abort(), 20000);
 
     const res = await fetch('https://text.pollinations.ai/', {
       method: 'POST',
@@ -995,6 +995,99 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         ],
         highlight: 'Будущее принадлежит тем, кто принимает смелые, научно обоснованные и системные решения уже сегодня.',
         speakerNotes: 'В заключительной части мы намечаем горизонты дальнейшего развития и закрепления долгосрочного лидерства.'
+      },
+      // ===================== RU ДОПОЛНИТЕЛЬНЫЕ ЭТАПЫ 24-30 =====================
+      {
+        layout: 'spotlight',
+        title: 'Стратегические Партнерства и Кластерная Экосистема',
+        sub: 'Сетевое взаимодействие, отраслевые альянсы и эффект коллективного масштаба',
+        photo: `${enKeywords} strategic partnership network cluster collaboration`,
+        spotlightText: `Объединение ведущих институтов в единый отраслевой кластер по направлению "${effectiveTopic}" увеличивает синергетический эффект в 4–5 раз.`,
+        points: [
+          { heading: 'Кластерная модель взаимодействия', description: 'Формирование единой платформы для координации промышленных предприятий, исследовательских центров и финансовых институтов обеспечивает непрерывный трансфер инноваций и ускоренное внедрение передовых методик.' },
+          { heading: 'Стратегические альянсы и совместные проекты', description: 'Заключение долгосрочных соглашений о партнерстве снижает издержки на экспансию и выход на смежные рынки, распределяя риски и аккумулируя передовой опыт лидеров отрасли.' }
+        ],
+        highlight: 'Развитая сеть стратегических партнерств сокращает затраты на инновации до 40% и укрепляет конкурентоспособность.',
+        speakerNotes: 'Кластерное взаимодействие и партнерские альянсы служат фундаментальным драйвером снижения себестоимости и быстрого масштабирования.'
+      },
+      {
+        layout: 'matrix_grid',
+        title: 'Дорожная Карта Цифровой Трансформации и KPI',
+        sub: 'Этапы технологической модернизации, измеримые метрики и аналитический мониторинг',
+        photo: `${enKeywords} digital transformation roadmap KPI dashboard`,
+        points: [
+          { heading: 'Аудит Цифровой Зрелости', description: 'Комплексная инвентаризация используемых ИТ-систем, выявление узких мест и оценка готовности инфраструктуры к интеграции сквозных решений.' },
+          { heading: 'Интеграция Базовых Платформ', description: 'Внедрение взаимосвязанных ERP, CRM и аналитических модулей, обеспечивающих автоматизацию рутинных операций и единое хранилище данных.' },
+          { heading: 'Архитектура Данных и Кибербезопасность', description: 'Стандартизация протоколов обмена информацией, сквозное шифрование и разграничение прав доступа для исключения утечек.' },
+          { heading: 'Сквозной Мониторинг Эффективности', description: 'Развертывание аналитических панелей реального времени для непрерывного отслеживания ключевых показателей эффективности (KPI).' }
+        ],
+        highlight: 'Системная цифровизация ускоряет принятие управленческих решений в 3 раза и снижает операционные издержки на 45%.',
+        speakerNotes: 'Цифровая трансформация переводит управление процессами на качественно новый уровень прозрачности и скорости.'
+      },
+      {
+        layout: 'three_cards',
+        title: 'Управление Интеллектуальной Собственностью и R&D',
+        sub: 'Патентная защита, портфель инноваций и капитализация нематериальных активов',
+        photo: `${enKeywords} intellectual property patent innovation portfolio`,
+        points: [
+          { heading: 'Патентная Стратегия и Лицензирование', description: 'Правовая защита уникальных научно-технических решений, формирование устойчивого патентного зонтика и коммерциализация ноу-хау.' },
+          { heading: 'Целевые Инвестиции в R&D', description: 'Систематическое финансирование прикладных исследований в партнерстве с профильными университетами и ведущими отраслевыми лабораториями.' },
+          { heading: 'Венчурные Инициативы и Акселерация', description: 'Поддержка внутренних стартапов, проведение пилотных экспериментов и быстрая интеграция успешных гипотез в основную цепочку создания стоимости.' }
+        ],
+        highlight: 'Надежный портфель интеллектуальной собственности обеспечивает устойчивое рыночное преимущество и защищает от копирования.',
+        speakerNotes: 'Интеллектуальный капитал и непрерывные инвестиции в исследования формируют барьеры для входа конкурентов на долгие годы.'
+      },
+      {
+        layout: 'process_timeline',
+        title: 'Антикризисное Управление и Организационная Стойкость',
+        sub: 'Протоколы раннего выявления рисков, оперативное реагирование и посткризисный рост',
+        photo: `${enKeywords} crisis management resilience continuity strategy`,
+        points: [
+          { heading: 'Фаза 1: Ранняя Диагностика Угроз', description: 'Непрерывный мониторинг рыночных сигналов и опережающих индикаторов риска с целью заблаговременной активации превентивных мер.' },
+          { heading: 'Фаза 2: Оперативный Кризисный Протокол', description: 'Развертывание антикризисного штаба, реализация регламентов защиты критических операций и сохранение ликвидности.' },
+          { heading: 'Фаза 3: Посткризисная Адаптация и Рост', description: 'Анализ извлеченных уроков, пересмотр бизнес-процессов и использование открывающихся возможностей для захвата освободившихся долей рынка.' }
+        ],
+        highlight: 'Организации с проработанными антикризисными протоколами выходят из турбулентности сильнее и захватывают лидерство.',
+        speakerNotes: 'Устойчивость к стрессовым факторам закладывается заранее путем регламентации действий в нештатных ситуациях.'
+      },
+      {
+        layout: 'comparison',
+        title: 'Сегментация Рынка и Анализ Целевых Аудиторий',
+        sub: 'Дифференциация потребительских профилей и точность ценностного предложения',
+        photo: `${enKeywords} market segmentation target audience customer profile`,
+        leftHeading: 'Массовое Недифференцированное Предложение',
+        rightHeading: 'Точечная Персонализированная Сегментация',
+        points: [
+          { heading: 'Недостатки размытого позиционирования', description: 'Попытка охватить всех потребителей единым стандартом приводит к размыванию фокуса, снижению лояльности и перерасходу маркетинговых бюджетов.' },
+          { heading: 'Преимущества адресных решений', description: 'Глубокая кластеризация аудитории и адаптация продукта под специфические боли каждого сегмента повышают конверсию на 65% и LTV клиента.' }
+        ],
+        highlight: 'Точная сегментация снижает затраты на привлечение на 35% и удваивает жизненный цикл взаимодействия с клиентом.',
+        speakerNotes: 'Переход от массового предложения к прецизионной сегментации многократно увеличивает конверсию каждого вложенного ресурса.'
+      },
+      {
+        layout: 'kpi_metrics',
+        title: 'Финансовая Устойчивость и Оптимизация Капитала',
+        sub: 'Анализ структуры баланса, рентабельности инвестиций и показателей ликвидности',
+        photo: `${enKeywords} financial stability capital structure liquidity analysis`,
+        metrics: getSmartDomainMetrics(effectiveTopic, 8, language),
+        points: [
+          { heading: 'Оптимизация структуры финансирования', description: 'Определение сбалансированного соотношения собственных и заемных средств минимизирует средневзвешенную стоимость капитала (WACC) и максимизирует доходность на собственный капитал (ROE). Продуманная финансовая политика обеспечивает достаточную подушку ликвидности при любых внешних потрясениях.' }
+        ],
+        highlight: 'Выверенная структура капитала гарантирует финансовую устойчивость и инвестиционную привлекательность проекта.',
+        speakerNotes: 'Управление структурой капитала позволяет максимизировать отдачу на вложенный рубль при строгом контроле долговых рисков.'
+      },
+      {
+        layout: 'split_hero',
+        title: 'Ключевые Факторы Успеха и Конкурентные Преимущества',
+        sub: 'Стратегические компетенции, барьеры для входа и удержание рыночного лидерства',
+        photo: `${enKeywords} success factors competitive advantage strategic model`,
+        points: [
+          { heading: 'Идентификация ключевых факторов успеха (KSF)', description: 'Научно обоснованное выделение 3–4 критических аспектов деятельности, обеспечивающих решающее преимущество перед прямыми конкурентами, и концентрация на них основных ресурсов.' },
+          { heading: 'Формирование устойчивых барьеров для входа', description: 'Создание трудновоспроизводимых технологических, кадровых и экосистемных активов, защищающих завоеванные позиции от копирования.' },
+          { heading: 'Механизм непрерывного опережения', description: 'Регулярный бенчмаркинг и опережающая адаптация бизнес-модели для сохранения безоговорочного отраслевого первенства в долгосрочной перспективе.' }
+        ],
+        highlight: 'Четко выстроенные конкурентные барьеры защищают бизнес-модель и гарантируют сохранение высоких маржинальных показателей.',
+        speakerNotes: 'Ключевые факторы успеха определяют, вокруг каких уникальных компетенций должна выстраиваться долгосрочная стратегия.'
       }
     ];
   }
@@ -1303,6 +1396,99 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         ],
         highlight: 'The future belongs to organizations that make bold, data-backed, and systemic decisions today.',
         speakerNotes: 'In conclusion, the foundations we lay today will define our leadership and impact for the next decade.'
+      },
+      // ===================== EN ADDITIONAL STAGES 24-30 =====================
+      {
+        layout: 'spotlight',
+        title: 'Strategic Partnerships & Cluster Economics',
+        sub: 'Network synergies, cross-sector alliances, and collective scale',
+        photo: `${enKeywords} strategic partnership network cluster collaboration`,
+        spotlightText: `Consolidating premier institutions into an integrated sectoral cluster centered on "${effectiveTopic}" expands output efficiency by 4–5x.`,
+        points: [
+          { heading: 'Cluster Collaboration Architecture', description: 'Establishing a shared operational framework across enterprises, research centers, and financial backers drives continuous knowledge exchange and accelerates the adoption of cutting-edge practices.' },
+          { heading: 'Strategic Alliances & Joint Ventures', description: 'Long-term partnership charters mitigate entry barriers and cross-border expansion risks while aggregating collective intellectual and technological capabilities.' }
+        ],
+        highlight: 'Robust strategic alliances reduce innovation expenditures by up to 40% and build resilient competitive advantages.',
+        speakerNotes: 'Cluster models and strategic joint ventures enable sustainable cost reduction and accelerated operational scale.'
+      },
+      {
+        layout: 'matrix_grid',
+        title: 'Digital Transformation Roadmap & KPI Engine',
+        sub: 'Modernization phases, quantitative benchmarks, and real-time observability',
+        photo: `${enKeywords} digital transformation roadmap KPI dashboard`,
+        points: [
+          { heading: 'Digital Maturity Assessment', description: 'Comprehensive audit of legacy software assets to pinpoint throughput bottlenecks and ensure infrastructure readiness for scalable modernization.' },
+          { heading: 'Enterprise Platform Integration', description: 'Deploying unified ERP, CRM, and BI systems to eliminate manual data silos and establish a single source of truth across operations.' },
+          { heading: 'Data Architecture & Zero-Trust Security', description: 'Enforcing standardized schema definitions, end-to-end encryption protocols, and role-based access governance to safeguard proprietary data assets.' },
+          { heading: 'Real-Time KPI Observability', description: 'Implementing automated executive dashboards with live telemetry for continuous operational health tracking and predictive alerting.' }
+        ],
+        highlight: 'Systemic digital transformation accelerates decision turnaround by 3x while trimming operational expenses by 45%.',
+        speakerNotes: 'Digital modernization elevates workflow agility, institutional transparency, and organizational execution speed.'
+      },
+      {
+        layout: 'three_cards',
+        title: 'Intellectual Property & Innovation Portfolio',
+        sub: 'Patent strategy, R&D capital allocation, and intangible asset capitalization',
+        photo: `${enKeywords} intellectual property patent innovation portfolio`,
+        points: [
+          { heading: 'Patent Protection & Licensing', description: 'Securing legal exclusivity over proprietary breakthroughs, developing defensible IP moats, and commercializing high-value licensing streams.' },
+          { heading: 'Targeted R&D Capital Allocation', description: 'Funding applied research initiatives in tight collaboration with top-tier research institutes, universities, and industry laboratories.' },
+          { heading: 'Internal Incubation & Venture Accelerators', description: 'Fostering agile internal venture sandboxes to rapidly validate disruptive concepts and integrate validated breakthroughs into core workflows.' }
+        ],
+        highlight: 'A defensible intellectual property portfolio provides sustainable market moats and long-term valuation premiums.',
+        speakerNotes: 'Continuous investments into proprietary intellectual capital ensure long-term competitive durability and pricing power.'
+      },
+      {
+        layout: 'process_timeline',
+        title: 'Crisis Management & Organizational Resilience',
+        sub: 'Early threat telemetry, rapid emergency containment, and post-crisis expansion',
+        photo: `${enKeywords} crisis management resilience continuity strategy`,
+        points: [
+          { heading: 'Phase 1: Early Anomaly Telemetry', description: 'Continuous tracking of leading macro indicators to trigger preemptive defensive measures before risks materialize into systemic disruption.' },
+          { heading: 'Phase 2: Rapid Containment & Protocol Activation', description: 'Mobilizing cross-functional crisis leadership units, enforcing contingency workflows, and safeguarding liquidity reserves.' },
+          { heading: 'Phase 3: Post-Crisis Adaptation & Growth', description: 'Conducting comprehensive root-cause post-mortems, restructuring operational vulnerabilities, and capturing vacated market share.' }
+        ],
+        highlight: 'Organizations with disciplined crisis protocols emerge from market volatility stronger and capture decisive market share.',
+        speakerNotes: 'Operational resilience is built in advance through rigorous contingency planning, stress-testing, and playbook automation.'
+      },
+      {
+        layout: 'comparison',
+        title: 'Market Segmentation & Precision Targeting',
+        sub: 'Customer profile differentiation and value proposition alignment',
+        photo: `${enKeywords} market segmentation target audience customer profile`,
+        leftHeading: 'Mass Generalized Outreach',
+        rightHeading: 'Data-Driven Precision Targeting',
+        points: [
+          { heading: 'Diluted value propositions', description: 'Targeting broad audiences with generic messaging squanders commercial capital, depresses brand resonance, and inflates customer acquisition costs.' },
+          { heading: 'Tailored high-impact positioning', description: 'Deep cohort clustering and tailored value propositions boost conversion rates by 65% and substantially increase long-term customer lifetime value.' }
+        ],
+        highlight: 'Precision market segmentation cuts acquisition expenditure by 35% while doubling average customer lifetime engagement.',
+        speakerNotes: 'Transitioning from undifferentiated outreach to targeted segmentation maximizes return on every operational dollar spent.'
+      },
+      {
+        layout: 'kpi_metrics',
+        title: 'Financial Stability & Capital Efficiency',
+        sub: 'Balance sheet optimization, return on invested capital, and liquidity reserves',
+        photo: `${enKeywords} financial stability capital structure liquidity analysis`,
+        metrics: getSmartDomainMetrics(effectiveTopic, 8, language),
+        points: [
+          { heading: 'Capital Structure Optimization', description: 'Balancing debt and equity tranches minimizes the Weighted Average Cost of Capital (WACC) while maximizing Return on Equity (ROE). Prudent capital management preserves resilient liquidity buffers across cyclical fluctuations.' }
+        ],
+        highlight: 'A disciplined capital allocation framework provides balance sheet resilience and unlocks sustainable growth trajectories.',
+        speakerNotes: 'Optimizing capital deployment maximizes enterprise returns while tightly governing financial and structural downside risks.'
+      },
+      {
+        layout: 'split_hero',
+        title: 'Key Success Factors & Sustainable Competitive Moats',
+        sub: 'Distinctive capabilities, high entry barriers, and durable market leadership',
+        photo: `${enKeywords} success factors competitive advantage strategic model`,
+        points: [
+          { heading: 'Isolating Key Success Factors (KSFs)', description: 'Empirically identifying the 3–4 foundational performance drivers that separate top quartile performers from industry peers, and directing resources accordingly.' },
+          { heading: 'Constructing High Entry Barriers', description: 'Cultivating hard-to-replicate technological capabilities, deep customer integrations, and network effects that shield profit margins from competitor imitation.' },
+          { heading: 'Dynamic Competitive Adaptation', description: 'Implementing continuous benchmark surveillance to proactively evolve core competencies and maintain uncontested market leadership over decades.' }
+        ],
+        highlight: 'Formidable competitive moats protect core business profitability and secure unchallenged industry leadership.',
+        speakerNotes: 'Key success factors define the distinctive, hard-to-copy capabilities around which our long-term roadmap is architected.'
       }
     ];
   }
@@ -1611,6 +1797,99 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         ],
         highlight: 'Оянда ба касоне тааллуқ дорад, ки имрӯз қарорҳои далер ва илман асоснок қабул мекунанд.',
         speakerNotes: 'Дар хотима бояд гуфт, ки пояи гузошташуда заминаи комёбиҳои даҳсолаи ояндаро мегузорад.'
+      },
+      // ===================== TG ИЛОВАГИИ ЭТАПҲОИ 24-30 =====================
+      {
+        layout: 'spotlight',
+        title: 'Ҳамкории Стратегӣ ва Иқтисодиёти Кластерӣ',
+        sub: 'Шабакаи ҳамкорӣ, иттиҳодҳои соҳавӣ ва афзоиши самаранокӣ',
+        photo: `${enKeywords} strategic partnership network cluster collaboration`,
+        spotlightText: `Муттаҳид сохтани муассисаҳои пешсаф дар кластери ягона оид ба "${effectiveTopic}" самаранокиро 4–5 маротиба меафзояд.`,
+        points: [
+          { heading: 'Модели ҳамкории кластерӣ', description: 'Таъсиси заминаи ягона барои корхонаҳо, марказҳои илмӣ ва молиявӣ мубодилаи дониш ва ҷорисозии босуръати навовариҳоро таъмин месозад.' },
+          { heading: 'Иттиҳодҳои стратегӣ ва тарҳҳои муштарак', description: 'Бастани созишномаҳои дарозмуддат хароҷоти воридшавӣ ба бозорҳои навро кам карда, таҷрибаи пешсафонро ҷамъ меорад.' }
+        ],
+        highlight: 'Шабакаи қавии шарикон хароҷоти навовариро то 40% кам карда, мавқеи рақобатиро мустаҳкам месозад.',
+        speakerNotes: 'Ҳамкории кластерӣ ва шарикӣ омили асосии кам кардани хароҷот ва рушди босуръат мебошанд.'
+      },
+      {
+        layout: 'matrix_grid',
+        title: 'Харитаи Роҳи Таҳаввулоти Рақамӣ ва Низоми KPI',
+        sub: 'Марҳилаҳои рақамикунонӣ, нишондиҳандаҳои ченшаванда ва мониторинг',
+        photo: `${enKeywords} digital transformation roadmap KPI dashboard`,
+        points: [
+          { heading: 'Баҳодиҳии Омодагии Рақамӣ', description: 'Тафтиши ҳамаҷонибаи системаҳои IT, ошкор сохтани нуқсонҳо ва омодагии инфрасохтор барои ворид намудани қарорҳои нав.' },
+          { heading: 'Ҳамгироии Платформаҳои Асосӣ', description: 'Ҷорисозии системаҳои ягонаи ERP, CRM ва модулҳои таҳлилӣ барои автоматикунонии амалиёти ҳаррӯза.' },
+          { heading: 'Амнияти Додаҳо ва Киберамният', description: 'Стандартикунонии қоидаҳои мубодилаи маълумот ва ҳифзи онҳо аз дастрасии ғайриқонунӣ.' },
+          { heading: 'Мониторинги Пайвастаи Самаранокӣ', description: 'Ташкили панелҳои таҳлилии фаврӣ барои пайгирии доимии нишондиҳандаҳои калидӣ (KPI).' }
+        ],
+        highlight: 'Рақамикунонии низомманд қабули қарорҳоро 3 баробар тезонида, хароҷотро 45% кам мекунад.',
+        speakerNotes: 'Таҳаввулоти рақамӣ идоракунии равандҳоро ба сатҳи комилан нави шаффофият мебарорад.'
+      },
+      {
+        layout: 'three_cards',
+        title: 'Идоракунии Моликияти Зеҳнӣ ва Сандуқи Навовариҳо',
+        sub: 'Ҳимояи патентӣ, сармоягузории илмӣ ва басармоятабдилдиҳӣ',
+        photo: `${enKeywords} intellectual property patent innovation portfolio`,
+        points: [
+          { heading: 'Стратегияи Патентӣ ва Иҷозатномадиҳӣ', description: 'Ҳимояи ҳуқуқии қарорҳои нодири илмию техникӣ ва истифодаи самараноки дороиҳои зеҳнӣ.' },
+          { heading: 'Сармоягузории Мақсаднок ба Тадқиқот', description: 'Маблағгузории пайвастаи тадқиқоти илмӣ дар ҳамкорӣ бо донишгоҳҳо ва озмоишгоҳҳо.' },
+          { heading: 'Ташаббусҳои Озмоишӣ ва Стартапҳо', description: 'Дастгирии лоиҳаҳои дохилӣ ва ҷорисозии босуръати ғояҳои муваффақ ба амалиёти асосӣ.' }
+        ],
+        highlight: 'Сандуқи устувори моликияти зеҳнӣ бартарии боэътимодро дар бозор таъмин месозад.',
+        speakerNotes: 'Сармояи зеҳнӣ заминаи рақобатпазирии дарозмуддат ва даромаднокии устуворро фароҳам меорад.'
+      },
+      {
+        layout: 'process_timeline',
+        title: 'Идоракунии Бӯҳрон ва Устувории Ташкилотӣ',
+        sub: 'Муайянкунии барвақтии хатарҳо, вокуниши фаврӣ ва рушди пас аз бӯҳрон',
+        photo: `${enKeywords} crisis management resilience continuity strategy`,
+        points: [
+          { heading: 'Марҳилаи 1: Ташхиси Барвақтӣ', description: 'Мониторинги доимии нишонаҳои бозор ва хатарҳо бо мақсади сари вақт андешидани чораҳои пешгирикунанда.' },
+          { heading: 'Марҳилаи 2: Вокуниши Фаврӣ', description: 'Фаъолсозии гурӯҳи зиддибӯҳронӣ, ҳифзи амалиёти муҳим ва захираҳои молиявӣ.' },
+          { heading: 'Марҳилаи 3: Мутобиқшавӣ ва Рушд', description: 'Таҳлили сабабҳо, такмили равандҳо ва истифодаи имкониятҳои нав барои ишғоли бозор.' }
+        ],
+        highlight: 'Ташкилотҳои дорои нақшаи зиддибӯҳронӣ аз ҳар мушкилот қавитар ва бо имкониятҳои бештар берун меоянд.',
+        speakerNotes: 'Устуворӣ ба ҳолатҳои ғайричашмдошт пешакӣ ва тавассути омодагии дақиқ ба даст меояд.'
+      },
+      {
+        layout: 'comparison',
+        title: 'Бахшбандии Бозор ва Таҳлили Мухотабон',
+        sub: 'Фарқияти талаботи истеъмолкунандагон ва пешниҳоди арзишманд',
+        photo: `${enKeywords} market segmentation target audience customer profile`,
+        leftHeading: 'Пешниҳоди Умумии Номуайян',
+        rightHeading: 'Бахшбандии Дақиқи Мақсаднок',
+        points: [
+          { heading: 'Камбудиҳои равиши якхела', description: 'Кӯшиши қонеъ кардани ҳамаи мизоҷон бо як паём боиси сарфи беҳудаи захираҳо ва паст шудани самаранокӣ мегардад.' },
+          { heading: 'Афзалиятҳои пешниҳоди дақиқ', description: 'Тақсимбандии дурусти мухотабон ва мутобиқ кардани маҳсулот ба талаботи мушаххас ҷалби мизоҷонро 65% меафзояд.' }
+        ],
+        highlight: 'Бахшбандии дуруст хароҷоти ҷалбро 35% кам карда, эътимоди мизоҷонро дучанд мегардонад.',
+        speakerNotes: 'Гузариш ба бахшбандии дақиқ натиҷаи ҳар як воситаи сарфшударо ба таври назаррас афзун мекунад.'
+      },
+      {
+        layout: 'kpi_metrics',
+        title: 'Устувории Молиявӣ ва Оптимизатсияи Сармоя',
+        sub: 'Таҳлили сохтори сармоя, даромаднокӣ ва нишондиҳандаҳои пардохтпазирӣ',
+        photo: `${enKeywords} financial stability capital structure liquidity analysis`,
+        metrics: getSmartDomainMetrics(effectiveTopic, 8, language),
+        points: [
+          { heading: 'Оптимизатсияи сохтори молиявӣ', description: 'Муайян намудани таносуби дурусти сармояи худӣ ва қарзӣ хароҷоти сармояро кам карда, даромаднокиро баланд мебардорад. Сиёсати оқилонаи молиявӣ устувориро дар шароити тағйирёбанда таъмин месозад.' }
+        ],
+        highlight: 'Сохтори дурусти сармоя кафолати устувории молиявӣ ва ҷолибияти сармоягузории лоиҳа мебошад.',
+        speakerNotes: 'Идоракунии самараноки сармоя фоидаро ҳадди аксар афзоиш дода, хатарҳои молиявиро кам мекунад.'
+      },
+      {
+        layout: 'split_hero',
+        title: 'Омилҳои Калидии Муваффақият ва Афзалиятҳои Рақобатӣ',
+        sub: 'Маҳорати стратегӣ, монеаҳо барои рақибон ва ҳифзи пешсафӣ дар бозор',
+        photo: `${enKeywords} success factors competitive advantage strategic model`,
+        points: [
+          { heading: 'Муайян кардани омилҳои асосӣ (KSF)', description: 'Ҷудо кардани 3-4 самти муҳимтарине, ки афзалияти ҳалкунанда медиҳанд, ва равона кардани захираҳои асосӣ ба онҳо.' },
+          { heading: 'Бунёди монеаҳои қавии рақобатӣ', description: 'Эҷоди дороиҳои технологии такрорнашаванда ва фарҳанги қавӣ, ки мавқеъро аз рақибон ҳимоя мекунанд.' },
+          { heading: 'Механизми пешсафии доимӣ', description: 'Мутобиқсозии пайвастаи тарзи кор барои нигоҳ доштани пешсафии мутлақ дар муддати тӯлонӣ.' }
+        ],
+        highlight: 'Бартариҳои рақобатии мушаххас лоиҳаро дар бозор ҳамчун пешсафи бебаҳс устувор месозанд.',
+        speakerNotes: 'Омилҳои муваффақият нишон медиҳанд, ки стратегии дарозмуддат бояд бар кадом пояҳо устувор бошад.'
       }
     ];
   }
@@ -1919,6 +2198,99 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       ],
       highlight: 'Kelajak bugun qabul qilinayotgan dadil, ilmiy asoslangan va aniq qarorlar bilan yaratiladi.',
       speakerNotes: 'Xulosa o\'rnida shuni ta\'kidlash joizki, bugun qo\'yilgan mustahkam poydevor kelgusi yillarda katta yuksalishlarga yo\'l ochadi.'
+    },
+    // ===================== QOSHIMCHA STAGES 24-30 (TAKRORLANISHNI OLDINI OLISH UCHUN) =====================
+    {
+      layout: 'spotlight',
+      title: 'Strategik Hamkorlik va Klaster Iqtisodiyoti',
+      sub: 'Sinergetik hamkorlik tarmog\'ini kengaytirish va klaster modeli',
+      photo: `${enKeywords} strategic partnership network cluster collaboration`,
+      spotlightText: 'Yagona maqsad atrofida birlashgan tashkilotlar klaster iqtisodiyoti orqali individual kuchlardan 5 baravar kuchliroq natijaga erishadi.',
+      points: [
+        { heading: 'Klaster hamkorlik modeli', description: 'Sohadagi yetakchi korxonalar, ilmiy markazlar va moliyaviy institutlarni bir tizimda birlashtirish innovatsiya va samaradorlikni keskin oshiradi. Klaster ichidagi bilimlar va resurslar almashishi barcha ishtirokchilar uchun raqobatbardosh afzalliklarni shakllantiradi.' },
+        { heading: 'Strategik ittifoqlar va joint venture', description: 'Keng qamrovli strategik sheriklik shartnomalari yangi bozorlarni o\'zlashtirish va texnologiyalar transferini tezlashtiradi. Birgalikdagi loyihalar alohida kuchlar uyg\'unlashganda ko\'zda tutilmagan yuqori natijalarga erishish imkonini beradi.' }
+      ],
+      highlight: 'Puxta hamkorlik tarmoqlari xarajatlarni 40% ga kamaytiradi va innovatsiyalar sur\'atini ikki baravar oshiradi.',
+      speakerNotes: 'Strategik hamkorlik va klaster modeli zamonaviy iqtisodiyotning eng kuchli raqobat vositalaridan biriga aylandi. Birgalikdagi harakatlar alohida kuchlar yig\'indisidan doimo yuqori natija beradi.'
+    },
+    {
+      layout: 'matrix_grid',
+      title: 'Raqamli Transformatsiya Yo\'l Xaritasi va KPI Tizimi',
+      sub: 'Raqamlashtirish bosqichlari, o\'lchanadigan maqsadlar va monitoring tizimi',
+      photo: `${enKeywords} digital transformation roadmap KPI dashboard`,
+      points: [
+        { heading: 'Raqamli tayyor holatni baholash (Digital Maturity)', description: 'Hozirgi raqamli salohiyatni to\'liq audit qilish va etishmayotgan komponentlarni aniqlash, raqamlashtirish yo\'l xaritasini tuzish.' },
+        { heading: 'Asosiy raqamli tizimlarni joriy etish', description: 'ERP, CRM, BI tizimlarini integratsiya qilish, jarayonlarni avtomatlashtirishning ustuvor yo\'nalishlarini belgilash.' },
+        { heading: 'Ma\'lumotlar boshqaruvi va xavfsizlik', description: 'Korporativ ma\'lumotlar arxitekturasini yagona standartga keltirish va kiberxavfsizlik protokollarini joriy etish.' },
+        { heading: 'Raqamli samaradorlik monitoringi', description: 'Real vaqt rejimida ishlash ko\'rsatkichlarini kuzatuvchi boshqaruv paneli (dashboard) va KPI tizimini o\'rnatish.' }
+      ],
+      highlight: 'Tizimli raqamlashtirish operatsion xarajatlarni 45% ga kamaytiradi va qaror qabul qilish tezligini 3 barobarga oshiradi.',
+      speakerNotes: 'Raqamli transformatsiya — bu nafaqat texnologiya, balki tashkilot madaniyatini va jarayonlarini tubdan o\'zgartirish jarayonidir. Puxta yo\'l xaritasi bu o\'tishni tizimli va xavfsiz qiladi.'
+    },
+    {
+      layout: 'three_cards',
+      title: 'Intellektual Mulk va Innovatsiyalar Portfeli',
+      sub: 'Patent strategiyasi, litsenziyalash va innovatsion aktiv boshqaruvi',
+      photo: `${enKeywords} intellectual property patent innovation portfolio`,
+      points: [
+        { heading: 'Patent va litsenziya strategiyasi', description: 'Innovatsion ishlanmalarni patentlash, strategik litsenziyalash shartnomalarini tuzish va intellektual aktivlarni kapitalga aylantirish mexanizmlarini ishga tushirish.' },
+        { heading: 'Tadqiqot va ishlanmalar (R&D) investitsiyasi', description: 'Ilmiy-tadqiqot ishlariga maqsadli investitsiya yo\'naltirish, ilg\'or universitetlar va laboratoriyalar bilan hamkorlikni yo\'lga qo\'yish.' },
+        { heading: 'Innovatsion ekotizim va startaplar', description: 'Ichki startap akseleratorlarini tashkil etish, yangi g\'oyalarni tezkor sinovdan o\'tkazish va muvaffaqiyatli g\'oyalarni asosiy biznesga integratsiya qilish.' }
+      ],
+      highlight: 'Kuchli intellektual mulk portfeli tashkilotga bozorda barqaror raqobatbardosh ustunlik va qo\'shimcha daromad oqimlari beradi.',
+      speakerNotes: 'Intellektual mulk zamonaviy iqtisodiyotda eng qimmatli aktivlardan biri. Innovatsiyalar portfelini boshqarish — bu uzoq muddatli raqobatbardoshlikning kafolatidir.'
+    },
+    {
+      layout: 'process_timeline',
+      title: 'Krizis Boshqaruvi va Tashkiliy Chidamlilik',
+      sub: 'Inqiroz sharoitida tizim barqarorligini saqlash strategiyasi',
+      photo: `${enKeywords} crisis management resilience continuity strategy`,
+      points: [
+        { heading: 'Krizis signallarini erta aniqlash', description: 'Biznes-razvedka tizimi va kalit ko\'rsatkichlarni doimiy monitoring qilish orqali inqirozning dastlabki belgilarini oldindan ko\'rish va profilaktik choralar ko\'rish.' },
+        { heading: 'Krizisga javob berish protokoli', description: 'Oldindan ishlab chiqilgan krizis-boshqaruv qo\'llanmasi va mas\'ul guruhning zudlik bilan harakatga o\'tishi tashkilot barqarorligini kafolatlaydi.' },
+        { heading: 'Krizisdan keyin tiklash va o\'rganish', description: 'Inqiroz yechilgandan so\'ng sabablarni tahlil qilish, tizim mustahkamligini oshirish va xodimlar tajribasini institutsiyal bilimga aylantirish.' }
+      ],
+      highlight: 'Krizis boshqaruviga oldindan tayyor bo\'lgan tashkilotlar istalgan inqirozdan kuchliroq va yangi imkoniyatlar bilan chiqib keladi.',
+      speakerNotes: 'Inqirozlar muqarrardir — muhim narsa ularga tayyor bo\'lish va tizimning chidamliligini oldindan shakllantirish. Biz ushbu strategiyani batafsil ko\'rib chiqamiz.'
+    },
+    {
+      layout: 'comparison',
+      title: 'Bozor Segmentatsiyasi va Maqsadli Auditoriya Tahlili',
+      sub: 'Mijozlar profili, segment dinamikasi va qiymat taklifi farqi',
+      photo: `${enKeywords} market segmentation target audience customer profile`,
+      leftHeading: 'An\'anaviy Ommaviy Yondashuv',
+      rightHeading: 'Maqsadli Segment Strategiyasi',
+      points: [
+        { heading: 'Ommaviy yondashuvning cheklovlari', description: 'Barcha iste\'molchilarga bir xil xabar berish resurslarni samarasiz sarflaydi, marketing ROI pastlaydi va mijozlar ehtiyojlarini to\'liq qondirish imkoniyati yo\'qoladi.' },
+        { heading: 'Segment asosidagi personallashtirilgan strategiya', description: 'Har bir maqsadli segment uchun alohida ishlab chiqilgan qiymat taklifi va muloqot strategiyasi mijozlarni jalb qilish samaradorligini 60-80% ga oshiradi va uzoq muddatli sadoqatni shakllantiradi.' }
+      ],
+      highlight: 'To\'g\'ri segmentatsiya marketing xarajatlarini 35% ga kamaytira turib, sotuvlar konversiyasini 2 barobarga oshiradi.',
+      speakerNotes: 'Bozor segmentatsiyasi zamonaviy marketing strategiyasining poydevori. Maqsadli yondashuv har bir so\'m sarflangan marketing xarajatidan maksimal natija olish imkonini beradi.'
+    },
+    {
+      layout: 'kpi_metrics',
+      title: 'Moliyaviy Barqarorlik va Kapital Tuzilishi Tahlili',
+      sub: 'Likvidlik, rentabellik va kapital samaradorligi ko\'rsatkichlari',
+      photo: `${enKeywords} financial stability capital structure liquidity analysis`,
+      metrics: getSmartDomainMetrics(effectiveTopic, 8, language),
+      points: [
+        { heading: 'Kapital samaradorligini optimallashtirish', description: 'Qarz va o\'z kapitalining optimal nisbatini belgilash, moliyaviy dastak ta\'siridan foydalanish va kapital xarajatlarini (WACC) minimallashtirishning amaliy usullari ko\'rib chiqiladi. Moliyaviy tuzilmani optimallashtirish EPS va ROE ko\'rsatkichlarini sezilarli yaxshilaydi.' }
+      ],
+      highlight: 'Puxta moliyaviy tuzilma tashkilotga barqarorlik beradi va kelajakdagi o\'sish uchun zaruriy kapital bazasini shakllantiradi.',
+      speakerNotes: 'Moliyaviy barqarorlik — har qanday tashkilotning uzoq muddatli muvaffaqiyatining asosi. Kapital tuzilishini to\'g\'ri boshqarish iqtisodiy inqirozlarda ham yuqori natija berishni ta\'minlaydi.'
+    },
+    {
+      layout: 'split_hero',
+      title: 'Muvaffaqiyat Omillari va Raqobatbardosh Ustunlik Modeli',
+      sub: 'Asosiy muvaffaqiyat omillarini (KSF) aniqlash va rivojlantirish',
+      photo: `${enKeywords} success factors competitive advantage strategic model`,
+      points: [
+        { heading: 'Kritik muvaffaqiyat omillarini (KSF) aniqlash', description: 'Sohaning o\'ziga xos raqobat sharoitida ustunlik qozonish uchun hal qiluvchi ahamiyatga ega bo\'lgan 3-5 ta asosiy omilni ilmiy asosda aniqlash va ularni kuchli tomonlarga aylantirish. KSF analizi resurslarni to\'g\'ri yo\'nalishga yo\'naltiradi va raqobat ustunligini uzluksiz ta\'minlaydi.' },
+        { heading: 'Raqobatbardosh pozitsiyani mustahkamlash strategiyasi', description: 'Porter\'s Five Forces va VRIO tahlillari asosida tashkilotning o\'ziga xos ustunlik manbalarini aniqlash, ularni imitatsiya qilish qiyinlashtirilgan tarzda rivojlantirish va sohada barqaror yetakchi o\'rinni egallash strategiyasini ishlab chiqish.' },
+        { heading: 'Doimiy ustunlikni saqlash mexanizmi', description: 'Raqobatchilarning harakatlarini doimiy kuzatib borish, o\'z ustunliklarini yangilash va adaptatsiya qilish tizimini joriy etish orqali o\'zgaruvchan bozor sharoitida ham yuqori pozitsiyani saqlab qolish.' }
+      ],
+      highlight: 'Aniq belgilangan raqobatbardosh ustunlik manbasi tashkilotni sohada uzoq muddatli yetakchi sifatida belgilaydi.',
+      speakerNotes: 'Raqobatbardosh ustunlik modeli tashkilotning nima sababdan bozorda o\'ziga xos o\'rin egallashini va bu pozitsiyani qanday saqlashini ko\'rsatadi. Bu strategik boshqaruvning eng muhim qismidir.'
     }
   ];
 }
@@ -2100,9 +2472,77 @@ export function generateDynamicFallbackPresentation({ topic, slideCount, languag
         speakerNotes: localizedMeta.concNotes
       });
     } else {
-      // 0 dan 22 gacha sof ketma-ketlik: HECH QANDAY MODULO TAKRORLANISHSIZ!
+      // Sof ketma-ketlik: HECH QANDAY MODULO TAKRORLANISHSIZ!
       const stageIdx = i - 2;
-      const st = stageTemplates[stageIdx] || stageTemplates[stageTemplates.length - 1];
+      let st;
+      if (stageIdx < stageTemplates.length) {
+        st = stageTemplates[stageIdx];
+      } else {
+        // Template tugagan holat: unikal overflow slayd yaratamiz (HECH QACHON oxirgisini takrorlamaymiz!)
+        const overflowIdx = stageIdx - stageTemplates.length;
+        const overflowTitles = {
+          uz: [
+            `${effectiveTopic}: Qo'shimcha Tahlil va Kengaytirilgan Tushuntirish`,
+            `${effectiveTopic} Sohasidagi Yangi Trendlar va Perspektivlar`,
+            `${effectiveTopic}: Amaliy Tajriba va Ko'nikmalar`,
+            `${effectiveTopic} Bo'yicha Muhim Xulosalar va Dalillar`,
+            `${effectiveTopic}: O'qib O'rganish va Muvofiqlash`,
+          ],
+          ru: [
+            `${effectiveTopic}: Дополнительный анализ и расширенные выводы`,
+            `Новые тенденции в сфере \"${effectiveTopic}\"`,
+            `${effectiveTopic}: Практика и профессиональные компетенции`,
+            `Ключевые данные по теме \"${effectiveTopic}\"`,
+            `${effectiveTopic}: Обучение и адаптация`,
+          ],
+          en: [
+            `${effectiveTopic}: Extended Analysis and Deeper Insights`,
+            `Emerging Trends in \"${effectiveTopic}\"`,
+            `${effectiveTopic}: Practical Skills and Competencies`,
+            `Key Evidence and Data on \"${effectiveTopic}\"`,
+            `${effectiveTopic}: Learning and Continuous Adaptation`,
+          ],
+          tg: [
+            `${effectiveTopic}: Таҳлили иловагӣ ва хулосаҳои васеъ`,
+            `Тамоюлҳои нав дар соҳаи \"${effectiveTopic}\"`,
+            `${effectiveTopic}: Малакаҳои амалӣ ва шоистагиҳо`,
+            `Маълумоти калидӣ оид ба \"${effectiveTopic}\"`,
+            `${effectiveTopic}: Омӯзиш ва мутобиқшавии доимӣ`,
+          ],
+        };
+        const titles = overflowTitles[language] || overflowTitles.uz;
+        const overflowTitle = titles[overflowIdx % titles.length];
+        const baseStage = stageTemplates[overflowIdx % stageTemplates.length];
+        st = {
+          layout: baseStage.layout,
+          title: overflowTitle,
+          sub: baseStage.sub,
+          photo: baseStage.photo,
+          points: baseStage.points ? baseStage.points.map(p => ({
+            heading: p.heading,
+            description: p.description + (language === 'uz'
+              ? ` Bu \"${overflowTitle}\" mavzusining muhim tarkibiy qismidir.`
+              : language === 'ru' ? ` Это важный компонент темы \"${overflowTitle}\".`
+              : language === 'en' ? ` This is a key element of "${overflowTitle}".`
+              : ` Ин ҷузъи муҳими мавзӯи \"${overflowTitle}\" мебошад.`)
+          })) : baseStage.points,
+          metrics: baseStage.metrics,
+          chart: baseStage.chart,
+          leftHeading: baseStage.leftHeading,
+          rightHeading: baseStage.rightHeading,
+          spotlightText: baseStage.spotlightText ? overflowTitle : undefined,
+          highlight: language === 'uz'
+            ? `\"${overflowTitle}\" bo'yicha chuqur tahlil va izchil yondashuv maqsadlarga erishishning asosiy kalitidir.`
+            : language === 'ru' ? `Системный подход по теме \"${overflowTitle}\" гарантирует устойчивый результат.`
+            : language === 'en' ? `A rigorous framework focused on "${overflowTitle}" ensures measurable outcomes.`
+            : `Муносибати низомманд дар \"${overflowTitle}\" натиҷаҳои боэътимодро кафолат медиҳад.`,
+          speakerNotes: language === 'uz'
+            ? `Hurmatli tinglovchilar! Ushbu ${i}-slaydda biz \"${overflowTitle}\" bo'yicha eng muhim jihatlarni tahlil qilamiz.`
+            : language === 'ru' ? `Уважаемые коллеги! На данном слайде ${i} мы рассмотрим \"${overflowTitle}\".`
+            : language === 'en' ? `Distinguished colleagues, slide ${i} explores the key dimensions of "${overflowTitle}".`
+            : `Ҳозирини гиромӣ! Слайди ${i} ба \"${overflowTitle}\" бахшида шудааст.`,
+        };
+      }
 
       slides.push({
         slideNumber: i,
@@ -2160,7 +2600,6 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
   const seenHeadings = new Set();
   const seenDescriptions = new Set();
   const seenSentences = new Set();
-  const cleanedSlides = [];
 
   const normalizeText = (txt) => (txt || '').toLowerCase().replace(/['`ʻ’".,!?:;()\-–—]/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -2182,7 +2621,6 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
     const normTitle = normalizeText(slide.title);
     if (!normTitle || normTitle.length < 3 || seenTitles.has(normTitle)) return true;
 
-    // Check heading collision (agar 2 ta yoki undan ortiq punkt nomi bir xil bo'lsa)
     if (Array.isArray(slide.points)) {
       let matchingHeadings = 0;
       for (const p of slide.points) {
@@ -2192,7 +2630,6 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
       if (matchingHeadings >= 2) return true;
     }
 
-    // Check sentence collision (agar birorta gap avvalgi slaydda ishlatilgan bo'lsa)
     const sentences = getSlideSentences(slide);
     for (const s of sentences) {
       if (seenSentences.has(s)) return true;
@@ -2219,7 +2656,7 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
     for (const s of sentences) seenSentences.add(s);
   };
 
-  // 1-slayd: Muqova
+  // 1-slayd: Muqova (Har doim 1-o'rinda)
   const firstSlide = data.slides[0] || {};
   firstSlide.slideNumber = 1;
   firstSlide.type = 'title';
@@ -2227,10 +2664,79 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
   firstSlide.title = firstSlide.title || effectiveTopic;
   firstSlide.subtitle = firstSlide.subtitle || localizedMeta.sub;
   registerSlideContent(firstSlide);
-  cleanedSlides.push(firstSlide);
 
+  // Content slaydlar uchun maksimal joy: targetCount - 2 (chunki 1-si muqova, oxirgisi xulosa)
+  const maxContentSlides = Math.max(targetCount - 2, 1);
+  const contentSlides = [];
   let stageCursor = 0;
 
+  // Helper: template tugab qolsa ham kafolatlangan unikal slayd yasash
+  const getNextUniqueStage = (slideNum) => {
+    while (stageCursor < stageTemplates.length) {
+      const candidate = stageTemplates[stageCursor];
+      stageCursor++;
+      if (!isSlideDuplicate(candidate)) {
+        return candidate;
+      }
+    }
+    // Agar barcha template ishlatib bo'lingan bo'lsa:
+    const overflowIdx = stageCursor - stageTemplates.length;
+    stageCursor++;
+    const layouts = ['split_hero', 'three_cards', 'comparison', 'matrix_grid', 'cinematic', 'spotlight'];
+    const chosenLayout = layouts[overflowIdx % layouts.length];
+    const overflowTitle = language === 'ru'
+      ? `${effectiveTopic}: Стратегический Аспект ${slideNum}`
+      : language === 'en'
+      ? `${effectiveTopic}: Strategic Focus ${slideNum}`
+      : language === 'tg'
+      ? `${effectiveTopic}: Ҷанбаи Стратегӣ ${slideNum}`
+      : `${effectiveTopic}: ${slideNum}-Strategik Yo'nalish`;
+    return {
+      layout: chosenLayout,
+      title: overflowTitle,
+      sub: localizedMeta.sub,
+      photo: `${enKeywords} advanced perspective concept`,
+      points: [
+        {
+          heading: language === 'ru' ? `Направление ${slideNum}.1` : language === 'en' ? `Dimension ${slideNum}.1` : language === 'tg' ? `Самти ${slideNum}.1` : `${slideNum}.1-Asosiy Yo'nalish`,
+          description: language === 'ru'
+            ? `Детальная аналитическая проработка направления "${overflowTitle}" позволяет исключить операционные риски и внедрить передовые стандарты эффективности.`
+            : language === 'en'
+            ? `In-depth operational analysis across "${overflowTitle}" eliminates systemic friction and integrates best-in-class performance standards.`
+            : language === 'tg'
+            ? `Таҳлили амиқи самти "${overflowTitle}" хатарҳои идоравиро коҳиш дода, сатҳи баланди маҳсулнокиро кафолат медиҳад.`
+            : `"${overflowTitle}" yo'nalishidagi chuqur amaliy tahlillar operatsion xatarlarni keskin kamaytirib, yuqori sifat standartlarini joriy etishga xizmat qiladi.`
+        },
+        {
+          heading: language === 'ru' ? `Направление ${slideNum}.2` : language === 'en' ? `Dimension ${slideNum}.2` : language === 'tg' ? `Самти ${slideNum}.2` : `${slideNum}.2-Amaliy Yechim`,
+          description: language === 'ru'
+            ? `Интеграция современных методологических инструментов обеспечивает устойчивое долгосрочное развитие и гибкую адаптацию к изменениям.`
+            : language === 'en'
+            ? `Deploying rigorous methodology ensures resilient long-term scalability and swift adaptation to evolving industry conditions.`
+            : language === 'tg'
+            ? `Ҷорисозии усулҳои пешрафта рушди устувор ва мутобиқшавии босуръатро ба шароити нав таъмин месозад.`
+            : `Ilg'or uslubiy vositalarni amaliyotga kiritish uzoq muddatli barqaror rivojlanish va tezkor moslashuvchanlik poydevorini yaratadi.`
+        }
+      ],
+      highlight: language === 'ru'
+        ? `Системный подход по направлению "${overflowTitle}" гарантирует качественный рост.`
+        : language === 'en'
+        ? `Disciplined execution across "${overflowTitle}" ensures sustained operational excellence.`
+        : language === 'tg'
+        ? `Муносибати низомманд дар "${overflowTitle}" пешрафти воқеиро таъмин мекунад.`
+        : `"${overflowTitle}" bo'yicha tizimli yondashuv yuqori sifat va barqarorlikni kafolatlaydi.`,
+      speakerNotes: language === 'ru'
+        ? `Уважаемые коллеги! На данном этапе мы подробно анализируем "${overflowTitle}".`
+        : language === 'en'
+        ? `Distinguished audience, on this slide we explore the core drivers of "${overflowTitle}".`
+        : language === 'tg'
+        ? `Ҳозирини гиромӣ! Дар ин слайд мо ҷанбаҳои асосии "${overflowTitle}"-ро баррасӣ мекунем.`
+        : `Hurmatli tinglovchilar! Ushbu bosqichda biz "${overflowTitle}" bo'yicha muhim jihatlarni ko'rib chiqamiz.`
+    };
+  };
+
+  // Kiruvchi slaydlarni tahlil qilish (muqovadan keyingi va xulosadan oldingi slaydlar)
+  let candidateConclusion = null;
   for (let sIdx = 1; sIdx < data.slides.length; sIdx++) {
     const sl = data.slides[sIdx];
     const normTitle = normalizeText(sl.title);
@@ -2241,27 +2747,18 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
       normTitle.includes('хулоса');
 
     if (isConclusionLike) {
-      // Conclusion faqat oxirgi slayd bo'lishi kerak, oraliq slaydlar orasida bo'lsa uni almashtiramiz
-      if (cleanedSlides.length + 1 === targetCount || sIdx === data.slides.length - 1) {
-        sl.slideNumber = cleanedSlides.length + 1;
-        sl.type = 'conclusion';
-        sl.layoutType = 'conclusion';
-        registerSlideContent(sl);
-        cleanedSlides.push(sl);
-        break;
-      }
+      if (!candidateConclusion) candidateConclusion = sl;
+      continue;
     }
 
-    // Takroriy yoki mazmuni bir xil slayd aniqlansa - mutlaqo yangi master bosqich bilan almashtiramiz!
-    if (isSlideDuplicate(sl)) {
-      while (stageCursor < stageTemplates.length && isSlideDuplicate(stageTemplates[stageCursor])) {
-        stageCursor++;
-      }
-      const replSt = stageTemplates[stageCursor] || stageTemplates[stageTemplates.length - 1];
-      stageCursor++;
+    if (contentSlides.length >= maxContentSlides) break;
 
+    if (!isSlideDuplicate(sl)) {
+      registerSlideContent(sl);
+      contentSlides.push(sl);
+    } else {
+      const replSt = getNextUniqueStage(contentSlides.length + 2);
       const newSlide = {
-        slideNumber: cleanedSlides.length + 1,
         type: 'content',
         layoutType: replSt.layout,
         title: replSt.title,
@@ -2277,33 +2774,14 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
         speakerNotes: replSt.speakerNotes,
       };
       registerSlideContent(newSlide);
-      cleanedSlides.push(newSlide);
-    } else {
-      sl.slideNumber = cleanedSlides.length + 1;
-      // Agar slayd data_chart yoki kpi_metrics bo'lsa-yu, chart/metrics bo'lmasa boyitish
-      if (sl.layoutType === 'data_chart' && !sl.chart) {
-        sl.chart = getSmartDomainCharts(effectiveTopic, cleanedSlides.length, language);
-      }
-      if (sl.layoutType === 'kpi_metrics' && (!sl.metrics || sl.metrics.length === 0)) {
-        sl.metrics = getSmartDomainMetrics(effectiveTopic, cleanedSlides.length, language);
-      }
-      registerSlideContent(sl);
-      cleanedSlides.push(sl);
+      contentSlides.push(newSlide);
     }
-
-    if (cleanedSlides.length >= targetCount - 1) break;
   }
 
-  // Agar slaydlar soni targetCount dan kam bo'lsa, yetishmaganlarini yangi noyob bosqichlar bilan to'ldiramiz
-  while (cleanedSlides.length < targetCount - 1) {
-    while (stageCursor < stageTemplates.length && isSlideDuplicate(stageTemplates[stageCursor])) {
-      stageCursor++;
-    }
-    const newSt = stageTemplates[stageCursor] || stageTemplates[stageTemplates.length - 1];
-    stageCursor++;
-
+  // Agar content slaydlar maxContentSlides ga yetmagan bo'lsa, yetishmaganlarini yangi unikal bosqichlar bilan to'ldirish
+  while (contentSlides.length < maxContentSlides) {
+    const newSt = getNextUniqueStage(contentSlides.length + 2);
     const newSlide = {
-      slideNumber: cleanedSlides.length + 1,
       type: 'content',
       layoutType: newSt.layout,
       title: newSt.title,
@@ -2319,38 +2797,45 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
       speakerNotes: newSt.speakerNotes,
     };
     registerSlideContent(newSlide);
-    cleanedSlides.push(newSlide);
+    contentSlides.push(newSlide);
   }
 
-  // Oxirgi slayd doim conclusion bo'lishi shart
-  if (cleanedSlides.length < targetCount) {
-    cleanedSlides.push({
-      slideNumber: targetCount,
-      type: 'conclusion',
-      layoutType: 'conclusion',
+  // Yakuniy Slayd: Xulosa (Har doim eng oxirgi slayd, slideNumber = targetCount)
+  let finalConclusion;
+  if (candidateConclusion && candidateConclusion.points && candidateConclusion.points.length > 0) {
+    finalConclusion = candidateConclusion;
+    finalConclusion.title = finalConclusion.title || localizedMeta.concTitle;
+    finalConclusion.subtitle = finalConclusion.subtitle || localizedMeta.concSub;
+    finalConclusion.highlight = finalConclusion.highlight || localizedMeta.concHighlight;
+    finalConclusion.speakerNotes = finalConclusion.speakerNotes || localizedMeta.concNotes;
+  } else {
+    finalConclusion = {
       title: localizedMeta.concTitle,
       subtitle: localizedMeta.concSub,
-      imagePrompts: [`${enKeywords} success achievement`, `${enKeywords} future vision`],
       points: localizedMeta.concPoints,
       highlight: localizedMeta.concHighlight,
       speakerNotes: localizedMeta.concNotes,
-    });
-  } else if (cleanedSlides.length === targetCount) {
-    const lastSl = cleanedSlides[cleanedSlides.length - 1];
-    lastSl.type = 'conclusion';
-    lastSl.layoutType = 'conclusion';
-    if (!lastSl.title || lastSl.title.length < 5) {
-      lastSl.title = localizedMeta.concTitle;
-    }
-    if (!lastSl.subtitle) {
-      lastSl.subtitle = localizedMeta.concSub;
-    }
-    if (!lastSl.points || lastSl.points.length === 0) {
-      lastSl.points = localizedMeta.concPoints;
-    }
+    };
   }
+  finalConclusion.type = 'conclusion';
+  finalConclusion.layoutType = 'conclusion';
+  finalConclusion.imagePrompts = [`${enKeywords} success achievement`, `${enKeywords} future vision`];
+  registerSlideContent(finalConclusion);
 
-  data.slides = cleanedSlides;
+  // Barcha slaydlarni birlashtirish va raqamlarini qat'iy 1 dan targetCount gacha belgilash
+  const allSlides = [firstSlide, ...contentSlides, finalConclusion];
+  allSlides.forEach((s, idx) => {
+    s.slideNumber = idx + 1;
+    // Agar slayd data_chart yoki kpi_metrics bo'lsa-yu, chart/metrics bo'lmasa boyitish
+    if (s.layoutType === 'data_chart' && !s.chart) {
+      s.chart = getSmartDomainCharts(effectiveTopic, idx + 1, language);
+    }
+    if (s.layoutType === 'kpi_metrics' && (!s.metrics || s.metrics.length === 0)) {
+      s.metrics = getSmartDomainMetrics(effectiveTopic, idx + 1, language);
+    }
+  });
+
+  data.slides = allSlides.slice(0, targetCount);
   return data;
 }
 
@@ -2839,15 +3324,44 @@ function sanitizePresentationData(data, language = 'uz') {
             }
           }
 
-          // Qisqa bo'lib qolgan gaplarni har bir slayd uchun unikal kontekst bilan boyitish (HECH QACHON takrorlanmaydi)
+          // Qisqa bo'lib qolgan gaplarni har bir nuqta va slayd uchun unikal kontekst bilan boyitish
           if (pt.description.length < 90) {
-            const contextSentence = language === 'ru'
-              ? ` В рамках направления "${slide.title}" соблюдение данных критериев обеспечивает качественный рост и исключает системные сбои.`
-              : language === 'en'
-              ? ` Across "${slide.title}", deploying these rigorous parameters optimizes resource utilization and ensures sustained throughput.`
-              : language === 'tg'
-              ? ` Дар доираи "${slide.title}" татбиқи ин тадбирҳо самаранокии баланд ва назорати сифатро кафолат медиҳад.`
-              : ` "${slide.title}" doirasida ushbu chora-tadbirlarni tatbiq etish jarayonlar ishonchliligini oshirib, sifat barqarorligini kafolatlaydi.`;
+            const enrichPools = {
+              uz: [
+                ` Ushbu chora-tadbirlar "${slide.title}" doirasida jarayonlar ishonchliligini oshirib, sifat barqarorligini kafolatlaydi.`,
+                ` Amaliyotga integratsiya qilish orqali umumiy samaradorlik ko'rsatkichlari 35-50% ga ortadi.`,
+                ` Belgilangan standartlar resurslardan tejamkor foydalanish va tizimli xatarlarni minimallashtirishga xizmat qiladi.`,
+                ` Natijada barcha bo'g'inlar o'rtasida mustahkam sinergiya va yuqori ijro intizomi shakllanadi.`,
+                ` Uzoq muddatli istiqbolda bu yondashuv barqaror o'sish va sohaviy yetakchilik poydevorini mustahkamlaydi.`,
+                ` Mazkur mexanizm kutilmagan operatsion to'siqlarni erta bartaraf etish imkonini beradi.`
+              ],
+              ru: [
+                ` В рамках направления "${slide.title}" соблюдение данных критериев обеспечивает качественный рост и исключает сбои.`,
+                ` Поэтапная практическая интеграция позволяет повысить результативность процессов на 35–50%.`,
+                ` Данный подход оптимизирует распределение ключевых ресурсов и минимизирует системные риски.`,
+                ` Систематический контроль формирует прочную основу для достижения долгосрочных показателей.`,
+                ` Комплексное внедрение закрепляет конкурентные преимущества и гарантирует стабильность.`,
+                ` Применение регламентов предотвращает операционные ошибки на ранних этапах выполнения.`
+              ],
+              en: [
+                ` Deploying these rigorous parameters across "${slide.title}" optimizes resource utilization and ensures throughput.`,
+                ` Phased operational execution boosts aggregate workflow performance by 35–50%.`,
+                ` This framework eliminates structural bottlenecks and reliably mitigates operational friction.`,
+                ` Consistent metric monitoring establishes a durable engine for long-term scalability.`,
+                ` Systematic integration secures measurable competitive moats and durable excellence.`,
+                ` Proactive governance eliminates execution errors before they impact deliverable quality.`
+              ],
+              tg: [
+                ` Татбиқи ин тадбирҳо дар доираи "${slide.title}" самаранокии баланд ва назорати сифатро кафолат медиҳад.`,
+                ` Ҷорисозии амалӣ маҳсулнокии равандҳоро ба андозаи 35–50% афзун мегардонад.`,
+                ` Ин равиш истифодаи сарфакоронаи захираҳо ва коҳиши хавфҳоро таъмин месозад.`,
+                ` Назорати пайваста пойдевори мустаҳкамро барои рушди дарозмуддат мегузорад.`,
+                ` Ҳамгироии ҳамаҷониба мавқеи пешсафиро дар соҳа таҳким мебахшад.`,
+                ` Риояи меъёрҳо камбудиҳои эҳтимолиро дар марҳилаҳои аввал пешгирӣ мекунад.`
+              ]
+            };
+            const langPool = enrichPools[language] || enrichPools.uz;
+            const contextSentence = langPool[(idx * 3 + pIdx) % langPool.length];
             pt.description += contextSentence;
           }
         });
@@ -2856,9 +3370,9 @@ function sanitizePresentationData(data, language = 'uz') {
 
     // Butun taqdimot bo'yicha gaplar takrorlanishini 100% bartaraf etish (Hech qachon 2 ta slaydda bir xil gap bo'lmasin!)
     const globalSentences = new Set();
-    data.slides.forEach((slide) => {
+    data.slides.forEach((slide, sIdx) => {
       if (Array.isArray(slide.points)) {
-        slide.points.forEach((pt) => {
+        slide.points.forEach((pt, pIdx) => {
           if (pt.description) {
             const rawSentences = pt.description.split(/(?<=[.!?])\s+/);
             const filtered = [];
@@ -2874,13 +3388,30 @@ function sanitizePresentationData(data, language = 'uz') {
             }
             pt.description = filtered.join(' ').trim();
             if (pt.description.length < 40) {
-              pt.description += language === 'ru'
-                ? ` Глубокая аналитическая проработка по разделу "${slide.title}" формирует надежную практическую базу.`
-                : language === 'en'
-                ? ` Rigorous domain execution across "${slide.title}" establishes a verifiable foundation for growth.`
-                : language === 'tg'
-                ? ` Таҳлили амиқ дар бахши "${slide.title}" заминаи боэътимоди амалиро таъмин месозад.`
-                : ` "${slide.title}" bo'yicha chuqur tahliliy yondashuv uzoq muddatli amaliy natijadorlikni ta'minlaydi.`;
+              const miniPool = {
+                uz: [
+                  ` "${slide.title}" bo'yicha chuqur tahliliy yondashuv uzoq muddatli amaliy natijadorlikni ta'minlaydi.`,
+                  ` Amaliy tadbiq jarayonida belgilangan standartlarga qat'iy rioya qilish yuqori sifat beradi.`,
+                  ` Tizimli tahlil natijalari jarayonlarni optimallashtirish va resurslarni tejashga xizmat qiladi.`
+                ],
+                ru: [
+                  ` Глубокая аналитическая проработка по разделу "${slide.title}" формирует надежную практическую базу.`,
+                  ` Соблюдение регламентов при реализации гарантирует стабильное качество и исключает риски.`,
+                  ` Системный анализ создает измеримый фундамент для оптимизации всех ключевых ресурсов.`
+                ],
+                en: [
+                  ` Rigorous domain execution across "${slide.title}" establishes a verifiable foundation for growth.`,
+                  ` Phased milestone delivery ensures consistent output quality and eliminates operational risks.`,
+                  ` Systematic analysis provides an empirical basis for optimizing critical resource allocation.`
+                ],
+                tg: [
+                  ` Таҳлили амиқ дар бахши "${slide.title}" заминаи боэътимоди амалиро таъмин месозад.`,
+                  ` Риояи дақиқи қоидаҳо сифати устуворро кафолат дода, хавфҳоро коҳиш медиҳад.`,
+                  ` Равиши низомманд барои истифодаи сарфакоронаи захираҳо мусоидат менамояд.`
+                ]
+              };
+              const mList = miniPool[language] || miniPool.uz;
+              pt.description += mList[(sIdx * 3 + pIdx) % mList.length];
             }
           }
         });
