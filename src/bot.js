@@ -60,6 +60,11 @@ const THEME_NAMES = {
   emerald: '🌿 Emerald Nature',
   sunset: '🌅 Sunset Orange',
   minimal: '📄 Clean Light',
+  cyberpunk: '🔮 Cyberpunk Neon',
+  luxury: '👑 Luxury Gold',
+  frost: '❄️ Nordic Frost',
+  crimson: '🍷 Crimson Ruby',
+  royal: '🏛️ Royal Navy',
 };
 
 // Tillarning chiroyli nomlari
@@ -111,14 +116,24 @@ function getSlideCountKeyboard() {
     .text('❌ Bekor qilish', 'cancel_action');
 }
 
-// 3. Dizayn uslubi klaviaturasi
+// 3. Dizayn uslubi klaviaturasi (10 xil boy va zamonaviy mavzular)
 function getThemeKeyboard() {
   return new InlineKeyboard()
-    .text('🌊 Ocean Blue (IT & Biznes)', 'theme_ocean').row()
-    .text('🌙 Modern Dark (Texnologik)', 'theme_dark').row()
-    .text('🌿 Emerald (Tabiat & Tibbiyot)', 'theme_emerald').row()
-    .text('🌅 Sunset (Kreativ & Dizayn)', 'theme_sunset').row()
-    .text('📄 Clean Light (Klassik oq fon)', 'theme_minimal').row()
+    .text('🌊 Ocean Blue', 'theme_ocean')
+    .text('🌙 Modern Dark', 'theme_dark')
+    .row()
+    .text('🌿 Emerald Nature', 'theme_emerald')
+    .text('🌅 Sunset Orange', 'theme_sunset')
+    .row()
+    .text('📄 Clean Light', 'theme_minimal')
+    .text('🔮 Cyberpunk Neon', 'theme_cyberpunk')
+    .row()
+    .text('👑 Luxury Gold', 'theme_luxury')
+    .text('❄️ Nordic Frost', 'theme_frost')
+    .row()
+    .text('🍷 Crimson Ruby', 'theme_crimson')
+    .text('🏛️ Royal Navy', 'theme_royal')
+    .row()
     .text('❌ Bekor qilish', 'cancel_action');
 }
 
@@ -370,6 +385,15 @@ bot.command('balance', async (ctx) => {
 bot.callbackQuery('action_balance', async (ctx) => {
   await ctx.answerCallbackQuery();
   await showUserBalance(ctx);
+});
+
+bot.callbackQuery('action_create', async (ctx) => {
+  await ctx.answerCallbackQuery();
+  userSessions[ctx.chat.id] = { step: 'awaiting_topic' };
+  await ctx.reply(
+    `✍️ *Yangi taqdimot mavzusini yozing:*\n\nMasalan: _"Raqamli iqtisodiyot va fintex istiqbollari"_ yoki _"Kardiologiya profilaktikasi"_`,
+    { parse_mode: 'Markdown' }
+  );
 });
 
 async function showUserBalance(ctx) {
@@ -1183,11 +1207,18 @@ bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
       tg: `✅ *${data.title}*\n\n🎯 Самт: ${catObj.name}\n🌐 Забон: ${langName}\n📄 Слайдҳо: ${data.slides?.length || session.slideCount}\n🎨 Тарҳ: ${themeName}\n🪙 Бақияи шумо: *${isVip ? '💎 VIP' : user.coins}*\n\n_Шумо метавонед файлро дар барномаи PowerPoint кушоед._`,
     }[langKey] || `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${isVip ? '💎 VIP' : user.coins + ' ta'}*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`;
 
+    const successMarkup = new InlineKeyboard();
+    if (config.webAppUrl) {
+      successMarkup.webApp("🌐 Mini App'da ochish", config.webAppUrl).row();
+    }
+    successMarkup.text('➕ Yangi taqdimot', 'action_create').text('💎 Balans & VIP', 'action_balance');
+
     await ctx.replyWithDocument(
       new InputFile(filePath, `${data.title || 'prezentatsiya'}.pptx`),
       {
         caption: docCaption,
         parse_mode: 'Markdown',
+        reply_markup: successMarkup,
       }
     );
 

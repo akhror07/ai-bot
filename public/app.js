@@ -303,6 +303,7 @@ slideWizardForm.addEventListener('submit', async (e) => {
 
   const topic = topicInput.value.trim();
   const organization = orgInput?.value?.trim() || '';
+  const author = document.getElementById('authorInput')?.value?.trim() || '';
 
   if (!topic) {
     updateWizardStep(1);
@@ -334,6 +335,7 @@ slideWizardForm.addEventListener('submit', async (e) => {
         topic,
         category: selectedCategory,
         organization,
+        author,
         slideCount: selectedCount,
         language: selectedLanguage,
         theme: selectedTheme,

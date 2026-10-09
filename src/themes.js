@@ -58,6 +58,66 @@ export const themes = {
     text: '0F172A',
     subtext: '64748B',
     border: 'E2E8F0',
+  },
+  cyberpunk: {
+    id: 'cyberpunk',
+    name: 'Cyberpunk Neon',
+    desc: 'Futuristik IT, neyrotarmoqlar va kiber estetika',
+    bg: '0B0A1A',
+    cardBg: '16142E',
+    primary: 'EC4899',     // Pink 500
+    accent: '8B5CF6',      // Purple 500
+    text: 'FDF4FF',
+    subtext: 'C084FC',
+    border: '3B2A63',
+  },
+  luxury: {
+    id: 'luxury',
+    name: 'Luxury Gold',
+    desc: 'VIP moliya, investitsiya va nufuzli biznes',
+    bg: '14120C',
+    cardBg: '231E15',
+    primary: 'F59E0B',     // Amber 500
+    accent: 'D97706',      // Amber 600
+    text: 'FFFBEB',
+    subtext: 'FDE68A',
+    border: '4D3E24',
+  },
+  frost: {
+    id: 'frost',
+    name: 'Nordic Frost',
+    desc: 'Ilmiy tahlil, texnologiya va muzdek tiniqlik',
+    bg: '0A1924',
+    cardBg: '132A3B',
+    primary: '06B6D4',     // Cyan 500
+    accent: '22D3EE',      // Cyan 400
+    text: 'ECFEFF',
+    subtext: 'A5F3FC',
+    border: '1E4966',
+  },
+  crimson: {
+    id: 'crimson',
+    name: 'Crimson Ruby',
+    desc: 'Liderlik, strategik energiya va sport',
+    bg: '1A0B10',
+    cardBg: '2B141E',
+    primary: 'F43F5E',     // Rose 500
+    accent: 'E11D48',      // Rose 600
+    text: 'FFF1F2',
+    subtext: 'FDA4AF',
+    border: '542033',
+  },
+  royal: {
+    id: 'royal',
+    name: 'Royal Navy',
+    desc: 'Davlat sektori, huquq va rasmiy diplomatiya',
+    bg: '0A1628',
+    cardBg: '122442',
+    primary: '60A5FA',     // Blue 400
+    accent: '3B82F6',      // Blue 500
+    text: 'EFF6FF',
+    subtext: '93C5FD',
+    border: '1D3C6B',
   }
 };
 

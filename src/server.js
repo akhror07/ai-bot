@@ -100,7 +100,7 @@ app.get('/api/presentations/:userId', (req, res) => {
 // 2. API: Slayd generatsiya qilish
 app.post('/api/generate', async (req, res) => {
   try {
-    const { topic, slideCount, language, theme, category, organization, chatId, username, firstName } = req.body;
+    const { topic, slideCount, language, theme, category, organization, author, chatId, username, firstName } = req.body;
 
     if (!topic || typeof topic !== 'string' || !topic.trim()) {
       return res.status(400).json({ success: false, error: 'Mavzu kiritilishi shart' });
@@ -137,7 +137,7 @@ app.post('/api/generate', async (req, res) => {
       remainingCoins = isVip ? 'VIP' : user.coins;
     }
 
-    console.log(`[API] Yangi taqdimot: "${topic}", soha: ${category}, slaydlar: ${slideCount}, til: ${language}, tema: ${theme}`);
+    console.log(`[API] Yangi taqdimot: "${topic}", soha: ${category}, slaydlar: ${slideCount}, til: ${language}, tema: ${theme}, muallif: ${author || 'kiritilmagan'}`);
 
     // AI orqali ma'lumot olish
     const presentationData = await generatePresentationData({
@@ -152,6 +152,8 @@ app.post('/api/generate', async (req, res) => {
     // PPTX fayl yasash (viral brending slaydi bilan)
     const { filePath, fileName, speakerNotesList } = await createPptx({
       ...presentationData,
+      author: author || presentationData.author || '',
+      organization: organization || presentationData.organization || '',
       language: language || presentationData.language || 'uz',
       includeBranding: true,
       botUsername: config.botUsername || 'ai_slide_bot',
