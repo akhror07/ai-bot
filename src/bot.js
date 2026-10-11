@@ -65,6 +65,8 @@ const THEME_NAMES = {
   frost: '❄️ Nordic Frost',
   crimson: '🍷 Crimson Ruby',
   royal: '🏛️ Royal Navy',
+  monochrome: '🖤 Monochrome Swiss',
+  neon_abstract: '🎨 Neon Abstract Art',
 };
 
 // Tillarning chiroyli nomlari
@@ -133,6 +135,9 @@ function getThemeKeyboard() {
     .row()
     .text('🍷 Crimson Ruby', 'theme_crimson')
     .text('🏛️ Royal Navy', 'theme_royal')
+    .row()
+    .text('🖤 Monochrome Swiss', 'theme_monochrome')
+    .text('🎨 Neon Abstract Art', 'theme_neon_abstract')
     .row()
     .text('❌ Bekor qilish', 'cancel_action');
 }
@@ -1110,7 +1115,7 @@ bot.callbackQuery(/^count_(\d+)$/, async (ctx) => {
 });
 
 // 4-qadam: Fon uslubi tanlanganda va generatsiya boshlash
-bot.callbackQuery(/^theme_([a-z]+)$/, async (ctx) => {
+bot.callbackQuery(/^theme_([a-z_]+)$/, async (ctx) => {
   const theme = ctx.match[1];
   const session = sessions.get(ctx.chat.id);
 

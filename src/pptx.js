@@ -1176,7 +1176,7 @@ export async function createPptx(data) {
   }
 
   const textW = coverImg2 ? 6.7 : 11.3;
-  const titleColor = (theme.id === 'minimal' && !coverImg) ? theme.primary : '#FFFFFF';
+  const titleColor = ((theme.id === 'minimal' || theme.id === 'monochrome') && !coverImg) ? theme.primary : '#FFFFFF';
 
   titleSlide.addText(data.title || titleData.title || '', {
     x: 1.0, y: 1.9, w: textW, h: 2.3,

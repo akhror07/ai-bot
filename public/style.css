@@ -433,6 +433,8 @@ body {
 .frost-gradient { background: linear-gradient(135deg, #0a1924, #0e3b43); border: 1px solid #06b6d4; }
 .crimson-gradient { background: linear-gradient(135deg, #1a0b10, #4c0519); border: 1px solid #f43f5e; }
 .royal-gradient { background: linear-gradient(135deg, #0a1628, #1e3a8a); border: 1px solid #60a5fa; }
+.monochrome-gradient { background: linear-gradient(135deg, #ffffff, #27272a); border: 1px solid #18181b; }
+.neon_abstract-gradient { background: linear-gradient(135deg, #1c2c3b, #44466a, #f88196); border: 1px solid #f88196; }
 
 .theme-info {
   display: flex;

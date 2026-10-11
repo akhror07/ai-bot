@@ -118,6 +118,30 @@ export const themes = {
     text: 'EFF6FF',
     subtext: '93C5FD',
     border: '1D3C6B',
+  },
+  monochrome: {
+    id: 'monochrome',
+    name: 'Monochrome Swiss',
+    desc: 'Arxitektura, biznes hisobot va qora-oq minimalizm',
+    bg: 'FFFFFF',
+    cardBg: 'F4F4F6',
+    primary: '111111',
+    accent: '52525B',
+    text: '18181B',
+    subtext: '71717A',
+    border: 'E4E4E7',
+  },
+  neon_abstract: {
+    id: 'neon_abstract',
+    name: 'Neon Abstract Art',
+    desc: '3D shisha, neon fluid va kreativ brending',
+    bg: '1C2C3B',
+    cardBg: '44466A',
+    primary: 'F88196',
+    accent: '96BFCB',
+    text: 'FFFFFF',
+    subtext: 'CBD5E1',
+    border: '595C8A',
   }
 };
 
