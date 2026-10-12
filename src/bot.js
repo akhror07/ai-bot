@@ -1158,7 +1158,7 @@ bot.callbackQuery(/^theme_([a-z_]+)$/, async (ctx) => {
   const statusMsg = await ctx.reply(statusText, { parse_mode: 'Markdown' });
 
   try {
-    // 1. AI orqali generatsiya
+    // 1. AI orqali generatsiya (2 bosqichli reja va mazmun)
     const data = await generatePresentationData({
       topic: session.topic,
       slideCount: session.slideCount,
@@ -1167,6 +1167,18 @@ bot.callbackQuery(/^theme_([a-z_]+)$/, async (ctx) => {
       category: session.category || 'general',
       documentText: session.documentText || '',
       organization: session.organization || '',
+      onProgress: async (step) => {
+        try {
+          if (step === 'content') {
+            const stepText = {
+              ru: `⏳ *" ${session.topic} "*\n\n🎯 Направление: *${catObj.name}*\n🌐 Язык: *${langName}*\n📊 Слайды: *${session.slideCount}*\n🎨 Стиль: *${themeName}*\n🪙 Баланс: *${isVip ? '💎 VIP' : user.coins}*\n\n_1️⃣ План структуры слайдов готов ✅\n2️⃣ Идет наполнение глубокой аналитикой и метриками..._`,
+              en: `⏳ *" ${session.topic} "*\n\n🎯 Field: *${catObj.name}*\n🌐 Language: *${langName}*\n📊 Slides: *${session.slideCount}*\n🎨 Theme: *${themeName}*\n🪙 Balance: *${isVip ? '💎 VIP' : user.coins}*\n\n_1️⃣ Slide outline finalized ✅\n2️⃣ Synthesizing deep domain content and KPI metrics..._`,
+              tg: `⏳ *" ${session.topic} "*\n\n🎯 Самт: *${catObj.name}*\n🌐 Забон: *${langName}*\n📊 Слайдҳо: *${session.slideCount}*\n🎨 Тарҳ: *${themeName}*\n🪙 Бақия: *${isVip ? '💎 VIP' : user.coins}*\n\n_1️⃣ Нақшаи сохтор таҳия шуд ✅\n2️⃣ Мундариҷаи таҳлилӣ ва ченакҳои KPI пур карда мешаванд..._`,
+            }[langKey] || `⏳ *" ${session.topic} "*\n\n🎯 Yo'nalish: *${catObj.name}*\n🌐 Til: *${langName}*\n📊 Slaydlar: *${session.slideCount} ta*\n🎨 Uslub: *${themeName}*\n🪙 Qolgan balansingiz: *${isVip ? '💎 VIP' : user.coins + ' ta'}*\n\n_1️⃣ Slaydlar rejasi tuzildi ✅\n2️⃣ Har bir bet tahliliy ma'lumotlar va KPI mezonlari bilan to'ldirilmoqda..._`;
+            await ctx.api.editMessageText(ctx.chat.id, statusMsg.message_id, stepText, { parse_mode: 'Markdown' }).catch(() => {});
+          }
+        } catch (_) {}
+      }
     });
 
     // 2. PPTX yaratish

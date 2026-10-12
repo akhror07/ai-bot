@@ -1481,7 +1481,8 @@ export async function createPptx(data) {
   }
 
   const textW = coverImg2 ? 6.7 : 11.3;
-  const titleColor = ((theme.id === 'minimal' || theme.id === 'monochrome') && !coverImg) ? theme.primary : '#FFFFFF';
+  const isLightTheme = theme.id === 'minimal' || theme.id === 'monochrome';
+  const titleColor = isLightTheme ? (theme.primary || '111111') : '#FFFFFF';
 
   titleSlide.addText(data.title || titleData.title || '', {
     x: 1.0, y: 1.9, w: textW, h: 2.3,
@@ -1492,7 +1493,7 @@ export async function createPptx(data) {
   if (data.subtitle || titleData.subtitle) {
     titleSlide.addText(data.subtitle || titleData.subtitle, {
       x: 1.0, y: 4.4, w: textW, h: 1.2,
-      fontFace: 'Arial', fontSize: 16, color: theme.primary, valign: 'top', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 16, color: isLightTheme ? (theme.accent || '52525B') : theme.primary, valign: 'top', wrap: true, fit: 'shrink',
     });
   }
 

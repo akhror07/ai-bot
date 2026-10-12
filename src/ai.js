@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { config } from './config.js';
 import { getCategory } from './categories.js';
 import { extractCleanKeywords } from './images.js';
+import { detectDomain, generateSemanticOutline, expandSemanticContent } from './domain_planner.js';
 
 let genAI = null;
 if (config.geminiApiKey && config.geminiApiKey.startsWith('AIzaSy')) {
@@ -45,22 +46,23 @@ Faqat rasmdagi matnning o'zini qaytar, boshqa hech qanday izoh yoki kirish so'zl
 /**
  * Pollinations AI orqali yuqori sifatli erkin generatsiya (OpenAI GPT-4o-mini / fast asosida)
  */
-async function generateViaPollinations(prompt) {
+export async function callPollinationsAI(prompt, systemPrompt = 'You are an elite academic presentation AI. Output ONLY raw valid JSON adhering strictly to the requested schema. Never output markdown codeblocks, text explanations, or preambles.', timeoutMs = 60000) {
   try {
     console.log('[AI Engine] Pollinations AI ga so\'rov yuborilmoqda...');
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     const res = await fetch('https://text.pollinations.ai/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [
-          { role: 'system', content: 'You are an elite academic presentation AI. Output ONLY raw valid JSON adhering strictly to the requested schema. Never output markdown codeblocks, text explanations, or preambles.' },
+          { role: 'system', content: systemPrompt },
           { role: 'user', content: prompt }
         ],
-        model: 'openai-fast',
-        temperature: 0.6,
+        model: 'openai',
+        jsonMode: true,
+        temperature: 0.65,
       }),
       signal: controller.signal,
     });
@@ -72,17 +74,41 @@ async function generateViaPollinations(prompt) {
       if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\s*/i, '').replace(/\s*```$/i, '');
       else if (cleaned.startsWith('```')) cleaned = cleaned.replace(/^```\s*/i, '').replace(/\s*```$/i, '');
 
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        if (parsed && parsed.slides && Array.isArray(parsed.slides) && parsed.slides.length >= 3) {
-          console.log(`[AI Engine] Pollinations AI orqali ${parsed.slides.length} ta boy slayd muvaffaqiyatli olindi!`);
-          return parsed;
+      let parsed = null;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch (_) {
+        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try { parsed = JSON.parse(jsonMatch[0]); } catch (_) {}
         }
+      }
+
+      if (parsed) {
+        // Agar model assistant obyekti ichida qaytarsa: { role: 'assistant', content: '...' }
+        if (parsed.content && typeof parsed.content === 'string') {
+          let inner = parsed.content.trim();
+          if (inner.startsWith('```json')) inner = inner.replace(/^```json\s*/i, '').replace(/\s*```$/i, '');
+          else if (inner.startsWith('```')) inner = inner.replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+          const iMatch = inner.match(/\{[\s\S]*\}/);
+          if (iMatch) {
+            try { parsed = JSON.parse(iMatch[0]); } catch (_) {}
+          }
+        }
+        return parsed;
       }
     }
   } catch (err) {
     console.warn('[AI Engine] Pollinations AI uzilishi:', err.message);
+  }
+  return null;
+}
+
+async function generateViaPollinations(prompt) {
+  const parsed = await callPollinationsAI(prompt, undefined, 60000);
+  if (parsed && parsed.slides && Array.isArray(parsed.slides) && parsed.slides.length >= 3) {
+    console.log(`[AI Engine] Pollinations AI orqali ${parsed.slides.length} ta boy slayd muvaffaqiyatli olindi!`);
+    return parsed;
   }
   return null;
 }
@@ -2493,157 +2519,36 @@ function getLocalizedQA(effectiveTopic, language = 'uz') {
  * Mavzuga to'liq moslashtirilgan, har bir slaydi unikal va xilma-xil zaxira generator.
  * HECH QACHON birorta ham slaydni takrorlamaydi!
  */
-export function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz', theme, categoryObj }) {
-  const effectiveTopic = translateUzbekTopic(topic, language);
+export function generateDynamicFallbackPresentation({ topic, slideCount, language = 'uz', theme, categoryObj, organization = '' }) {
+  const effectiveTopic = translateUzbekTopic(topic, language) || topic;
   console.log(`[AI Fallback] Mavzuga moslashtirilgan boy unikal reja tuzilmoqda: "${effectiveTopic}" (asli: "${topic}", til: ${language})`);
   const enKeywords = extractCleanKeywords(effectiveTopic || topic);
-  const slides = [];
 
-  const localizedMeta = getLocalizedMeta(effectiveTopic, categoryObj?.name || '', language);
-
-  // 1-slayd: Muqova
-  slides.push({
-    slideNumber: 1,
-    type: 'title',
-    layoutType: 'title',
-    title: effectiveTopic.length > 50 ? effectiveTopic.substring(0, 50) + '...' : effectiveTopic,
-    subtitle: localizedMeta.sub,
-    imagePrompts: [
-      `${enKeywords} professional concept`,
-      `${enKeywords} background visual`
-    ],
-    speakerNotes: localizedMeta.notes
+  const outline = generateSemanticOutline({
+    topic: effectiveTopic,
+    slideCount,
+    language,
+    categoryObj
   });
 
-  // Mavzuga moslashtirilgan 23 ta unikal bosqichlar zanjiri
-  const stageTemplates = buildPresentationSequentialStages(effectiveTopic, enKeywords, language);
+  const enriched = expandSemanticContent({
+    outline,
+    language,
+    organization
+  });
 
-  for (let i = 2; i <= slideCount; i++) {
-    const isLast = (i === slideCount);
-    if (isLast) {
-      slides.push({
-        slideNumber: i,
-        type: 'conclusion',
-        layoutType: 'conclusion',
-        title: localizedMeta.concTitle,
-        subtitle: localizedMeta.concSub,
-        imagePrompts: [
-          `${enKeywords} success achievement`,
-          `${enKeywords} future vision`
-        ],
-        points: localizedMeta.concPoints,
-        highlight: localizedMeta.concHighlight,
-        speakerNotes: localizedMeta.concNotes
-      });
-    } else {
-      // Sof ketma-ketlik: HECH QANDAY MODULO TAKRORLANISHSIZ!
-      const stageIdx = i - 2;
-      let st;
-      if (stageIdx < stageTemplates.length) {
-        st = stageTemplates[stageIdx];
-      } else {
-        // Template tugagan holat: unikal overflow slayd yaratamiz (HECH QACHON oxirgisini takrorlamaymiz!)
-        const overflowIdx = stageIdx - stageTemplates.length;
-        const overflowTitles = {
-          uz: [
-            `${effectiveTopic}: Qo'shimcha Tahlil va Kengaytirilgan Tushuntirish`,
-            `${effectiveTopic} Sohasidagi Yangi Trendlar va Perspektivlar`,
-            `${effectiveTopic}: Amaliy Tajriba va Ko'nikmalar`,
-            `${effectiveTopic} Bo'yicha Muhim Xulosalar va Dalillar`,
-            `${effectiveTopic}: O'qib O'rganish va Muvofiqlash`,
-          ],
-          ru: [
-            `${effectiveTopic}: Дополнительный анализ и расширенные выводы`,
-            `Новые тенденции в сфере \"${effectiveTopic}\"`,
-            `${effectiveTopic}: Практика и профессиональные компетенции`,
-            `Ключевые данные по теме \"${effectiveTopic}\"`,
-            `${effectiveTopic}: Обучение и адаптация`,
-          ],
-          en: [
-            `${effectiveTopic}: Extended Analysis and Deeper Insights`,
-            `Emerging Trends in \"${effectiveTopic}\"`,
-            `${effectiveTopic}: Practical Skills and Competencies`,
-            `Key Evidence and Data on \"${effectiveTopic}\"`,
-            `${effectiveTopic}: Learning and Continuous Adaptation`,
-          ],
-          tg: [
-            `${effectiveTopic}: Таҳлили иловагӣ ва хулосаҳои васеъ`,
-            `Тамоюлҳои нав дар соҳаи \"${effectiveTopic}\"`,
-            `${effectiveTopic}: Малакаҳои амалӣ ва шоистагиҳо`,
-            `Маълумоти калидӣ оид ба \"${effectiveTopic}\"`,
-            `${effectiveTopic}: Омӯзиш ва мутобиқшавии доимӣ`,
-          ],
-        };
-        const titles = overflowTitles[language] || overflowTitles.uz;
-        const overflowTitle = titles[overflowIdx % titles.length];
-        const baseStage = stageTemplates[overflowIdx % stageTemplates.length];
-        st = {
-          layout: baseStage.layout,
-          title: overflowTitle,
-          sub: baseStage.sub,
-          photo: baseStage.photo,
-          points: baseStage.points ? baseStage.points.map(p => ({
-            heading: p.heading,
-            description: p.description + (language === 'uz'
-              ? ` Bu \"${overflowTitle}\" mavzusining muhim tarkibiy qismidir.`
-              : language === 'ru' ? ` Это важный компонент темы \"${overflowTitle}\".`
-              : language === 'en' ? ` This is a key element of "${overflowTitle}".`
-              : ` Ин ҷузъи муҳими мавзӯи \"${overflowTitle}\" мебошад.`)
-          })) : baseStage.points,
-          metrics: baseStage.metrics,
-          chart: baseStage.chart,
-          leftHeading: baseStage.leftHeading,
-          rightHeading: baseStage.rightHeading,
-          spotlightText: baseStage.spotlightText ? overflowTitle : undefined,
-          highlight: language === 'uz'
-            ? `\"${overflowTitle}\" bo'yicha chuqur tahlil va izchil yondashuv maqsadlarga erishishning asosiy kalitidir.`
-            : language === 'ru' ? `Системный подход по теме \"${overflowTitle}\" гарантирует устойчивый результат.`
-            : language === 'en' ? `A rigorous framework focused on "${overflowTitle}" ensures measurable outcomes.`
-            : `Муносибати низомманд дар \"${overflowTitle}\" натиҷаҳои боэътимодро кафолат медиҳад.`,
-          speakerNotes: language === 'uz'
-            ? `Hurmatli tinglovchilar! Ushbu ${i}-slaydda biz \"${overflowTitle}\" bo'yicha eng muhim jihatlarni tahlil qilamiz.`
-            : language === 'ru' ? `Уважаемые коллеги! На данном слайде ${i} мы рассмотрим \"${overflowTitle}\".`
-            : language === 'en' ? `Distinguished colleagues, slide ${i} explores the key dimensions of "${overflowTitle}".`
-            : `Ҳозирини гиромӣ! Слайди ${i} ба \"${overflowTitle}\" бахшида шудааст.`,
-        };
-      }
-
-      slides.push({
-        slideNumber: i,
-        type: 'content',
-        layoutType: st.layout,
-        title: st.title,
-        subtitle: st.sub,
-        imagePrompts: [
-          st.photo,
-          `${enKeywords} high quality`
-        ],
-        points: st.points,
-        metrics: st.metrics,
-        chart: st.chart,
-        leftHeading: st.leftHeading,
-        rightHeading: st.rightHeading,
-        spotlightText: st.spotlightText,
-        highlight: st.highlight,
-        speakerNotes: st.speakerNotes || (language === 'ru'
-          ? `Уважаемые слушатели! На данном слайде ${i} мы подробно проанализируем ключевые аспекты темы "${st.title}". Особое внимание следует обратить на практическую реализацию и измеримые результаты.`
-          : language === 'en'
-          ? `Distinguished colleagues, on slide ${i} we explore the critical dimensions of "${st.title}". It is essential to focus on operational execution and measurable outcomes.`
-          : language === 'tg'
-          ? `Шунавандагони гиромӣ! Дар ин слайди ${i} мо ҷанбаҳои муҳимтарини мавзӯи "${st.title}"-ро ба таври муфассал баррасӣ менамоем. Таваҷҷуҳи асосӣ бояд ба татбиқи амалӣ ва натиҷаҳои мушаххас равона шавад.`
-          : `Hurmatli tinglovchilar! Ushbu ${i}-slaydda biz "${st.title}" bo'yicha eng muhim strategik jihatlarni ko'rib chiqamiz. Asosiy e'tiborni amaliy tatbiq va kutilayotgan natijadorlikka qaratishimiz lozim.`)
-      });
-    }
-  }
+  enriched.slides.forEach(slide => {
+    slide.imagePrompts = [
+      `${enKeywords} professional concept`,
+      `${enKeywords} background visual`
+    ];
+  });
 
   const localizedQA = getLocalizedQA(effectiveTopic, language);
 
   return {
-    title: effectiveTopic,
-    subtitle: localizedMeta.sub,
+    ...enriched,
     theme: theme || 'ocean',
-    language: language || 'uz',
-    slides,
     qaList: localizedQA,
   };
 }
@@ -3539,73 +3444,136 @@ function sanitizePresentationData(data, language = 'uz') {
 /**
  * Foydalanuvchi mavzusi va sohasi asosida slaydlar strukturasini JSON ko'rinishida generatsiya qiladi.
  */
-export async function generatePresentationData({ topic, slideCount = 6, language = 'uz', theme = 'ocean', category = 'general', documentText = '', organization = '' }) {
-  const targetCount = Math.min(Math.max(parseInt(slideCount, 10) || 6, 3), 25);
-  const categoryObj = getCategory(category, language);
-  const enKeywords = extractCleanKeywords(topic);
+/**
+ * Taqdimot rejasini (Outline) AI yoki Semantic Planner orqali tuzish
+ */
+export async function generatePresentationOutline({ topic, slideCount = 6, language = 'uz', categoryObj }) {
+  const targetCount = Math.min(Math.max(parseInt(slideCount, 10) || 6, 3), 20);
+  const lang = (['uz', 'ru', 'en', 'tg'].includes(language)) ? language : 'uz';
+  const categoryName = categoryObj?.name || 'Umumiy';
 
-  const prompt = buildPresentationPrompt({
-    topic,
-    targetCount,
-    language,
-    theme,
-    categoryObj,
-    enKeywords,
-    organization,
-    documentText,
-  });
+  const outlinePrompt = `Mavzu: "${topic}"
+Slaydlar soni: ${targetCount}
+Til: ${lang}
+Soha: ${categoryName}
 
-  // 1-URINISH: Anthropic Claude 3.5 Sonnet (Agar API kalit sozlangan bo'lsa)
-  const claudeData = await generateViaClaude(prompt);
-  if (claudeData && claudeData.slides && claudeData.slides.length >= 3) {
-    if (organization) claudeData.organization = organization;
-    const completeData = ensureUniqueAndCompleteSlides(claudeData, topic, language, targetCount);
-    return sanitizePresentationData(completeData, language);
+Vazifa: Ushbu mavzu bo'yicha professional taqdimot rejasini (outline) JSON formatida tuzib ber.
+Slaydlar ketma-ketligi:
+1-slayd: layoutType: "title" (Mavzu, qisqa ilmiy sarlavha osti)
+2-slayd: layoutType: "agenda_numbered" (Taqdimot rejasi va bo'limlari: sections massivida 01.., 02.. ko'rinishida)
+3-slayddan boshlab quyidagi layoutType-lardan foydalangan holda MAVZUGA 100% MOS, ANIQ, ILMIY sarlavhalar va sarlavha ostilari:
+- split_hero (Strategik zarurat, dolzarblik, mavzuning kirish tahlili)
+- comparison (An'anaviy va yangi zamonaviy yondashuvlar qiyosi)
+- three_cards (3 ta asosiy tayanch ustun / komponent)
+- circular_feature (Boshqaruv yadrosi / integratsiyalashgan ekotizim)
+- kpi_metrics (Asosiy faktik statistika va KPI ko'rsatkichlari)
+- process_timeline (Bosqichma-bosqich amaliyotga joriy etish yo'l xaritasi)
+- milestones_table (Kvartallar bo'yicha amalga oshirish matritsasi)
+- spotlight (Asosiy xatarlar va muhim xulosa)
+Oxirgi slayd: layoutType: "conclusion" (Strategik xulosalar va amaliy tavsiyalar)
+
+MUHIM QOIDA: Har bir sarlavha va sarlavha osti MAVZUNING O'ZIGA xos atamalari bilan yozilsin. Umumiy so'zlar bo'lmasin.
+Raw JSON qaytar:
+{
+  "title": "${topic}",
+  "subtitle": "...",
+  "slides": [
+    { "slideNumber": 1, "layoutType": "title", "title": "...", "subtitle": "..." },
+    { "slideNumber": 2, "layoutType": "agenda_numbered", "title": "...", "subtitle": "...", "sections": ["01. ...", "02. ..."] },
+    ...
+    { "slideNumber": ${targetCount}, "layoutType": "conclusion", "title": "...", "subtitle": "..." }
+  ]
+}`;
+
+  const sysPrompt = 'You are an elite academic presentation outline generator. Respond with raw JSON only. Do not call any tools.';
+
+  // 1. Claude
+  if (config.anthropicApiKey) {
+    try {
+      const cData = await generateViaClaude(outlinePrompt);
+      if (cData && Array.isArray(cData.slides) && cData.slides.length >= 3) {
+        return cData;
+      }
+    } catch (_) {}
   }
 
-  // 2-URINISH: OpenRouter orqali Claude (Agar API kalit sozlangan bo'lsa)
-  const openRouterData = await generateViaOpenRouter(prompt);
-  if (openRouterData && openRouterData.slides && openRouterData.slides.length >= 3) {
-    if (organization) openRouterData.organization = organization;
-    const completeData = ensureUniqueAndCompleteSlides(openRouterData, topic, language, targetCount);
-    return sanitizePresentationData(completeData, language);
+  // 2. OpenRouter
+  if (config.openRouterApiKey) {
+    try {
+      const oData = await generateViaOpenRouter(outlinePrompt);
+      if (oData && Array.isArray(oData.slides) && oData.slides.length >= 3) {
+        return oData;
+      }
+    } catch (_) {}
   }
 
-  // 3-URINISH: Agar Google Gemini API mavjud bo'lsa
+  // 3. Gemini
   if (genAI) {
     try {
       const model = genAI.getGenerativeModel({
         model: 'gemini-1.5-flash',
-        generationConfig: {
-          responseMimeType: 'application/json',
-          temperature: 0.7,
-        },
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.7 }
       });
-
-      const result = await model.generateContent(prompt);
+      const result = await model.generateContent(outlinePrompt);
       const text = result.response.text();
-      const data = JSON.parse(text);
-      if (data && data.slides && data.slides.length > 0) {
-        if (organization) data.organization = organization;
-        const completeData = ensureUniqueAndCompleteSlides(data, topic, language, targetCount);
-        return sanitizePresentationData(completeData, language);
+      const parsed = JSON.parse(text);
+      if (parsed && Array.isArray(parsed.slides) && parsed.slides.length >= 3) {
+        return parsed;
       }
-    } catch (gErr) {
-      console.warn('[AI Engine] Google Gemini uzilishi:', gErr.message);
+    } catch (_) {}
+  }
+
+  // 4. Pollinations AI
+  try {
+    const pData = await callPollinationsAI(outlinePrompt, sysPrompt, 30000);
+    if (pData && Array.isArray(pData.slides) && pData.slides.length >= 3) {
+      return pData;
     }
+  } catch (_) {}
+
+  // 5. Semantic Domain Outline
+  console.log(`[Outline Engine] Semantic Domain Outline ishga tushirildi: "${topic}" (${lang})`);
+  return generateSemanticOutline({ topic, slideCount: targetCount, language: lang, categoryObj });
+}
+
+/**
+ * Foydalanuvchi mavzusi va sohasi asosida 2 bosqichli intellektual taqdimot generatsiyasi:
+ * 1-bosqich: Mavzuga to'liq mos reja (Outline) tuzish
+ * 2-bosqich: Rejani boy faktik mazmun, KPI va jadvallar bilan to'ldirish
+ */
+export async function generatePresentationData({ topic, slideCount = 6, language = 'uz', theme = 'ocean', category = 'general', documentText = '', organization = '', onProgress = null }) {
+  const targetCount = Math.min(Math.max(parseInt(slideCount, 10) || 6, 3), 25);
+  const categoryObj = getCategory(category, language);
+  const enKeywords = extractCleanKeywords(topic);
+
+  if (typeof onProgress === 'function') onProgress('outline');
+
+  // 1-QADAM: Mavzuga to'liq mos professional reja (Outline)
+  let outline = await generatePresentationOutline({ topic, slideCount: targetCount, language, categoryObj });
+  if (!outline || !Array.isArray(outline.slides) || outline.slides.length < 3) {
+    outline = generateSemanticOutline({ topic, slideCount: targetCount, language, categoryObj });
   }
 
-  // 4-URINISH: Pollinations AI (OpenAI GPT-4o-mini asosida bepul va yuqori intellektual)
-  const pollData = await generateViaPollinations(prompt);
-  if (pollData && pollData.slides && pollData.slides.length >= 3) {
-    if (organization) pollData.organization = organization;
-    const completeData = ensureUniqueAndCompleteSlides(pollData, topic, language, targetCount);
-    return sanitizePresentationData(completeData, language);
-  }
+  if (typeof onProgress === 'function') onProgress('content');
 
-  // 5-URINISH: Mavzuga to'liq moslashtirilgan boy dinamik reja
-  const fallbackData = generateDynamicFallbackPresentation({ topic, slideCount: targetCount, language, theme, categoryObj });
-  if (organization) fallbackData.organization = organization;
-  const completeData = ensureUniqueAndCompleteSlides(fallbackData, topic, language, targetCount);
+  // 2-QADAM: Rejani boy faktik tahliliy kontent bilan to'ldirish
+  const enriched = expandSemanticContent({
+    outline,
+    language,
+    organization
+  });
+
+  // Rasm promptlarini biriktirish
+  enriched.slides.forEach(slide => {
+    slide.imagePrompts = [
+      `${enKeywords} professional concept`,
+      `${enKeywords} background visual`
+    ];
+  });
+
+  if (organization) enriched.organization = organization;
+  enriched.theme = theme;
+
+  const completeData = ensureUniqueAndCompleteSlides(enriched, topic, language, targetCount);
   return sanitizePresentationData(completeData, language);
 }
