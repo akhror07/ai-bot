@@ -260,6 +260,7 @@ const pendingReferrers = new Map();
 // Telegram bot buyruqlarini (Commands Menu) ro'yxatdan o'tkazish
 export async function setupBotCommands() {
   try {
+    // 1. Umumiy foydalanuvchilar uchun komandalar (bu yerda /users va /admin ko'rinmaydi)
     await bot.api.setMyCommands([
       { command: 'start', description: '🔄 Botni qayta ishga tushirish (Bosh menyu)' },
       { command: 'restart', description: '🔄 Qayta ishga tushirish' },
@@ -275,6 +276,28 @@ export async function setupBotCommands() {
       { command: 'help', description: 'ℹ️ Qo\'llanma va yordam' },
     ]);
     console.log('✅ Telegram bot buyruqlari (setMyCommands) muvaffaqiyatli sozlandi!');
+
+    // 2. Faqat bot admini uchun maxsus buyruqlar menyusi (/users, /admin, /give, /promo)
+    const adminIds = [String(config.adminId), '8388288136'].filter(Boolean);
+    const uniqueAdminIds = [...new Set(adminIds)];
+
+    for (const aId of uniqueAdminIds) {
+      try {
+        await bot.api.setMyCommands([
+          { command: 'start', description: '🔄 Botni qayta ishga tushirish' },
+          { command: 'users', description: '👥 Foydalanuvchilar va ularning usernamelari' },
+          { command: 'admin', description: '👑 Admin boshqaruv paneli' },
+          { command: 'promo', description: '🎟 Promo-kodlar boshqaruvi' },
+          { command: 'give', description: '🪙 Foydalanuvchiga koin berish' },
+          { command: 'slayd', description: '📊 Yangi taqdimot yaratish' },
+          { command: 'balance', description: '🪙 Balans va referal tizimi' },
+          { command: 'cancel', description: '❌ Bekor qilish' },
+          { command: 'help', description: 'ℹ️ Yordam va qo\'llanma' },
+        ], {
+          scope: { type: 'chat', chat_id: Number(aId) },
+        });
+      } catch (_) {}
+    }
   } catch (err) {
     console.warn('[Bot] setMyCommands sozlashda xatolik:', err.message);
   }
@@ -1800,6 +1823,96 @@ bot.on('message:text', async (ctx) => {
   );
 });
 
+// HTML maxsus belgilarini xavfsiz qilish
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// Admin uchun foydalanuvchilar ro'yxati va usernamelarini ko'rsatish funksiyasi
+async function showAdminUsersList(ctx) {
+  if (!isAdmin(ctx)) {
+    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
+  }
+
+  const allUsers = getAllUsers();
+  const totalCount = allUsers.length;
+
+  if (totalCount === 0) {
+    return ctx.reply("ℹ️ Hozircha botda ro'yxatdan o'tgan foydalanuvchilar mavjud emas.");
+  }
+
+  const usersWithUsername = allUsers.filter(u => u.username && u.username.trim()).length;
+  const usersWithoutUsername = totalCount - usersWithUsername;
+  const totalCoins = allUsers.reduce((acc, u) => acc + (u.coins || 0), 0);
+  const totalUsedCoins = allUsers.reduce((acc, u) => acc + (u.usedCoins || 0), 0);
+
+  // Telegram 4096 belgilik cheklovidan oshib ketmasligi uchun foydalanuvchilarni 25 tadan qismlarga (chunks) bo'lib yuboramiz
+  const CHUNK_SIZE = 25;
+  const totalPages = Math.ceil(totalCount / CHUNK_SIZE);
+
+  for (let page = 0; page < totalPages; page++) {
+    const chunk = allUsers.slice(page * CHUNK_SIZE, (page + 1) * CHUNK_SIZE);
+    let msg = '';
+
+    if (page === 0) {
+      msg += `👑 <b>Bot Foydalanuvchilari Ro'yxati:</b>\n\n`;
+      msg += `📊 <b>Jami foydalanuvchilar soni:</b> <code>${totalCount} ta</code>\n`;
+      msg += `🌐 <b>Username mavjud:</b> <code>${usersWithUsername} ta</code>\n`;
+      msg += `👤 <b>Username yo'q:</b> <code>${usersWithoutUsername} ta</code>\n`;
+      msg += `🪙 <b>Foydalanuvchilar balansi:</b> <code>${totalCoins} ta koin</code> (Ishlatilgan: ${totalUsedCoins} ta)\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+    } else {
+      msg += `📄 <b>Foydalanuvchilar ro'yxati (${page + 1}/${totalPages}-qism):</b>\n━━━━━━━━━━━━━━━━━━━━━━\n`;
+    }
+
+    chunk.forEach((u, i) => {
+      const index = page * CHUNK_SIZE + i + 1;
+      const uname = u.username && u.username.trim()
+        ? `@${escapeHtml(u.username)}`
+        : `<i>(Username yo'q)</i>`;
+      const fname = escapeHtml(u.firstName || 'Foydalanuvchi');
+      const isUserAdmin = isAdmin(u.userId);
+      const adminTag = isUserAdmin ? ' 👑 <b>[Admin]</b>' : '';
+      const isVip = u.vipUntil && new Date(u.vipUntil) > new Date();
+      const vipTag = isVip ? ' 💎 <b>[VIP]</b>' : '';
+
+      msg += `${index}. ${uname} (${fname})${adminTag}${vipTag}\n`;
+      msg += `   🆔 <code>${escapeHtml(u.userId)}</code> • 🪙 <b>${u.coins || 0} ta</b> koin`;
+      if (u.referralsCount > 0) {
+        msg += ` • 👥 ${u.referralsCount} ta taklif`;
+      }
+      msg += `\n`;
+    });
+
+    if (page === totalPages - 1) {
+      msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `💡 <i>Foydalanuvchiga koin berish uchun:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>`;
+    }
+
+    await ctx.reply(msg, {
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+    });
+  }
+}
+
+// /users buyrug'i (Faqat admin uchun: foydalanuvchilar soni va usernamelari)
+bot.command(['users', 'foydalanuvchilar'], async (ctx) => {
+  await showAdminUsersList(ctx);
+});
+
+// Admin panelidagi foydalanuvchilar tugmasi (Callback)
+bot.callbackQuery('admin_users_list', async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.answerCallbackQuery({ text: "❌ Faqat admin uchun!", show_alert: true });
+  }
+  await ctx.answerCallbackQuery();
+  await showAdminUsersList(ctx);
+});
+
 // /admin buyrug'i (Admin boshqaruv paneli)
 bot.command('admin', async (ctx) => {
   if (!isAdmin(ctx)) {
@@ -1823,10 +1936,15 @@ bot.command('admin', async (ctx) => {
     });
   }
 
+  text += `\n👥 *Foydalanuvchilar va usernamelar:* \`/users\``;
   text += `\n💡 *Foydalanuvchiga coin berish:* \n\`/give <ID> <SON>\` (masalan: \`/give 8388288136 5\`)`;
   text += `\n🎟 *Promo-kodlar boshqaruvi:* \`/promo\` (yangi yaratish va ko'rish)`;
 
-  await ctx.reply(text, { parse_mode: 'Markdown' });
+  const keyboard = new InlineKeyboard()
+    .text('👥 Foydalanuvchilar (/users)', 'admin_users_list')
+    .text('🎟 Promo-kodlar (/promo)', 'action_promo_admin');
+
+  await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: keyboard });
 });
 
 // /give buyrug'i (Foydalanuvchiga coin taqdim qilish)

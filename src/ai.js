@@ -823,28 +823,468 @@ const WORD_TRANSLATIONS = {
     'samaradorlik': 'efficiency',
   },
   tg: {
+    // Multi-word phrases (higher priority, length sorted)
     'madaniy boylik': 'мероси фарҳангӣ',
+    'madaniy boyliklar': 'боигариҳои фарҳангӣ',
     'madaniy meros': 'мероси фарҳангӣ',
-    'madaniy': 'фарҳангӣ',
-    'boylik': 'боигарӣ',
-    'boyliklar': 'боигариҳо',
-    'meros': 'мерос',
-    'madaniyat': 'фарҳанг',
-    'tarix': 'таърих',
-    'tarixiy': 'таърихӣ',
-    'asosiy': 'асосӣ',
-    'tushuncha': 'консепсия',
-    'vizual': 'визуал',
-    'bosqich': 'марҳила',
+    'маданий бойлик': 'мероси фарҳангӣ',
+    'маданий мерос': 'мероси фарҳангӣ',
+    'sun\'iy intellekt': 'зеҳни сунъӣ',
+    'suniy intellekt': 'зеҳни сунъӣ',
+    'сунъий интеллект': 'зеҳни сунъӣ',
+    'суний интеллект': 'зеҳни сунъӣ',
+    'raqamli iqtisodiyot': 'иқтисодиёти рақамӣ',
+    'рақамли иқтисодиёт': 'иқтисодиёти рақамӣ',
+    'taqdimot rejasi': 'нақшаи муаррифӣ',
+    'тақдимот режаси': 'нақшаи муаррифӣ',
+    'slayd sarlavhasi': 'сарлавҳаи слайд',
+    'слайд сарлавҳаси': 'сарлавҳаи слайд',
+    'sarlavha osti': 'сарлавҳаи фаръӣ',
+    'сарлавҳа ости': 'сарлавҳаи фаръӣ',
+    'bo\'lim mazmuni': 'мазмуни бахш',
+    'бўлим мазмуни': 'мазмуни бахш',
+    'kirish so\'zi': 'сухани ифтитоҳӣ',
+    'кириш сўзи': 'сухани ифтитоҳӣ',
+    'ma\'ruza nutqi': 'матни нутқ',
+    'маъруза нутқи': 'матни нутқ',
+    'nutq matni': 'матни нутқ',
+    'нутқ матни': 'матни нутқ',
+    'muhim xulosa': 'хулосаи муҳим',
+    'муҳим хулоса': 'хулосаи муҳим',
+    'strategik xulosa': 'хулосаи стратегӣ',
+    'стратегик хулоса': 'хулосаи стратегӣ',
+    'amaliy tavsiyalar': 'тавсияҳои амалӣ',
+    'амалий тавсиялар': 'тавсияҳои амалӣ',
+    'strategik tavsiyalar': 'тавсияҳои стратегӣ',
+    'стратегик тавсиялар': 'тавсияҳои стратегӣ',
+    'yo\'l xaritasi': 'харитаи роҳ',
+    'йўл харитаси': 'харитаи роҳ',
+    'bosqichma-bosqich': 'марҳила ба марҳила',
+    'босқичма-босқич': 'марҳила ба марҳила',
+    'uchta asosiy ustun': 'се сутуни асосӣ',
+    'учта асосий устун': 'се сутуни асосӣ',
+    'boshqaruv yadrosi': 'маркази идоракунӣ',
+    'бошқарув ядроси': 'маркази идоракунӣ',
+    'qiyosiy tahlil': 'таҳлили муқоисавӣ',
+    'қиёсий таҳлил': 'таҳлили муқоисавӣ',
+    'asosiy ko\'rsatkichlar': 'нишондиҳандаҳои асосӣ',
+    'асосий кўрсаткичлар': 'нишондиҳандаҳои асосӣ',
+    'samaradorlik ko\'rsatkichlari': 'нишондиҳандаҳои самаранокӣ',
+    'самарадорлик кўрсаткичлари': 'нишондиҳандаҳои самаранокӣ',
+    'amaliyotga joriy etish': 'татбиқи амалӣ',
+    'амалиётга жорий этиш': 'татбиқи амалӣ',
+    'joriy etish': 'ҷорисозӣ',
+    'жорий этиш': 'ҷорисозӣ',
+    'amalga oshirish': 'амалӣ сохтан',
+    'амалга ошириш': 'амалӣ сохтан',
+    'asosiy tushunchalar': 'мафҳумҳои асосӣ',
+    'асосий тушунчалар': 'мафҳумҳои асосӣ',
+    'har bir': 'ҳар як',
+    'ҳар бир': 'ҳар як',
+    'ushbu slaydda': 'дар ин слайд',
+    'ушбу слайдда': 'дар ин слайд',
+    'ushbu bosqichda': 'дар ин марҳила',
+    'ушбу босқичда': 'дар ин марҳила',
+    'ushbu yo\'nalishda': 'дар ин самт',
+    'ушбу йўналишда': 'дар ин самт',
+    'assalomu alaykum': 'Салом, ҳозирини гиромӣ!',
+    'ассалому алайкум': 'Салом, ҳозирини гиромӣ!',
+    'hurmatli tinglovchilar': 'ҳозирини гиромӣ',
+    'ҳурматли тингловчилар': 'ҳозирини гиромӣ',
+    'hurmatli hamkasblar': 'ҳамкорони гиромӣ',
+    'ҳурматли ҳамкасблар': 'ҳамкорони гиромӣ',
+    'e\'tiboringiz uchun rahmat': 'Ташаккур барои таваҷҷуҳ!',
+    'эътиборингиз учун раҳмат': 'Ташаккур барои таваҷҷуҳ!',
+    'ta\'sir ko\'rsatish': 'таъсир расонидан',
+    'таъсир кўрсатиш': 'таъсир расонидан',
+    'qo\'llab-quvvatlash': 'дастгирӣ кардан',
+    'қўллаб-қувватлаш': 'дастгирӣ кардан',
+    'ishtirok etish': 'иштирок намудан',
+    'иштирок этиш': 'иштирок намудан',
+    'taqdim etish': 'пешниҳод кардан',
+    'тақдим этиш': 'пешниҳод кардан',
+
+    // Presentation and slide structures
+    'taqdimot': 'муаррифӣ',
+    'тақдимот': 'муаррифӣ',
+    'taqdimoti': 'муаррифии',
+    'тақдимоти': 'муаррифии',
+    'slayd': 'слайд',
+    'слайд': 'слайд',
+    'slaydlar': 'слайдҳо',
+    'слайдлар': 'слайдҳо',
+    'mundarija': 'мундариҷа',
+    'мундарижа': 'мундариҷа',
+    'reja': 'нақша',
+    'режа': 'нақша',
+    'rejasi': 'нақшаи',
+    'режаси': 'нақшаи',
+    'kirish': 'муқаддима',
+    'кириш': 'муқаддима',
+    'ma\'ruza': 'нутқ',
+    'маъруза': 'нутқ',
     'xulosa': 'хулоса',
-    'maqsad': 'ҳадаф',
-    'omil': 'омил',
+    'хулоса': 'хулоса',
+    'xulosalar': 'хулосаҳо',
+    'хулосалар': 'хулосаҳо',
+    'tavsiya': 'тавсия',
+    'тавсия': 'тавсия',
+    'tavsiyalar': 'тавсияҳо',
+    'тавсиялар': 'тавсияҳо',
+    'bosqich': 'марҳила',
+    'босқич': 'марҳила',
+    'bosqichlari': 'марҳилаҳои',
+    'босқичлари': 'марҳилаҳои',
+    'bosqichlar': 'марҳилаҳо',
+    'босқичлар': 'марҳилаҳо',
+    'yo\'nalish': 'самт',
+    'йўналиш': 'самт',
+    'yo\'nalishlari': 'самтҳои',
+    'йўналишлари': 'самтҳои',
+    'yo\'nalishlar': 'самтҳо',
+    'йўналишлар': 'самтҳо',
+    'sarlavha': 'сарлавҳа',
+    'сарлавҳа': 'сарлавҳа',
+    'bo\'lim': 'бахш',
+    'бўлим': 'бахш',
+    'bo\'limlar': 'бахшҳо',
+    'бўлимлар': 'бахшҳо',
+
+    // Prepositions, pronouns, particles
+    'bo\'yicha': 'оид ба',
+    'бўйича': 'оид ба',
+    'uchun': 'барои',
+    'учун': 'барои',
+    'bilan': 'бо',
+    'билан': 'бо',
+    'hamda': 'ва ҳамчунин',
+    'ҳамда': 'ва ҳамчунин',
+    'haqida': 'дар бораи',
+    'ҳақида': 'дар бораи',
+    'to\'g\'risida': 'дар бораи',
+    'тўғрисида': 'дар бораи',
+    'orqali': 'тавассути',
+    'орқали': 'тавассути',
+    'barcha': 'ҳамаи',
+    'барча': 'ҳамаи',
+    'ushbu': 'ин',
+    'ушбу': 'ин',
+    'mazkur': 'ин',
+    'мазкур': 'ин',
+    'shu': 'ин',
+    'шу': 'ин',
+    'shuningdek': 'ҳамчунин',
+    'шунингдек': 'ҳамчунин',
+    'ammo': 'аммо',
+    'аммо': 'аммо',
+    'lekin': 'вале',
+    'лекин': 'вале',
+    'biroq': 'вале',
+    'бироқ': 'вале',
+    'chunki': 'зеро',
+    'чунки': 'зеро',
+    'agar': 'агар',
+    'агар': 'агар',
+    'asosan': 'асосан',
+    'асосан': 'асосан',
+    'doirasida': 'дар доираи',
+    'доирасида': 'дар доираи',
+    'asosida': 'дар асоси',
+    'асосида': 'дар асоси',
+    'natijasida': 'дар натиҷаи',
+    'натижасида': 'дар натиҷаи',
+    'tufayli': 'ба шарофати',
+    'туфайли': 'ба шарофати',
+    'sababli': 'ба сабаби',
+    'сабабли': 'ба сабаби',
+    'mobaynida': 'дар тӯли',
+    'мобайнида': 'дар тӯли',
+    'davomida': 'дар давоми',
+    'давомида': 'дар давоми',
+    'ko\'ra': 'мувофиқи',
+    'кўра': 'мувофиқи',
+    'nisbatan': 'нисбат ба',
+    'нисбатан': 'нисбат ба',
+
+    // Analytical and substantive terms
+    'asosiy': 'асосӣ',
+    'асосий': 'асосӣ',
+    'muhim': 'муҳим',
+    'муҳим': 'муҳим',
+    'zarurat': 'зарурат',
+    'зарурат': 'зарурат',
+    'dolzarblik': 'мубрамият',
+    'долзарблик': 'мубрамият',
+    'afzallik': 'бартарӣ',
+    'афзаллик': 'бартарӣ',
+    'afzalliklar': 'бартариҳо',
+    'афзалликлар': 'бартариҳо',
+    'kamchilik': 'камбудӣ',
+    'камчилик': 'камбудӣ',
+    'kamchiliklar': 'камбудиҳо',
+    'камчиликлар': 'камбудиҳо',
+    'cheklov': 'маҳдудият',
+    'чеклов': 'маҳдудият',
+    'cheklovlar': 'маҳдудиятҳо',
+    'чекловлар': 'маҳдудиятҳо',
+    'imkoniyat': 'имконият',
+    'имконият': 'имконият',
+    'imkoniyatlar': 'имкониятҳо',
+    'имкониятлар': 'имкониятҳо',
+    'xatar': 'хавф',
+    'хатар': 'хавф',
+    'xatarlar': 'хавфҳо',
+    'хатарлар': 'хавфҳо',
+    'muammo': 'мушкилот',
+    'муаммо': 'мушкилот',
+    'muammolar': 'мушкилотҳо',
+    'муаммолар': 'мушкилотҳо',
+    'yechim': 'роҳи ҳал',
+    'ечим': 'роҳи ҳал',
+    'yechimlar': 'роҳҳои ҳал',
+    'ечимлар': 'роҳҳои ҳал',
     'natija': 'натиҷа',
+    'натижа': 'натиҷа',
+    'natijalar': 'натиҷаҳо',
+    'натижалар': 'натиҷаҳо',
+    'omil': 'омил',
+    'омил': 'омил',
+    'omillar': 'омилҳо',
+    'омиллар': 'омилҳо',
+    'omillari': 'омилҳои',
+    'омиллари': 'омилҳои',
+    'maqsad': 'ҳадаф',
+    'мақсад': 'ҳадаф',
+    'maqsadlar': 'ҳадафҳо',
+    'мақсадлар': 'ҳадафҳо',
+    'maqsadlari': 'ҳадафҳои',
+    'мақсадлари': 'ҳадафҳои',
+    'vazifa': 'вазифа',
+    'вазифа': 'вазифа',
+    'vazifalar': 'вазифаҳо',
+    'вазифалар': 'вазифаҳо',
+    'vazifalari': 'вазифаҳои',
+    'вазифалари': 'вазифаҳои',
     'jarayon': 'раванд',
+    'жараён': 'раванд',
+    'jarayonlar': 'равандҳо',
+    'жараёнлар': 'равандҳо',
     'tizim': 'низом',
-    'zamonaviy': 'муосир',
+    'тизим': 'низом',
+    'tizimi': 'низоми',
+    'тизими': 'низоми',
+    'tizimlar': 'низомҳо',
+    'тизимлар': 'низомҳо',
+    'tahlil': 'таҳлил',
+    'таҳлил': 'таҳлил',
+    'tahlili': 'таҳлили',
+    'таҳлили': 'таҳлили',
+    'tahliliy': 'таҳлилӣ',
+    'таҳлилий': 'таҳлилӣ',
     'rivojlanish': 'рушд',
+    'ривожланиш': 'рушд',
+    'rivojlanishi': 'рушди',
+    'ривожланиши': 'рушди',
     'samaradorlik': 'самаранокӣ',
+    'самарадорлик': 'самаранокӣ',
+    'samaradorligi': 'самаранокии',
+    'самарадорлиги': 'самаранокии',
+    'yondashuv': 'равиш',
+    'ёндашув': 'равиш',
+    'yondashuvlar': 'равишҳо',
+    'ёндашувлар': 'равишҳо',
+    'ko\'rsatkich': 'нишондиҳанда',
+    'кўрсаткич': 'нишондиҳанда',
+    'ko\'rsatkichlar': 'нишондиҳандаҳо',
+    'кўрсаткичлар': 'нишондиҳандаҳо',
+    'ko\'rsatkichlari': 'нишондиҳандаҳои',
+    'кўрсаткичлари': 'нишондиҳандаҳои',
+    'o\'rganish': 'омӯзиш',
+    'ўрганиш': 'омӯзиш',
+    'ta\'minlash': 'таъмин сохтан',
+    'таъминлаш': 'таъмин сохтан',
+    'boshqaruv': 'идоракунӣ',
+    'бошқарув': 'идоракунӣ',
+    'nazorat': 'назорат',
+    'назорат': 'назорат',
+    'baholash': 'баҳодиҳӣ',
+    'баҳолаш': 'баҳодиҳӣ',
+    'amaliyot': 'амалия',
+    'амалиёт': 'амалия',
+    'nazariya': 'назария',
+    'назария': 'назария',
+    'tushuncha': 'консепсия',
+    'тушунча': 'консепсия',
+    'mezon': 'меъёр',
+    'мезон': 'меъёр',
+    'mezonlar': 'меъёрҳо',
+    'мезонлар': 'меъёрҳо',
+    'talab': 'талабот',
+    'талаб': 'талабот',
+    'talablar': 'талаботҳо',
+    'талаблар': 'талаботҳо',
+    'qoida': 'қоида',
+    'қоида': 'қоида',
+    'qoidalar': 'қоидаҳо',
+    'қоидалар': 'қоидаҳо',
+    'tuzilma': 'сохтор',
+    'тузилма': 'сохтор',
+    'tuzilmasi': 'сохтори',
+    'тузилмаси': 'сохтори',
+    'muassasa': 'муассаса',
+    'муассаса': 'муассаса',
+    'muassasalar': 'муассасаҳо',
+    'муассасалар': 'муассасаҳо',
+    'tashkilot': 'ташкилот',
+    'ташкилот': 'ташкилот',
+    'tashkilotlar': 'ташкилотҳо',
+    'ташкилотлар': 'ташкилотҳо',
+    'korxona': 'корхона',
+    'корхона': 'корхона',
+    'korxonalar': 'корхонаҳо',
+    'корхоналар': 'корхонаҳо',
+    'jamiyat': 'ҷомеа',
+    'жамият': 'ҷомеа',
+    'davlat': 'давлат',
+    'давлат': 'давлат',
+    'fan': 'илм',
+    'фан': 'илм',
+    'ta\'lim': 'маориф',
+    'таълим': 'маориф',
+    'tarbiya': 'тарбия',
+    'тарбия': 'тарбия',
+    'talabalar': 'донишҷӯён',
+    'талабалар': 'донишҷӯён',
+    'o\'quvchilar': 'хонандагон',
+    'ўқувчилар': 'хонандагон',
+    'o\'qituvchilar': 'омӯзгорон',
+    'ўқитувчилар': 'омӯзгорон',
+    'mutaxassislar': 'мутахассисон',
+    'мутахассислар': 'мутахассисон',
+    'rahbarlar': 'роҳбарон',
+    'раҳбарлар': 'роҳбарон',
+    'xodimlar': 'кормандон',
+    'ходимлар': 'кормандон',
+    'madaniy': 'фарҳангӣ',
+    'маданий': 'фарҳангӣ',
+    'madaniyat': 'фарҳанг',
+    'маданият': 'фарҳанг',
+    'boylik': 'боигарӣ',
+    'бойлик': 'боигарӣ',
+    'boyliklar': 'боигариҳо',
+    'бойликлар': 'боигариҳо',
+    'meros': 'мерос',
+    'мерос': 'мерос',
+    'tarix': 'таърих',
+    'тарих': 'таърих',
+    'tarixiy': 'таърихӣ',
+    'тарихий': 'таърихӣ',
+    'iqtisodiyot': 'иқтисодиёт',
+    'иқтисодиёт': 'иқтисодиёт',
+    'iqtisodiy': 'иқтисодӣ',
+    'иқтисодий': 'иқтисодӣ',
+    'moliya': 'молия',
+    'молия': 'молия',
+    'moliyaviy': 'молиявӣ',
+    'молиявий': 'молиявӣ',
+    'ijtimoiy': 'иҷтимоӣ',
+    'ижтимоий': 'иҷтимоӣ',
+    'siyosiy': 'сиёсӣ',
+    'сиёсий': 'сиёсӣ',
+    'huquqiy': 'ҳуқуқӣ',
+    'ҳуқуқий': 'ҳуқуқӣ',
+    'ekologik': 'экологӣ',
+    'экологик': 'экологӣ',
+    'ekologiya': 'экология',
+    'экология': 'экология',
+    'texnologiya': 'технология',
+    'технология': 'технология',
+    'texnologiyalar': 'технологияҳо',
+    'технологиялар': 'технологияҳо',
+    'texnologik': 'технологӣ',
+    'технологик': 'технологӣ',
+    'innovatsiya': 'навоварӣ',
+    'инновация': 'навоварӣ',
+    'innovatsiyalar': 'навовариҳо',
+    'инновациялар': 'навовариҳо',
+    'innovatsion': 'инноватсионӣ',
+    'инновацион': 'инноватсионӣ',
+    'xalqaro': 'байналмилалӣ',
+    'халқаро': 'байналмилалӣ',
+    'milliy': 'миллӣ',
+    'миллий': 'миллӣ',
+    'zamonaviy': 'муосир',
+    'замонавий': 'муосир',
+    'an\'anaviy': 'анъанавӣ',
+    'анъанавий': 'анъанавӣ',
+    'ilmiy': 'илмӣ',
+    'илмий': 'илмӣ',
+    'amaliy': 'амалӣ',
+    'амалий': 'амалӣ',
+    'nazariy': 'назариявӣ',
+    'назарий': 'назариявӣ',
+    'strategik': 'стратегӣ',
+    'стратегик': 'стратегӣ',
+    'raqamli': 'рақамӣ',
+    'рақамли': 'рақамӣ',
+
+    // Verbs and verbal nouns
+    'oshirish': 'баланд бардоштан',
+    'ошириш': 'баланд бардоштан',
+    'kamaytirish': 'кам кардан',
+    'камайтириш': 'кам кардан',
+    'yaratish': 'эҷод кардан',
+    'яратиш': 'эҷод кардан',
+    'belgilash': 'муайян кардан',
+    'белгилаш': 'муайян кардан',
+    'aniqlash': 'муайянсозӣ',
+    'аниқлаш': 'муайянсозӣ',
+    'erishish': 'ноил шудан',
+    'эришиш': 'ноил шудан',
+    'bajarish': 'иҷро намудан',
+    'бажариш': 'иҷро намудан',
+    'shakllantirish': 'ташаккул додан',
+    'шакллантириш': 'ташаккул додан',
+    'kuchaytirish': 'тақвият бахшидан',
+    'кучайтириш': 'тақвият бахшидан',
+    'kengaytirish': 'густариш додан',
+    'кенгайтириш': 'густариш додан',
+    'saqlash': 'ҳифз намудан',
+    'сақлаш': 'ҳифз намудан',
+    'o\'sish': 'афзоиш',
+    'ўсиш': 'афзоиш',
+    'pasayish': 'коҳиш',
+    'пасайиш': 'коҳиш',
+    'o\'zgarish': 'тағйирот',
+    'ўзгариш': 'тағйирот',
+    'o\'zgarishlar': 'тағйиротҳо',
+    'ўзгаришлар': 'тағйиротҳо',
+    'ta\'sir': 'таъсир',
+    'таъсир': 'таъсир',
+    'foydalanish': 'истифода бурдан',
+    'фойдаланиш': 'истифода бурдан',
+    'qilish': 'кардан',
+    'қилиш': 'кардан',
+    'etish': 'намудан',
+    'этиш': 'намудан',
+    'berish': 'додан',
+    'бериш': 'додан',
+    'olish': 'гирифтан',
+    'олиш': 'гирифтан',
+    'bo\'lish': 'будан',
+    'бўлиш': 'будан',
+    'bo\'ladi': 'мешавад',
+    'бўлади': 'мешавад',
+    'bo\'lgan': 'буда',
+    'бўлган': 'буда',
+    'bo\'lsa': 'бошад',
+    'бўлса': 'бошад',
+    'qaratilgan': 'равона шудааст',
+    'қаратилган': 'равона шудааст',
+    'rahmat': 'ташаккур',
+    'раҳмат': 'ташаккур',
+    'tashakkur': 'ташаккур',
+    'ташаккур': 'ташаккур'
   }
 };
 
@@ -871,32 +1311,73 @@ export function translateUzbekTopic(rawTopic, targetLang = 'uz') {
   }
 
   // 3. So'zma-so'z almashtirish
-  let result = rawTopic;
-  const wordsDict = WORD_TRANSLATIONS[targetLang];
-  if (wordsDict) {
-    for (const [uWord, tWord] of Object.entries(wordsDict)) {
-      const reg = new RegExp(`\\b${uWord}\\b`, 'gi');
-      result = result.replace(reg, tWord);
-    }
-    if (result !== rawTopic) {
-      return result.charAt(0).toUpperCase() + result.slice(1);
-    }
+  const cleaned = cleanUzbekWordsFromText(rawTopic, targetLang);
+  if (cleaned !== rawTopic) {
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   }
 
   return rawTopic;
 }
 
-function cleanUzbekWordsFromText(text, targetLang = 'uz') {
+export function cleanUzbekWordsFromText(text, targetLang = 'uz') {
   if (!text || typeof text !== 'string' || targetLang === 'uz') return text;
   let res = text;
   const wordsDict = WORD_TRANSLATIONS[targetLang];
-  if (wordsDict) {
-    for (const [uWord, tWord] of Object.entries(wordsDict)) {
-      const reg = new RegExp(`\\b${uWord}\\b`, 'gi');
-      res = res.replace(reg, tWord);
+  if (!wordsDict) return res;
+
+  const sortedKeys = Object.keys(wordsDict).sort((a, b) => b.length - a.length);
+  const letterClass = "a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9";
+
+  for (const uWord of sortedKeys) {
+    const tWord = wordsDict[uWord];
+    const escaped = uWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/['`ʻ’]/g, "['`ʻ’]");
+    const reg = new RegExp(`(^|[^${letterClass}])${escaped}(?=[^${letterClass}]|$)`, 'gi');
+
+    res = res.replace(reg, (match, prefix) => {
+      const matchedWord = match.slice(prefix.length);
+      let adjusted = tWord;
+      if (matchedWord.length > 1 && matchedWord === matchedWord.toUpperCase()) {
+        adjusted = tWord.toUpperCase();
+      } else if (matchedWord.charAt(0) === matchedWord.charAt(0).toUpperCase() && matchedWord.charAt(0) !== matchedWord.charAt(0).toLowerCase()) {
+        adjusted = tWord.charAt(0).toUpperCase() + tWord.slice(1);
+      }
+      return prefix + adjusted;
+    });
+  }
+
+  if (targetLang === 'tg') {
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Assalomu\s+alaykum[^.!?,;:]*([.!?,;:]|$)/gi, '$1Салом, ҳозирини гиромӣ!$2');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Ассалому\s+алайкум[^.!?,;:]*([.!?,;:]|$)/gi, '$1Салом, ҳозирини гиромӣ!$2');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])E['`ʻ’]tiboringiz\s+uchun\s+rahmat/gi, '$1Ташаккур барои таваҷҷуҳ');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Эътиборингиз\s+учун\s+раҳмат/gi, '$1Ташаккур барои таваҷҷуҳ');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Ushbu\s+slaydda/gi, '$1Дар ин слайд');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Ушбу\s+слайдда/gi, '$1Дар ин слайд');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Mazkur\s+slaydda/gi, '$1Дар ин слайд');
+    res = res.replace(/(^|[^a-zA-Zа-яёА-ЯЁҲҳҶҷӢӣӮӯҒғҚқ0-9])Мазкур\s+слайдда/gi, '$1Дар ин слайд');
+  }
+
+  return res;
+}
+
+export function recursivelyCleanObject(obj, targetLang = 'uz') {
+  if (!obj || typeof obj !== 'object' || targetLang === 'uz') return obj;
+  for (const key of Object.keys(obj)) {
+    const val = obj[key];
+    if (typeof val === 'string') {
+      obj[key] = cleanUzbekWordsFromText(val, targetLang);
+    } else if (Array.isArray(val)) {
+      for (let i = 0; i < val.length; i++) {
+        if (typeof val[i] === 'string') {
+          val[i] = cleanUzbekWordsFromText(val[i], targetLang);
+        } else if (typeof val[i] === 'object' && val[i] !== null) {
+          recursivelyCleanObject(val[i], targetLang);
+        }
+      }
+    } else if (typeof val === 'object' && val !== null) {
+      recursivelyCleanObject(val, targetLang);
     }
   }
-  return res;
+  return obj;
 }
 
 function getLocalizedGenericStages(topic, enKeywords, language) {
@@ -3902,29 +4383,25 @@ function sanitizePresentationData(data, language = 'uz') {
           if (slide.speakerNotes) slide.speakerNotes = slide.speakerNotes.replace(origRegex, data.title);
         }
 
-        slide.title = cleanUzbekWordsFromText(slide.title, language);
-        if (slide.subtitle) slide.subtitle = cleanUzbekWordsFromText(slide.subtitle, language);
-        if (slide.highlight) slide.highlight = cleanUzbekWordsFromText(slide.highlight, language);
-        if (slide.spotlightText) slide.spotlightText = cleanUzbekWordsFromText(slide.spotlightText, language);
-        if (slide.speakerNotes) slide.speakerNotes = cleanUzbekWordsFromText(slide.speakerNotes, language);
+        recursivelyCleanObject(slide, language);
 
         if (/zamonaviy\s*tahlil/i.test(slide.subtitle) || /keng\s*qamrovli/i.test(slide.subtitle)) {
           slide.subtitle = defaultSubtitles[language] || '';
         }
-        if (/bo['']lim\s*mazmuni/i.test(slide.subtitle)) {
+        if (/bo['`ʻ’]lim\s*mazmuni/i.test(slide.subtitle) || /бўлим\s*мазмуни/i.test(slide.subtitle)) {
           slide.subtitle = language === 'ru' ? 'Ключевые направления и анализ' : language === 'en' ? 'Core dimensions and analysis' : 'Самтҳои асосӣ ва таҳлил';
         }
-        if (/slayd\s*sarlavhasi/i.test(slide.title)) {
+        if (/slayd\s*sarlavhasi/i.test(slide.title) || /слайд\s*сарлавҳаси/i.test(slide.title)) {
           slide.title = language === 'ru' ? `Тематический раздел ${idx + 1}` : language === 'en' ? `Strategic Focus ${idx + 1}` : `Бахши мавзӯъии ${idx + 1}`;
         }
-        if (/kirish\s*so['']zi/i.test(slide.speakerNotes) || /nutq\s*matni/i.test(slide.speakerNotes)) {
+        if (/kirish\s*so['`ʻ’]zi/i.test(slide.speakerNotes) || /кириш\s*сўзи/i.test(slide.speakerNotes) || /nutq\s*matni/i.test(slide.speakerNotes) || /нутқ\s*матни/i.test(slide.speakerNotes) || /ma['`ʻ’]ruza\s*nutqi/i.test(slide.speakerNotes) || /маъруза\s*нутқи/i.test(slide.speakerNotes) || /assalomu\s*alaykum/i.test(slide.speakerNotes) || /ассалому\s*алайкум/i.test(slide.speakerNotes) || /ushbu\s*slaydda/i.test(slide.speakerNotes) || /ушбу\s*слайдда/i.test(slide.speakerNotes)) {
           slide.speakerNotes = language === 'ru'
             ? `Здравствуйте, уважаемые коллеги! На данном слайде мы подробно рассмотрим тему "${slide.title}".`
             : language === 'en'
             ? `Welcome everyone. On this slide, we explore the essential dimensions of "${slide.title}".`
             : `Салом, ҳозирини гиромӣ! Дар ин слайд мо ҷанбаҳои муҳимтарини "${slide.title}"-ро баррасӣ мекунем.`;
         }
-        if (/xulosa/i.test(slide.highlight) && slide.highlight.length < 25) {
+        if ((/xulosa/i.test(slide.highlight) && slide.highlight.length < 35) || /muhim\s*xulosa/i.test(slide.highlight) || /муҳим\s*хулоса/i.test(slide.highlight)) {
           slide.highlight = language === 'ru'
             ? 'Системный подход и выверенная стратегия гарантируют достижение высоких показателей.'
             : language === 'en'
@@ -3969,6 +4446,9 @@ function sanitizePresentationData(data, language = 'uz') {
             }
             pt.heading = cleanUzbekWordsFromText(pt.heading, language);
             pt.description = cleanUzbekWordsFromText(pt.description, language);
+            if (pt.phase) pt.phase = cleanUzbekWordsFromText(pt.phase, language);
+            if (pt.owner) pt.owner = cleanUzbekWordsFromText(pt.owner, language);
+            if (pt.kpi) pt.kpi = cleanUzbekWordsFromText(pt.kpi, language);
 
             if (/^\d+[-_]nuqta$/i.test(pt.heading) || /^nuqta\s*\d+$/i.test(pt.heading)) {
               pt.heading = language === 'ru'
@@ -4138,7 +4618,113 @@ export async function generatePresentationOutline({ topic, slideCount = 6, langu
   const lang = (['uz', 'ru', 'en', 'tg'].includes(language)) ? language : 'uz';
   const categoryName = categoryObj?.name || 'Umumiy';
 
-  const outlinePrompt = `Mavzu: "${topic}"
+  let outlinePrompt = '';
+  let sysPrompt = 'You are an elite academic presentation outline generator. Respond with raw JSON only. Do not call any tools.';
+
+  if (lang === 'tg') {
+    sysPrompt = 'Шумо мутахассиси барҷастаи таҳияи муаррифии илмӣ ва академӣ ба забони тоҷикӣ мебошед. Танҳо бо JSON-и хом посух диҳед, бе ягон матни иловагӣ ё рамзҳо. Забони посух бояд 100% тоза ва адабии тоҷикӣ бошад, бе ягон калимаи ӯзбекӣ ё русӣ!';
+    outlinePrompt = `Мавзӯъ: "${topic}"
+Шумораи слайдҳо: ${targetCount}
+Забон: тоҷикӣ (tg) - 100% тоза ва адабӣ, бе ягон калимаи ӯзбекӣ!
+Соҳа: ${categoryName}
+
+Вазифа: Оид ба ин мавзӯъ нақшаи касбии муаррифӣ (outline)-ро дар формати JSON тартиб диҳед.
+Тартиби слайдҳо:
+1-слайд: layoutType: "title" (Мавзӯъ, сарлавҳаи фаръии кӯтоҳи илмӣ)
+2-слайд: layoutType: "agenda_numbered" (Нақшаи муаррифӣ ва бахшҳо: дар массиви sections дар шакли 01.., 02..)
+Аз слайди 3 сар карда бо истифода аз layoutType-ҳои зерин сарлавҳаҳо ва сарлавҳаҳои фаръии 100% МУТОБИҚ БА МАВЗӮЪ, ДАҚИҚ ВА ИЛМӢ:
+- split_hero (Зарурати стратегӣ, мубрамият, таҳлили муқаддимавии мавзӯъ)
+- comparison (Муқоисаи равишҳои анъанавӣ ва инноватсионии муосир)
+- three_cards (3 сутуни асосӣ / ҷузъҳои бунёдӣ)
+- circular_feature (Маркази идоракунӣ / экосистемаи ҳамгирошуда)
+- kpi_metrics (Омори воқеӣ ва нишондиҳандаҳои KPI)
+- process_timeline (Харитаи роҳи татбиқи амалии марҳилавӣ)
+- milestones_table (Матритсаи иҷрои семоҳа)
+- spotlight (Хавфҳои асосӣ ва хулосаи муҳим)
+Слайди охирин: layoutType: "conclusion" (Хулосаҳои стратегӣ ва тавсияҳои амалӣ)
+
+ҚОИДАИ МУҲИМ: Ҳамаи сарлавҳаҳо ва сарлавҳаҳои фаръӣ бо истилоҳоти хоси ХУДИ МАВЗӮЪ ва ТАНҲО БА ЗАБОНИ ТОҶИКӢ навишта шаванд. Ҳеҷ гуна калима ё ҷумлаи ӯзбекӣ набошад!
+Raw JSON баргардонед:
+{
+  "title": "${topic}",
+  "subtitle": "...",
+  "slides": [
+    { "slideNumber": 1, "layoutType": "title", "title": "...", "subtitle": "..." },
+    { "slideNumber": 2, "layoutType": "agenda_numbered", "title": "...", "subtitle": "...", "sections": ["01. ...", "02. ..."] },
+    ...
+    { "slideNumber": ${targetCount}, "layoutType": "conclusion", "title": "...", "subtitle": "..." }
+  ]
+}`;
+  } else if (lang === 'ru') {
+    sysPrompt = 'Вы ведущий академический эксперт по созданию презентаций на русском языке. Отвечайте только чистым JSON без преамбул.';
+    outlinePrompt = `Тема: "${topic}"
+Количество слайдов: ${targetCount}
+Язык: русский (ru)
+Отрасль: ${categoryName}
+
+Задача: Составить профессиональный план презентации (outline) в формате JSON по указанной теме.
+Структура слайдов:
+1-й слайд: layoutType: "title" (Тема, краткий академический подзаголовок)
+2-й слайд: layoutType: "agenda_numbered" (План презентации и разделы: в массиве sections в виде 01.., 02..)
+Начиная с 3-го слайда с использованием следующих layoutType — ТОЧНЫЕ, НАУЧНЫЕ заголовки и подзаголовки:
+- split_hero (Стратегическая актуальность, введение в проблематику)
+- comparison (Сравнение традиционного и инновационного подходов)
+- three_cards (3 ключевых опорных столпа / компонента)
+- circular_feature (Управляющее ядро / экосистема)
+- kpi_metrics (Ключевая статистика и метрики KPI)
+- process_timeline (Поэтапная дорожная карта внедрения)
+- milestones_table (Квартальная матрица реализации)
+- spotlight (Анализ рисков и ключевой фокус)
+Последний слайд: layoutType: "conclusion" (Стратегические выводы и практические рекомендации)
+
+ВАЖНОЕ ПРАВИЛО: Все заголовки и подзаголовки должны быть написаны исключительно на русском языке с отраслевыми терминами темы.
+Верните raw JSON:
+{
+  "title": "${topic}",
+  "subtitle": "...",
+  "slides": [
+    { "slideNumber": 1, "layoutType": "title", "title": "...", "subtitle": "..." },
+    { "slideNumber": 2, "layoutType": "agenda_numbered", "title": "...", "subtitle": "...", "sections": ["01. ...", "02. ..."] },
+    ...
+    { "slideNumber": ${targetCount}, "layoutType": "conclusion", "title": "...", "subtitle": "..." }
+  ]
+}`;
+  } else if (lang === 'en') {
+    sysPrompt = 'You are an elite academic presentation expert. Respond with raw JSON only, strictly in English.';
+    outlinePrompt = `Topic: "${topic}"
+Slide count: ${targetCount}
+Language: English (en)
+Field: ${categoryName}
+
+Task: Generate a professional presentation outline in JSON format.
+Slide structure:
+Slide 1: layoutType: "title" (Topic, academic subtitle)
+Slide 2: layoutType: "agenda_numbered" (Executive agenda in sections array: 01.., 02..)
+From Slide 3 onwards using following layoutTypes with DEEP, RIGOROUS, TOPIC-SPECIFIC titles and subtitles:
+- split_hero (Strategic relevance, necessity, introductory analysis)
+- comparison (Traditional vs innovative cutting-edge approaches)
+- three_cards (3 core foundational pillars / components)
+- circular_feature (Governance core / integrated ecosystem)
+- kpi_metrics (Empirical statistics and verifiable KPI metrics)
+- process_timeline (Step-by-step phased execution roadmap)
+- milestones_table (Quarterly milestones matrix)
+- spotlight (Critical risks and key focal takeaway)
+Final slide: layoutType: "conclusion" (Strategic conclusions and actionable recommendations)
+
+IMPORTANT RULE: All content must be 100% in professional English with topic-specific academic vocabulary.
+Return raw JSON:
+{
+  "title": "${topic}",
+  "subtitle": "...",
+  "slides": [
+    { "slideNumber": 1, "layoutType": "title", "title": "...", "subtitle": "..." },
+    { "slideNumber": 2, "layoutType": "agenda_numbered", "title": "...", "subtitle": "...", "sections": ["01. ...", "02. ..."] },
+    ...
+    { "slideNumber": ${targetCount}, "layoutType": "conclusion", "title": "...", "subtitle": "..." }
+  ]
+}`;
+  } else {
+    outlinePrompt = `Mavzu: "${topic}"
 Slaydlar soni: ${targetCount}
 Til: ${lang}
 Soha: ${categoryName}
@@ -4170,15 +4756,26 @@ Raw JSON qaytar:
     { "slideNumber": ${targetCount}, "layoutType": "conclusion", "title": "...", "subtitle": "..." }
   ]
 }`;
+  }
 
-  const sysPrompt = 'You are an elite academic presentation outline generator. Respond with raw JSON only. Do not call any tools.';
+  function cleanOutlineResult(data) {
+    if (!data) return data;
+    if (lang !== 'uz') {
+      if (data.title) data.title = cleanUzbekWordsFromText(data.title, lang);
+      if (data.subtitle) data.subtitle = cleanUzbekWordsFromText(data.subtitle, lang);
+      if (Array.isArray(data.slides)) {
+        data.slides.forEach(s => recursivelyCleanObject(s, lang));
+      }
+    }
+    return data;
+  }
 
   // 1. Claude
   if (config.anthropicApiKey) {
     try {
       const cData = await generateViaClaude(outlinePrompt);
       if (cData && Array.isArray(cData.slides) && cData.slides.length >= 3) {
-        return cData;
+        return cleanOutlineResult(cData);
       }
     } catch (_) {}
   }
@@ -4188,7 +4785,7 @@ Raw JSON qaytar:
     try {
       const oData = await generateViaOpenRouter(outlinePrompt);
       if (oData && Array.isArray(oData.slides) && oData.slides.length >= 3) {
-        return oData;
+        return cleanOutlineResult(oData);
       }
     } catch (_) {}
   }
@@ -4204,7 +4801,7 @@ Raw JSON qaytar:
       const text = result.response.text();
       const parsed = JSON.parse(text);
       if (parsed && Array.isArray(parsed.slides) && parsed.slides.length >= 3) {
-        return parsed;
+        return cleanOutlineResult(parsed);
       }
     } catch (_) {}
   }
@@ -4213,7 +4810,7 @@ Raw JSON qaytar:
   try {
     const pData = await callPollinationsAI(outlinePrompt, sysPrompt, 30000);
     if (pData && Array.isArray(pData.slides) && pData.slides.length >= 3) {
-      return pData;
+      return cleanOutlineResult(pData);
     }
   } catch (_) {}
 
@@ -4229,7 +4826,116 @@ export async function generateSlideBatchAI(topic, outlineBatch, language = 'uz')
   if (!outlineBatch || !outlineBatch.length) return [];
   const lang = (['uz', 'ru', 'en', 'tg'].includes(language)) ? language : 'uz';
 
-  const batchPrompt = `Mavzu: "${topic}"
+  let batchPrompt = '';
+  let sysPrompt = 'You are an elite academic researcher and presentation expert. Return raw JSON array ONLY without any markdown codeblocks or preamble.';
+
+  if (lang === 'tg') {
+    sysPrompt = 'Шумо муҳаққиқи барҷаста ва коршиноси таҳияи муаррифӣ ба забони тоҷикӣ мебошед. ТАНҲО массиви хоми JSON баргардонед. ҲАМАИ МАТНҲО бояд 100% ба забони тозаи адабии тоҷикӣ бошанд, ҳеҷ гуна калима ё ибораи ӯзбекӣ ё русӣ набошад!';
+    batchPrompt = `Мавзӯъ: "${topic}"
+Забон: тоҷикӣ (tg) - 100% тоза ва адабӣ, бе ягон калимаи ӯзбекӣ!
+Слайдҳо:
+${JSON.stringify(outlineBatch.map(s => ({
+  slideNumber: s.slideNumber,
+  layoutType: s.layoutType,
+  title: s.title,
+  subtitle: s.subtitle,
+  sections: s.sections
+})), null, 2)}
+
+ВАЗИФА: Барои слайдҳои боло танҳо матнҳои АМИҚИ ИЛМӢ, ДАЛЕЛИИ ОМОРӢ ва марбут ба мавзӯи "${topic}"-ро бо ЗАБОНИ ТОҶИКӢ нависед.
+Ҳар як слайд дорои далелҳои воқеӣ, рақамҳо (фоизҳо, нишондиҳандаҳо, солҳо, ташкилотҳо, формулаҳо) бошад.
+ИСТИФОДАИ КАЛИМАҲОИ УМУМӢ ВА ҲАР ГУНА КАЛИМАИ ӮЗБЕКӢ ҚАТЪИЯН МАНЪ АСТ!
+Ҳар як бахши point description бояд ҳадди ақал 3-4 ҷумлаи мукаммали илмӣ ва таҳлилӣ бошад.
+
+Массиви JSON, ки бояд баргардонида шавад:
+[
+  {
+    "slideNumber": ...,
+    "layoutType": "...",
+    "title": "...",
+    "subtitle": "...",
+    "points": [
+      { "heading": "...", "description": "3-4 ҷумлаи мукаммали илмӣ ва таҳлилии тоҷикӣ..." }
+    ],
+    "metrics": [ ...агар kpi_metrics бошад 4 рақами воқеӣ: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "leftHeading": "...агар comparison бошад...",
+    "rightHeading": "...агар comparison бошад...",
+    "highlight": "Хулосаи муҳимми таҳлилӣ ба забони тоҷикӣ...",
+    "speakerNotes": "Матни мукаммали нутқ барои баромад ба забони тоҷикӣ..."
+  }
+]`;
+  } else if (lang === 'ru') {
+    sysPrompt = 'Вы ведущий академический эксперт по созданию презентаций на русском языке. Возвращайте ТОЛЬКО чистый массив JSON.';
+    batchPrompt = `Тема: "${topic}"
+Язык: русский (ru)
+Слайды:
+${JSON.stringify(outlineBatch.map(s => ({
+  slideNumber: s.slideNumber,
+  layoutType: s.layoutType,
+  title: s.title,
+  subtitle: s.subtitle,
+  sections: s.sections
+})), null, 2)}
+
+ЗАДАЧА: Для указанных слайдов напишите ГЛУБОКИЙ НАУЧНЫЙ, ФАКТИЧЕСКИЙ, СТАТИСТИЧЕСКИЙ контент, строго относящийся к теме "${topic}".
+Каждый слайд должен содержать реальные факты, цифры (проценты, годы, организации, конкретные формулы и метрики).
+ОБЩИЕ ШАБЛОННЫЕ ФРАЗЫ КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНЫ!
+Каждый point description должен содержать не менее 3-4 полноценных предложений глубокого отраслевого анализа.
+
+JSON массив:
+[
+  {
+    "slideNumber": ...,
+    "layoutType": "...",
+    "title": "...",
+    "subtitle": "...",
+    "points": [
+      { "heading": "...", "description": "3-4 предложения глубокого научного анализа..." }
+    ],
+    "metrics": [ ...если kpi_metrics, то 4 реальных показателя: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "leftHeading": "...если comparison...",
+    "rightHeading": "...если comparison...",
+    "highlight": "Ключевой аналитический вывод на русском языке...",
+    "speakerNotes": "Полный текст речи докладчика на русском языке..."
+  }
+]`;
+  } else if (lang === 'en') {
+    sysPrompt = 'You are an elite academic researcher and presentation expert. Return raw JSON array ONLY strictly in English.';
+    batchPrompt = `Topic: "${topic}"
+Language: English (en)
+Slides:
+${JSON.stringify(outlineBatch.map(s => ({
+  slideNumber: s.slideNumber,
+  layoutType: s.layoutType,
+  title: s.title,
+  subtitle: s.subtitle,
+  sections: s.sections
+})), null, 2)}
+
+TASK: For the slides above, write DEEP EMPIRICAL, FACTUAL, STATISTICAL analysis strictly pertaining to "${topic}".
+Include real metrics (percentages, years, institutions, formulas, benchmarks).
+GENERIC PHRASES ARE STRICTLY FORBIDDEN!
+Each point description must contain at least 3-4 full sentences of rigorous domain analysis.
+
+JSON array to return:
+[
+  {
+    "slideNumber": ...,
+    "layoutType": "...",
+    "title": "...",
+    "subtitle": "...",
+    "points": [
+      { "heading": "...", "description": "3-4 rigorous sentences of deep academic analysis..." }
+    ],
+    "metrics": [ ...if kpi_metrics, 4 empirical stats: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "leftHeading": "...if comparison...",
+    "rightHeading": "...if comparison...",
+    "highlight": "Key strategic takeaway in English...",
+    "speakerNotes": "Full comprehensive speech transcript for the speaker in English..."
+  }
+]`;
+  } else {
+    batchPrompt = `Mavzu: "${topic}"
 Til: ${lang}
 Slaydlar:
 ${JSON.stringify(outlineBatch.map(s => ({
@@ -4262,6 +4968,7 @@ Qaytishi kerak bo'lgan JSON massiv:
     "speakerNotes": "Ma'ruza nutqi matni..."
   }
 ]`;
+  }
 
   try {
     const res = await fetch('https://text.pollinations.ai/', {
@@ -4269,7 +4976,7 @@ Qaytishi kerak bo'lgan JSON massiv:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: [
-          { role: 'system', content: 'You are an elite academic researcher and presentation expert. Return raw JSON array ONLY without any markdown codeblocks or preamble.' },
+          { role: 'system', content: sysPrompt },
           { role: 'user', content: batchPrompt }
         ],
         model: 'openai',
@@ -4281,6 +4988,9 @@ Qaytishi kerak bo'lgan JSON massiv:
       const raw = await res.text();
       const slides = extractSlidesFromAiResponse(raw);
       if (slides && Array.isArray(slides) && slides.length > 0) {
+        if (lang !== 'uz') {
+          slides.forEach(s => recursivelyCleanObject(s, lang));
+        }
         return slides;
       }
     }
