@@ -236,8 +236,31 @@ export function getSubscriptionMessage(firstName = '') {
 // Kanal tekshiruvidan o'tmagan referallarni saqlash
 const pendingReferrers = new Map();
 
+// Telegram bot buyruqlarini (Commands Menu) ro'yxatdan o'tkazish
+export async function setupBotCommands() {
+  try {
+    await bot.api.setMyCommands([
+      { command: 'start', description: '🔄 Botni qayta ishga tushirish (Bosh menyu)' },
+      { command: 'restart', description: '🔄 Qayta ishga tushirish' },
+      { command: 'slayd', description: '📊 Yangi taqdimot yaratish' },
+      { command: 'balance', description: '🪙 Balans va referal tizimi' },
+      { command: 'pay', description: '💳 Hisobni to\'ldirish' },
+      { command: 'stars', description: '⭐ Telegram Stars orqali to\'lov' },
+      { command: 'vip', description: '💎 VIP Pass (Cheksiz taqdimotlar)' },
+      { command: 'promo', description: '🎟 Promo-kod kiritish' },
+      { command: 'ocr', description: '📸 Konspektdan slayd tayyorlash' },
+      { command: 'taklif', description: '✍️ Taklif va murojaat yuborish' },
+      { command: 'cancel', description: '❌ Joriy amalni bekor qilish' },
+      { command: 'help', description: 'ℹ️ Qo\'llanma va yordam' },
+    ]);
+    console.log('✅ Telegram bot buyruqlari (setMyCommands) muvaffaqiyatli sozlandi!');
+  } catch (err) {
+    console.warn('[Bot] setMyCommands sozlashda xatolik:', err.message);
+  }
+}
+
 // Asosiy xush kelibsiz menyusi
-async function sendWelcomeMenu(ctx, referrerId = null) {
+async function sendWelcomeMenu(ctx, referrerId = null, isRestart = false) {
   const { user, isNew, bonusGiven, referrer } = getOrCreateUser(
     ctx.chat.id,
     { username: ctx.from.username, firstName: ctx.from.first_name },
@@ -264,18 +287,15 @@ async function sendWelcomeMenu(ctx, referrerId = null) {
     } catch (_) {}
   }
 
-  if (config.miniAppUrl && config.miniAppUrl.startsWith('https://')) {
-    try {
-      await bot.api.setChatMenuButton({
-        chat_id: ctx.chat.id,
-        menu_button: {
-          type: 'web_app',
-          text: '📊 Taqdimot Yaratish',
-          web_app: { url: config.miniAppUrl },
-        },
-      });
-    } catch (_) {}
-  }
+  // Telegram Menu tugmasini buyruqlar menyusiga sozlash (foydalanuvchi doim /start ni bosishi uchun)
+  try {
+    await bot.api.setChatMenuButton({
+      chat_id: ctx.chat.id,
+      menu_button: {
+        type: 'commands',
+      },
+    });
+  } catch (_) {}
 
   const keyboard = new InlineKeyboard();
 
@@ -290,6 +310,7 @@ async function sendWelcomeMenu(ctx, referrerId = null) {
     .text('🎟 Promo-kod', 'action_promo')
     .row()
     .text('📸 Konspektdan slayd (OCR)', 'action_ocr')
+    .text('🔄 Qayta ishga tushirish', 'action_restart')
     .row();
 
   const isVip = isUserVip(ctx.chat.id);
@@ -297,8 +318,12 @@ async function sendWelcomeMenu(ctx, referrerId = null) {
     ? `\n👑 *VIP Obuna: FAOL!* (${new Date(user.vipUntil).toLocaleDateString('uz-UZ')} gacha cheksiz)\n`
     : '';
 
+  const restartBadge = (isRestart && !isNew)
+    ? `🔄 *Bot muvaffaqiyatli qayta ishga tushirildi!*\nBarcha faol jarayonlar tozalandi va bosh menyu yangilandi.\n\n`
+    : '';
+
   const welcomeText = `
-👋 *Assalomu alaykum, ${ctx.from.first_name || 'do\'stim'}!*
+${restartBadge}👋 *Assalomu alaykum, ${ctx.from.first_name || 'do\'stim'}!*
 
 Men sun'iy intellekt yordamida **PowerPoint (.pptx)** taqdimotlarini tayyorlab beruvchi botman.
 ${vipBadge}
@@ -321,8 +346,8 @@ ${vipBadge}
   });
 }
 
-// /start buyrug'i (Referal bilan: /start ref_123456)
-bot.command('start', async (ctx) => {
+// /start va /restart buyruqlari (Referal bilan: /start ref_123456)
+bot.command(['start', 'restart'], async (ctx) => {
   sessions.delete(ctx.chat.id);
 
   let referrerId = null;
@@ -342,8 +367,23 @@ bot.command('start', async (ctx) => {
   }
 
   const refToUse = referrerId || pendingReferrers.get(String(ctx.chat.id));
-  await sendWelcomeMenu(ctx, refToUse);
+  await sendWelcomeMenu(ctx, refToUse, true);
   pendingReferrers.delete(String(ctx.chat.id));
+});
+
+// Qayta ishga tushirish tugmasi bosilganda (Restart callback)
+bot.callbackQuery(['action_restart', 'cmd_start'], async (ctx) => {
+  sessions.delete(ctx.chat.id);
+  await ctx.answerCallbackQuery({ text: 'Bot qayta ishga tushirildi! 🔄' });
+  const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
+  if (!isSubscribed) {
+    return ctx.reply(getSubscriptionMessage(ctx.from?.first_name), {
+      parse_mode: 'Markdown',
+      reply_markup: getSubscriptionKeyboard(),
+      disable_web_page_preview: true,
+    });
+  }
+  await sendWelcomeMenu(ctx, null, true);
 });
 
 // A'zolikni tekshirish tugmasi bosilganda
@@ -1564,6 +1604,13 @@ bot.on('message:text', async (ctx) => {
       reply_markup: getSubscriptionKeyboard(),
       disable_web_page_preview: true,
     });
+  }
+
+  // Agar foydalanuvchi oddiy matn sifatida "start", "restart", "boshlash", "menyu" deb yozsa
+  const lowerText = text.toLowerCase();
+  if (['start', 'restart', 'boshlash', 'qayta ishga tushirish', 'bosh menyu', 'menu', 'menyu'].includes(lowerText)) {
+    sessions.delete(ctx.chat.id);
+    return sendWelcomeMenu(ctx, null, true);
   }
 
   const session = sessions.get(ctx.chat.id);

@@ -580,8 +580,11 @@ export function detectDomain(topic) {
   if (/(ta'lim|maktab|universitet|pedagog|o'qituvchi|talaba|o'quvchi|metodika|dars|tarbiya|образован|педагог|учител|школ|студент|обучени|методик|вуз|маориф|омӯзгор|донишҷӯ|education|school|university|teacher|student|pedagogy)/i.test(t)) return 'education';
   if (/(turizm|sayyoh|ziyorat|mehmonxona|hotel|sayohat|ekoturizm|gastronomik|gid|туро|туризм|путешеств|гостиниц|отел|экскурси|сайёҳ|сайёҳӣ|меҳмонхона|tourism|tourist|travel|hotel|hospitality)/i.test(t)) return 'tourism';
   if (/(tibbiyot|shifo|salomat|klinika|vrach|doktor|dori|farmatsevt|kasallik|jarroh|genom|mrt|covid|meditsin|здравоохран|медицин|врач|клиник|болезн|диагностик|тиб|тандуруст|бемор|табиб|medicine|health|medical|clinic|doctor)/i.test(t)) return 'med';
-  if (/(ekolog|yashil|energetik|quyosh|shamol|tabiat|suv|iqlim|chiqindi|bio|эколог|зелен|энергети|солнц|климат|природ|обёр|экология|барқ|ecology|green|energy|solar|wind|climate|nature)/i.test(t)) return 'ecology';
+  if (/(ekolog|yashil|energetik|quyosh|shamol|tabiat|suv|iqlim|chiqindi|bio|global\s*isish|isish|harorat|muzlik|uglerod|parnik|issiqxona|atmosfera|co2|carbon|warming|climate|emissiy|эколог|зелен|энергети|солнц|климат|природ|обёр|экология|барқ|потеплен|парников|ледник|выброс|углерод|ecology|green|energy|solar|wind|climate|nature|warming|greenhouse)/i.test(t)) return 'ecology';
   if (/(iqtisod|moliya|bank|kredit|investits|buxgalter|soliq|bozor|savdo|pul|audit|finans|бизнес|финанс|банк|инвестиц|бухгалтер|налог|рынок|экономик|валют|молия|бонк|finance|bank|investment|audit|tax)/i.test(t)) return 'finance';
+  if (/(huquq|qonun|sud|advokat|jinoyat|adliya|konstituts|davlat|boshqaruv|normativ|прав|закон|суд|юрист|юриспруд|государств|конституц|law|legal|court|crime|justice|constitution)/i.test(t)) return 'law';
+  if (/(qishloq|fermer|hosil|paxta|g'alla|bog'dorchilik|chorva|agrar|agro|сельск|фермер|урожай|аграр|животновод|agriculture|farm|crop|harvest|agro)/i.test(t)) return 'agriculture';
+  if (/(sanoat|zavod|fabrika|avtomobil|mashinasozlik|ishlab chiqarish|metallurg|logistik|транспорт|промышлен|завод|автомобил|производств|логистик|industry|factory|manufacturing|production|logistics)/i.test(t)) return 'industry';
   if (/(ai|sun'iy intellekt|neyron|dastur|kiber|algoritm|kompyuter|robot|texnolog|software|cloud|bulut|data|ma'lumot|tarmoq|цифров|программ|интеллект|нейрон|кибер|ии|зеҳни сунъӣ|technology|artificial intelligence|neural)/i.test(t)) return 'it';
   return 'general';
 }

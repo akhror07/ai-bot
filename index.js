@@ -1,5 +1,5 @@
 import { app } from './src/server.js';
-import { bot } from './src/bot.js';
+import { bot, setupBotCommands } from './src/bot.js';
 import { config } from './src/config.js';
 import { startTunnel as startUntun } from 'untun';
 import localtunnel from 'localtunnel';
@@ -66,20 +66,19 @@ async function main() {
     config.botUsername = botInfo.username;
     console.log(`🤖 Telegram bot: @${botInfo.username} (${botInfo.first_name})`);
 
-    // Telegram Chat Menu Button sozlash
-    if (tunnelUrl && tunnelUrl.startsWith('https://')) {
-      try {
-        await bot.api.setChatMenuButton({
-          menu_button: {
-            type: 'web_app',
-            text: '📊 Taqdimot Yaratish',
-            web_app: { url: tunnelUrl },
-          },
-        });
-        console.log(`✅ Telegram Menu Button sozlandi: ${tunnelUrl}`);
-      } catch (menuErr) {
-        console.warn('[Bot] Menu button sozlashda xatolik:', menuErr.message);
-      }
+    // Telegram bot buyruqlarini (setMyCommands) sozlash
+    await setupBotCommands();
+
+    // Telegram Chat Menu Button sozlash (Buyruqlar menyusini ochish uchun)
+    try {
+      await bot.api.setChatMenuButton({
+        menu_button: {
+          type: 'commands',
+        },
+      });
+      console.log('✅ Telegram Menu Button (Commands menyusi) sozlandi');
+    } catch (menuErr) {
+      console.warn('[Bot] Menu button sozlashda xatolik:', menuErr.message);
     }
 
     // 4. Bot polling boshlash

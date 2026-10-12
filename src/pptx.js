@@ -133,6 +133,16 @@ function getI18n(lang = 'uz') {
       pyramidLevelLabels: ['01. Стратегическая Вершина & Миссия', '02. Управленческие Механизмы', '03. Базовый Фундамент & Ресурсы'],
       quoteLead: 'КЛЮЧЕВАЯ АКАДЕМИЧЕСКАЯ КОНЦЕПЦИЯ',
       stakeholderBadges: ['Руководство & Регуляторы', 'Профильные Эксперты', 'Конечные Пользователи'],
+      sourcePrefix: '📊 Источник: ',
+      ratingScaleNote: 'Шкала оценки: ●●●●● — отлично, ○ — слабо. Экспертная аналитическая оценка.',
+      scenarioRule: '💡 Правило: Сначала определяются задачи и бюджет, затем выбирается оптимальное решение.',
+      profileHeadings: {
+        pros: 'СИЛЬНЫЕ СТОРОНЫ',
+        cons: 'СЛАБЫЕ СТОРОНЫ И ОГРАНИЧЕНИЯ',
+        bestFor: 'НАИБОЛЕЕ ПОДХОДЯЩИЕ СФЕРЫ',
+        passport: 'ПАСПОРТ СИСТЕМЫ'
+      },
+      coverSources: 'На основе StatCounter, Gartner и официальных отраслевых отчетов',
     },
     en: {
       badge: 'PRESENTATION',
@@ -170,6 +180,16 @@ function getI18n(lang = 'uz') {
       pyramidLevelLabels: ['01. Strategic Pinnacle & Vision', '02. Operational Systems & Tools', '03. Core Infrastructure & Foundation'],
       quoteLead: 'EXECUTIVE CITATION & INSIGHT',
       stakeholderBadges: ['Leadership & Governance', 'Domain Specialists', 'Target Beneficiaries'],
+      sourcePrefix: '📊 Source: ',
+      ratingScaleNote: 'Rating scale: ●●●●● — excellent, ○ — weak. Domain expert evaluation.',
+      scenarioRule: '💡 Core rule: Define workload and budget first, then select the optimal solution.',
+      profileHeadings: {
+        pros: 'CORE STRENGTHS',
+        cons: 'KEY LIMITATIONS & RISKS',
+        bestFor: 'OPTIMAL USE CASES',
+        passport: 'SYSTEM PROFILE'
+      },
+      coverSources: 'Based on StatCounter, Gartner, and official global data benchmarks',
     },
     tg: {
       badge: 'МУАРРИФӢ',
@@ -207,6 +227,16 @@ function getI18n(lang = 'uz') {
       pyramidLevelLabels: ['01. Қуллаи Стратегӣ ва Ҳадаф', '02. Механизмҳои Идоракунӣ', '03. Пойдевори Асосӣ ва Захираҳо'],
       quoteLead: 'КОНСЕПСИЯ ВА ХУЛОСАИ МУҲИМИ ИЛМӢ',
       stakeholderBadges: ['Роҳбарият ва Танзимгарон', 'Мутахассисони Соҳавӣ', 'Истифодабарандагони Ниҳоӣ'],
+      sourcePrefix: '📊 Сарчашма: ',
+      ratingScaleNote: 'Миқёси баҳодиҳӣ: ●●●●● — аъло, ○ — заиф. Баҳодиҳии коршиносон.',
+      scenarioRule: '💡 Қоида: Аввал ҳадаф ва буҷет муайян карда мешавад, сипас қарор интихоб мешавад.',
+      profileHeadings: {
+        pros: 'ҶАНБАҲОИ ҚАВӢ',
+        cons: 'ҶАНБАҲОИ ЗАИФ ВА МАҲДУДИЯТҲО',
+        bestFor: 'СОҲАҲОИ МУНОСИБ',
+        passport: 'ШИНОСНОМАИ НИЗОМ'
+      },
+      coverSources: 'Дар асоси StatCounter, Gartner ва омори расмии ҷаҳонӣ',
     },
   };
   return dict[lang] || dict.uz;
@@ -399,22 +429,24 @@ function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false, i1
 }
 
 /**
- * Pastki footer (Hech qanday keraksiz AI so'zlari yo'q)
+ * Pastki footer (Manba va sahifa ko'rsatkichi)
  */
-function addSlideFooter(slide, pres, theme, mainTitle, slideNumber, totalSlides) {
-  if (!mainTitle) return;
+function addSlideFooter(slide, pres, theme, mainTitle, slideNumber, totalSlides, source = '', i18n = null) {
+  if (!mainTitle && !source) return;
   slide.addShape(pres.ShapeType.line, {
     x: 0.8, y: 6.60, w: 11.73, h: 0,
     line: { color: theme.border, width: 0.8, transparency: 40 },
   });
-  slide.addText(mainTitle, {
-    x: 0.8, y: 6.68, w: 8.5, h: 0.30,
-    fontFace: 'Arial', fontSize: 9.5, color: theme.subtext, align: 'left', fit: 'shrink',
+  const sourcePrefix = i18n?.sourcePrefix || '📊 Manba: ';
+  const footerText = source ? `${sourcePrefix}${source}` : (mainTitle || '');
+  slide.addText(footerText, {
+    x: 0.8, y: 6.66, w: 8.8, h: 0.32,
+    fontFace: 'Arial', fontSize: 9.0, italic: !!source, color: theme.subtext, align: 'left', fit: 'shrink',
   });
   if (slideNumber && totalSlides) {
     slide.addText(`${slideNumber} / ${totalSlides}`, {
-      x: 10.0, y: 6.68, w: 2.53, h: 0.30,
-      fontFace: 'Arial', fontSize: 9.5, color: theme.subtext, align: 'right', fit: 'shrink',
+      x: 9.8, y: 6.66, w: 2.73, h: 0.32,
+      fontFace: 'Arial', fontSize: 9.5, bold: true, color: theme.subtext, align: 'right', fit: 'shrink',
     });
   }
 }
@@ -504,7 +536,7 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, 
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -592,7 +624,7 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data,
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -669,7 +701,7 @@ function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data,
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -737,7 +769,7 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -789,7 +821,7 @@ function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data,
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -854,7 +886,7 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -915,7 +947,7 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, 
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, true, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -992,7 +1024,7 @@ function renderThreeCardsLayout(slide, pres, theme, item, num, total, img, data,
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1136,7 +1168,7 @@ function renderChartLayout(slide, pres, theme, item, num, total, img, data, i18n
     console.warn('[PPTX] Chart chizishda xatolik:', chartErr.message);
   }
 
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1214,7 +1246,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
     fontFace: 'Arial', fontSize: 11, bold: true, color: theme.primary, align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1283,7 +1315,7 @@ function renderAgendaNumberedLayout(slide, pres, theme, item, num, total, img, d
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1386,7 +1418,7 @@ function renderCircularFeatureLayout(slide, pres, theme, item, num, total, img, 
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1461,7 +1493,7 @@ function renderMilestonesTableLayout(slide, pres, theme, item, num, total, img, 
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1530,7 +1562,7 @@ function renderSwotAnalysisLayout(slide, pres, theme, item, num, total, img, dat
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1626,7 +1658,7 @@ function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, 
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1691,7 +1723,7 @@ function renderPyramidHierarchyLayout(slide, pres, theme, item, num, total, img,
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1766,7 +1798,7 @@ function renderQuoteEditorialLayout(slide, pres, theme, item, num, total, img, d
   });
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1835,7 +1867,7 @@ function renderHorizontalFlowchartLayout(slide, pres, theme, item, num, total, i
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 // ================================================================
@@ -1903,12 +1935,302 @@ function renderTeamStakeholdersLayout(slide, pres, theme, item, num, total, img,
   }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
-  addSlideFooter(slide, pres, theme, data.title, num, total);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
+}
+
+// ================================================================
+// 20-LAYOUT: MATRIX RATING (Ekspert Baholash Matritsasi — ●●●●○ Ballari Bilan)
+// ================================================================
+function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  applySlideBackground(slide, pres, theme);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+
+  const hasHighlight = !!item.highlight;
+  const contentY = 1.68;
+  const tableH = hasHighlight ? 3.65 : 4.60;
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
+
+  const defaultCols = ['Mezon', 'Variant A', 'Variant B', 'Variant C', 'Variant D', 'Variant E'];
+  const columns = (item.columns && item.columns.length) ? item.columns : (item.headers && item.headers.length ? item.headers : defaultCols);
+  const colCount = columns.length;
+
+  const headerBg = isMonochrome ? '111111' : (isNeon ? '1C2C3B' : theme.primary);
+  const headerTextColor = '#FFFFFF';
+
+  const tableRows = [
+    columns.map((c, cIdx) => ({
+      text: c,
+      options: {
+        fill: headerBg,
+        color: headerTextColor,
+        bold: true,
+        align: cIdx === 0 ? 'left' : 'center',
+        fontSize: colCount > 5 ? 10 : 11
+      }
+    }))
+  ];
+
+  const defaultRows = [
+    { name: 'Ekotizim & Qamrov', scores: ['●●●●●', '●●●●○', '●●●○○', '●●●●●', '●●●●○'] },
+    { name: 'Xavfsizlik & Maxfiylik', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+    { name: 'Moslashtirish Erkinligi', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●○', '●●○○○'] },
+    { name: 'Resurs Samaradorligi', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+    { name: 'Kirish Narxi & Tejamkorlik', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●●', '●●○○○'] },
+  ];
+
+  const rows = (item.matrixRows && item.matrixRows.length) ? item.matrixRows : (item.rows && item.rows.length ? item.rows : defaultRows);
+  const maxRows = Math.min(rows.length, 6);
+  for (let rIdx = 0; rIdx < maxRows; rIdx++) {
+    const r = rows[rIdx];
+    const isEven = (rIdx % 2 === 0);
+    const rowBg = isEven ? theme.cardBg : theme.bg;
+    const rowCells = [
+      {
+        text: r.name || r.criterion || `Mezon 0${rIdx + 1}`,
+        options: {
+          fill: rowBg,
+          color: isMonochrome ? '111111' : theme.primary,
+          bold: true,
+          align: 'left',
+          fontSize: 10
+        }
+      }
+    ];
+
+    const scores = r.scores || r.values || [];
+    for (let cIdx = 1; cIdx < colCount; cIdx++) {
+      const scoreVal = scores[cIdx - 1] || '●●●○○';
+      rowCells.push({
+        text: scoreVal,
+        options: {
+          fill: rowBg,
+          color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary),
+          bold: true,
+          align: 'center',
+          fontSize: 10.5
+        }
+      });
+    }
+    tableRows.push(rowCells);
+  }
+
+  const firstColW = colCount > 5 ? 2.8 : 3.3;
+  const otherColW = (11.73 - firstColW) / Math.max(colCount - 1, 1);
+  const colWidths = [firstColW];
+  for (let c = 1; c < colCount; c++) colWidths.push(otherColW);
+
+  try {
+    slide.addTable(tableRows, {
+      x: 0.8,
+      y: contentY,
+      w: 11.73,
+      h: tableH,
+      colW: colWidths,
+      border: { type: 'solid', pt: 1, color: isNeon ? '595C8A' : theme.border },
+      valign: 'middle',
+      margin: [0.06, 0.1, 0.06, 0.1],
+    });
+  } catch (tErr) {
+    console.warn('[PPTX] Matrix rating jadvalida xatolik:', tErr.message);
+  }
+
+  const ratingNote = item.ratingScaleNote || i18n.ratingScaleNote;
+  const highlightText = item.highlight ? `${ratingNote} • ${item.highlight}` : ratingNote;
+  if (highlightText) addHighlightBox(slide, pres, theme, highlightText, 5.52, false, i18n);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
+}
+
+// ================================================================
+// 21-LAYOUT: SCENARIO MATRIX (Amaliy Stsenariylar & Tanlov Tavsiyalari Jadvali)
+// ================================================================
+function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  applySlideBackground(slide, pres, theme);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+
+  const hasHighlight = !!item.highlight;
+  const contentY = 1.68;
+  const tableH = hasHighlight ? 3.65 : 4.60;
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
+
+  const defaultHeaders = ['Foydalanish Stsenariysi / Vazifa', 'Tavsiya Etilgan Tanlov', 'Asosiy Sabab & Strategik Afzallik'];
+  const headers = (item.headers && item.headers.length) ? item.headers : defaultHeaders;
+
+  const headerBg = isMonochrome ? '111111' : (isNeon ? '1C2C3B' : theme.primary);
+  const headerTextColor = '#FFFFFF';
+
+  const tableRows = [
+    [
+      { text: headers[0], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
+      { text: headers[1], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'center', fontSize: 11 } },
+      { text: headers[2], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
+    ]
+  ];
+
+  const defaultScenarios = [
+    { scenario: 'Korporativ Ofis & Boshqaruv', choice: 'Standart Model A', reason: 'Keng qamrovli ekotizim, markaziy audit va integratsiya qulayligi.' },
+    { scenario: 'Kreativ Ish & Dizayn', choice: 'Premium Model B', reason: 'Maksimal rang aniqligi, unumdorlik va energiya samaradorligi balansi.' },
+    { scenario: 'Dasturlash & Infratuzilma', choice: 'Ochiq Model C', reason: 'UNIX/POSIX muhiti, konteynerlar va litsenziya xarajatlarining yo\'qligi.' },
+    { scenario: 'Ommaviy Bozor & Mass Market', choice: 'Moslashuvchan Model D', reason: 'Keng apparat tanlovi, har qanday byudjetga moslik va erkinlik.' },
+    { scenario: 'Eski yoki Cheklangan Resurs', choice: 'Yengil Model E', reason: 'Minimal talablar bilan barqaror ishlash va tejamkorlik.' },
+  ];
+
+  const scenarios = (item.scenarios && item.scenarios.length) ? item.scenarios : (item.points ? item.points.map(p => ({
+    scenario: p.heading,
+    choice: p.choice || p.tag || 'Tavsiya',
+    reason: p.description
+  })) : defaultScenarios);
+
+  const rowCount = Math.min(scenarios.length, 6);
+  for (let r = 0; r < rowCount; r++) {
+    const sc = scenarios[r];
+    const isEven = (r % 2 === 0);
+    const rowBg = isEven ? theme.cardBg : theme.bg;
+
+    tableRows.push([
+      { text: sc.scenario || `Vazifa 0${r + 1}`, options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'left', fontSize: 10 } },
+      { text: sc.choice || 'Tanlov', options: { fill: rowBg, color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary), bold: true, align: 'center', fontSize: 10.5 } },
+      { text: sc.reason || '', options: { fill: rowBg, color: theme.text, fontSize: 9.5 } },
+    ]);
+  }
+
+  try {
+    slide.addTable(tableRows, {
+      x: 0.8,
+      y: contentY,
+      w: 11.73,
+      h: tableH,
+      colW: [3.3, 2.7, 5.73],
+      border: { type: 'solid', pt: 1, color: isNeon ? '595C8A' : theme.border },
+      valign: 'middle',
+      margin: [0.07, 0.12, 0.07, 0.12],
+    });
+  } catch (tErr) {
+    console.warn('[PPTX] Scenario jadvalida xatolik:', tErr.message);
+  }
+
+  const ruleNote = item.rule || i18n.scenarioRule;
+  const highlightText = item.highlight ? `${ruleNote} • ${item.highlight}` : ruleNote;
+  if (highlightText) addHighlightBox(slide, pres, theme, highlightText, 5.52, false, i18n);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
+}
+
+// ================================================================
+// 22-LAYOUT: PROFILE CARD (Tizim Portreti: Pasport, Kuchli/Zaif Tomonlar & Qo'llanish)
+// ================================================================
+function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  applySlideBackground(slide, pres, theme);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+
+  const hasHighlight = !!item.highlight;
+  const contentY = 1.68;
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
+
+  // 1. TIZIM PASPORTI (Yuqoridagi horizontal karta)
+  const passportH = 0.68;
+  slide.addShape(pres.ShapeType.roundRect, {
+    x: 0.8, y: contentY, w: 11.73, h: passportH,
+    fill: { color: theme.cardBg },
+    line: { color: theme.primary, width: 1.2 },
+    rectRadius: 0.1,
+  });
+
+  const passportFields = item.passport || [
+    { label: 'Turi', val: item.typeDesc || 'Operatsion Tizim' },
+    { label: 'Yadro', val: item.kernel || 'Gibrid / Modular' },
+    { label: 'Litsenziya', val: item.license || 'Proprietar / GPL' },
+    { label: 'Bozor Ulushi', val: item.marketShare || '~70%' },
+  ];
+
+  const passW = 11.73 / passportFields.length;
+  passportFields.forEach((f, idx) => {
+    const px = 0.8 + idx * passW;
+    slide.addText([
+      { text: `${f.label}: `, options: { bold: true, fontSize: 9.5, color: theme.subtext } },
+      { text: `${f.val}`, options: { bold: true, fontSize: 10.5, color: isNeon ? '#FFFFFF' : theme.primary } },
+    ], {
+      x: px + 0.1, y: contentY + 0.05, w: passW - 0.2, h: passportH - 0.1,
+      align: 'center', valign: 'middle', fit: 'shrink',
+    });
+  });
+
+  // 2. IKKI USTUNLI TAHLIL (Kuchli tomonlari vs Zaif tomonlari)
+  const colY = contentY + passportH + 0.15;
+  const colH = hasHighlight ? 2.15 : 2.95;
+  const colW = 5.65;
+  const gap = 0.43;
+  const leftX = 0.8;
+  const rightX = leftX + colW + gap;
+
+  // Chap karta: Kuchli tomonlari
+  slide.addShape(pres.ShapeType.roundRect, {
+    x: leftX, y: colY, w: colW, h: colH,
+    fill: { color: theme.cardBg },
+    line: { color: '10B981', width: 1.4 },
+    rectRadius: 0.12,
+  });
+  slide.addText(`✅ ${i18n.profileHeadings?.pros || 'KUCHLI TOMONLARI'}`, {
+    x: leftX + 0.25, y: colY + 0.12, w: colW - 0.5, h: 0.35,
+    fontFace: 'Arial', fontSize: 11, bold: true, color: '10B981', fit: 'shrink',
+  });
+
+  const pros = (item.pros && item.pros.length) ? item.pros : (item.strengths && item.strengths.length ? item.strengths : (item.points ? item.points.slice(0, 3) : []));
+  const prosText = pros.map(p => `• ${typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`}`).join('\n\n');
+  slide.addText(prosText, {
+    x: leftX + 0.25, y: colY + 0.48, w: colW - 0.5, h: colH - 0.58,
+    fontFace: 'Arial', fontSize: 9.5, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
+  });
+
+  // O'ng karta: Zaif tomonlari
+  slide.addShape(pres.ShapeType.roundRect, {
+    x: rightX, y: colY, w: colW, h: colH,
+    fill: { color: theme.cardBg },
+    line: { color: 'EF4444', width: 1.4 },
+    rectRadius: 0.12,
+  });
+  slide.addText(`⚠️ ${i18n.profileHeadings?.cons || 'ZAIF TOMONLARI & CHEKLOVLAR'}`, {
+    x: rightX + 0.25, y: colY + 0.12, w: colW - 0.5, h: 0.35,
+    fontFace: 'Arial', fontSize: 11, bold: true, color: 'EF4444', fit: 'shrink',
+  });
+
+  const cons = (item.cons && item.cons.length) ? item.cons : (item.weaknesses && item.weaknesses.length ? item.weaknesses : (item.points ? item.points.slice(3, 6) : []));
+  const consList = cons.length ? cons : [
+    'Yuqori apparat talablari va resurs sarfi.',
+    'Maxfiylik va telemetriya parametrlarining cheklanganligi.'
+  ];
+  const consText = consList.map(p => `• ${typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`}`).join('\n\n');
+  slide.addText(consText, {
+    x: rightX + 0.25, y: colY + 0.48, w: colW - 0.5, h: colH - 0.58,
+    fontFace: 'Arial', fontSize: 9.5, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
+  });
+
+  // 3. ENG MOS SOHALAR (Pastki blok)
+  const bestForY = colY + colH + 0.12;
+  const bestForH = 0.55;
+  slide.addShape(pres.ShapeType.roundRect, {
+    x: 0.8, y: bestForY, w: 11.73, h: bestForH,
+    fill: { color: theme.bg },
+    line: { color: theme.border, width: 1 },
+    rectRadius: 0.08,
+  });
+  const bestForText = item.bestFor || item.targetUse || 'Korporativ ofis, ilmiy tadqiqotlar va keng qamrovli ekotizim.';
+  slide.addText([
+    { text: `🎯 ${i18n.profileHeadings?.bestFor || 'ENG MOS SOHALAR'}: `, options: { bold: true, fontSize: 10, color: isNeon ? '#FFFFFF' : theme.primary } },
+    { text: bestForText, options: { bold: false, fontSize: 10, color: theme.text } },
+  ], {
+    x: 0.95, y: bestForY + 0.05, w: 11.43, h: bestForH - 0.1,
+    valign: 'middle', wrap: true, fit: 'shrink',
+  });
+
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
+  addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
 /**
  * Professional PowerPoint (.pptx) taqdimot yaratadi:
- * - 18 xil boy va unikal andozalar
+ * - 21 xil boy va unikal andozalar
  * - 100% ramka ichida qoladigan matnlar (fit: 'shrink')
  * - Mavzuga 100% mos 4K fotosuratlar
  */
@@ -2024,29 +2346,54 @@ export async function createPptx(data) {
 
   if (data.subtitle || titleData.subtitle) {
     titleSlide.addText(data.subtitle || titleData.subtitle, {
-      x: 1.0, y: 4.4, w: textW, h: 1.2,
-      fontFace: 'Arial', fontSize: 16, color: isLightTheme ? (theme.accent || '52525B') : theme.primary, valign: 'top', wrap: true, fit: 'shrink',
+      x: 1.0, y: 4.4, w: textW, h: 0.75,
+      fontFace: 'Arial', fontSize: 15, color: isLightTheme ? (theme.accent || '52525B') : theme.primary, valign: 'top', wrap: true, fit: 'shrink',
+    });
+  }
+
+  // Scope Tag Pills (Masalan: Windows 11, macOS, Linux, Android, iOS kabi asosiy qismlar)
+  const scopePills = titleData.tags || data.tags || titleData.scopePills || data.scopePills || [];
+  if (scopePills && scopePills.length) {
+    const pillY = 5.20;
+    let pillX = 1.0;
+    scopePills.slice(0, 5).forEach(pillText => {
+      const pW = Math.min(Math.max(pillText.length * 0.13 + 0.45, 1.2), 2.4);
+      if (pillX + pW <= textW + 1.0) {
+        titleSlide.addShape(pres.ShapeType.roundRect, {
+          x: pillX, y: pillY, w: pW, h: 0.36,
+          fill: { color: theme.cardBg },
+          line: { color: theme.border, width: 1 },
+          rectRadius: 0.18,
+        });
+        titleSlide.addText(pillText, {
+          x: pillX, y: pillY, w: pW, h: 0.36,
+          fontFace: 'Arial', fontSize: 9.0, bold: true, color: theme.primary,
+          align: 'center', valign: 'middle', fit: 'shrink',
+        });
+        pillX += pW + 0.15;
+      }
     });
   }
 
   if (data.author) {
     const authorCardW = textW > 7 ? 6.5 : textW;
     titleSlide.addShape(pres.ShapeType.roundRect, {
-      x: 1.0, y: 5.65, w: authorCardW, h: 0.52,
+      x: 1.0, y: 5.75, w: authorCardW, h: 0.48,
       fill: { color: theme.cardBg },
       line: { color: theme.primary, width: 1.2 },
       rectRadius: 0.1,
     });
     titleSlide.addText(`👤 ${data.author}`, {
-      x: 1.15, y: 5.65, w: authorCardW - 0.3, h: 0.52,
+      x: 1.15, y: 5.75, w: authorCardW - 0.3, h: 0.48,
       fontFace: 'Arial', fontSize: 11, bold: true,
       color: theme.primary, valign: 'middle', fit: 'shrink',
     });
   }
 
-  titleSlide.addText(i18n.totalInfo(slidesList.length), {
-    x: 1.0, y: 6.6, w: 8.0, h: 0.35,
-    fontFace: 'Arial', fontSize: 10, color: theme.subtext, fit: 'shrink',
+  const totalSlidesInfo = `${slidesList.length} ${i18n.slide || 'slayd'} • 16:9 Full HD • ${data.sourcesNote || i18n.coverSources || 'StatCounter, Gartner va rasmiy xalqaro manbalar asosida'}`;
+  titleSlide.addText(totalSlidesInfo, {
+    x: 1.0, y: 6.6, w: 10.5, h: 0.35,
+    fontFace: 'Arial', fontSize: 9.5, color: theme.subtext, fit: 'shrink',
   });
 
   if (titleData.speakerNotes) titleSlide.addNotes(titleData.speakerNotes);
@@ -2060,15 +2407,18 @@ export async function createPptx(data) {
   const layoutRotator = [
     'split_hero',
     'agenda_numbered',
+    'kpi_metrics',
+    'profile_card',
     'three_cards',
     'circular_feature',
+    'matrix_rating',
     'swot_analysis',
     'data_chart',
     'problem_solution',
     'milestones_table',
     'comparison',
+    'scenario_matrix',
     'pyramid_hierarchy',
-    'kpi_metrics',
     'process_timeline',
     'quote_editorial',
     'matrix_grid',
@@ -2144,6 +2494,15 @@ export async function createPptx(data) {
           break;
         case 'team_stakeholders':
           renderTeamStakeholdersLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
+          break;
+        case 'matrix_rating':
+          renderMatrixRatingLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
+          break;
+        case 'scenario_matrix':
+          renderScenarioMatrixLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
+          break;
+        case 'profile_card':
+          renderProfileCardLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'spotlight':
           renderSpotlightCalloutLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
