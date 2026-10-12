@@ -601,7 +601,7 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
   const subs = bp.subtitles[lang] || bp.subtitles.uz;
   const domainName = bp.names[lang] || bp.names.uz;
 
-  // Layout journey matching reference presentation
+  // Layout journey matching reference presentation (20 distinct unique stages)
   const progression = [
     {
       layoutType: 'split_hero',
@@ -634,6 +634,16 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
       sub: subs.pillars
     },
     {
+      layoutType: 'matrix_grid',
+      suffix: {
+        uz: 'Tizimli Matritsa va Tuzilmaviy Bog\'liqliklar',
+        ru: 'Системная матрица и структурные взаимосвязи',
+        en: 'Systemic Framework Matrix & Core Dependencies',
+        tg: 'Матритсаи низомманд ва робитаҳои сохторӣ'
+      },
+      sub: (lang === 'ru') ? 'Четыре ключевых измерения устойчивого развития' : (lang === 'en') ? 'Four structural dimensions of institutional excellence' : (lang === 'tg') ? 'Чаҳор ҷанбаи калидии рушди устувор' : 'Barqaror rivojlanishning to\'rtta asosiy tizimli o\'lchovi'
+    },
+    {
       layoutType: 'circular_feature',
       suffix: {
         uz: 'Integratsiyalashgan Ekotizim va Boshqaruv Yadrosi',
@@ -654,6 +664,26 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
       sub: subs.kpi
     },
     {
+      layoutType: 'data_chart',
+      suffix: {
+        uz: 'Statistik Trendlar va Rivojlanish Dinamikasi',
+        ru: 'Статистические тренды и динамика развития',
+        en: 'Statistical Trajectory & Quantitative Trends',
+        tg: 'Тамоюлҳои оморӣ ва динамикаи рушд'
+      },
+      sub: (lang === 'ru') ? 'Аналитическая динамика изменений и сравнительный тренд' : (lang === 'en') ? 'Longitudinal metric trajectory and validation benchmarks' : (lang === 'tg') ? 'Динамикаи тағйирот ва таҳлили муқоисавӣ' : 'O\'zgarishlar dinamikasi va qiyosiy empirik trend'
+    },
+    {
+      layoutType: 'problem_solution',
+      suffix: {
+        uz: 'Dolzarb Muammolar Diagnostikasi va Yechimlar',
+        ru: 'Диагностика проблем и системные решения',
+        en: 'Problem Diagnosis & Transformative Solutions',
+        tg: 'Ташхиси мушкилот ва роҳҳалҳои низомманд'
+      },
+      sub: (lang === 'ru') ? 'Ключевые системные вызовы и механизмы их устранения' : (lang === 'en') ? 'Critical friction points and strategic resolution mechanisms' : (lang === 'tg') ? 'Мушкилоти асосӣ ва роҳҳои ҳалли онҳо' : 'Mavjud tizimli muammolar va ularni bartaraf etish mexanizmlari'
+    },
+    {
       layoutType: 'process_timeline',
       suffix: {
         uz: 'Amaliyotga Joriy Qilish Bosqichlari va Yo\'l Xaritasi',
@@ -662,6 +692,26 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
         tg: 'Марҳилаҳои татбиқи амалӣ ва харитаи роҳ'
       },
       sub: subs.roadmap
+    },
+    {
+      layoutType: 'swot_analysis',
+      suffix: {
+        uz: 'Kompleks SWOT Tahlili: Imkoniyat va Xatarlar',
+        ru: 'Комплексный SWOT-анализ: возможности и риски',
+        en: 'Comprehensive SWOT Matrix: Potentials & Risks',
+        tg: 'Таҳлили ҳамаҷонибаи SWOT: имкониятҳо ва хатарҳо'
+      },
+      sub: (lang === 'ru') ? 'Оценка сильных и слабых сторон, рыночные драйверы и барьеры' : (lang === 'en') ? 'Internal strengths, structural gaps, macro opportunities and threats' : (lang === 'tg') ? 'Арзёбии ҷиҳатҳои қавӣ, заиф ва хатарҳои эҳтимолӣ' : 'Ichki salohiyat, zaif jihatlar, imkoniyatlar va xatarlar balansi'
+    },
+    {
+      layoutType: 'pyramid_hierarchy',
+      suffix: {
+        uz: 'Ko\'p Qatlamli Ierarxiya va Fundamental Asoslar',
+        ru: 'Многоуровневая иерархия и фундамент системы',
+        en: 'Multi-Tier Hierarchy & Architectural Foundation',
+        tg: 'Иерархияи бисёрсатҳа ва пояҳои низом'
+      },
+      sub: (lang === 'ru') ? 'Базовый фундамент, операционный контур и стратегический пик' : (lang === 'en') ? 'Core foundation, operational execution and strategic summit' : (lang === 'tg') ? 'Пояи асосӣ, сатҳи амалиётӣ ва қуллаи стратегӣ' : 'Baza poydevori, operatsion boshqaruv va strategik cho\'qqi'
     },
     {
       layoutType: 'milestones_table',
@@ -674,6 +724,66 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
       sub: subs.milestones
     },
     {
+      layoutType: 'matrix_rating',
+      suffix: {
+        uz: 'Standartlar va Mezonlar Bo\'yicha Baholash Reytingi',
+        ru: 'Оценочный рейтинг параметров и отраслевых стандартов',
+        en: 'Benchmark Scorecard & Performance Rating Matrix',
+        tg: 'Рейтинги арзёбии нишондиҳандаҳо ва стандартҳо'
+      },
+      sub: (lang === 'ru') ? 'Сравнительная матрица оценки по ключевым критериям' : (lang === 'en') ? 'Comparative scoring matrix across mission-critical parameters' : (lang === 'tg') ? 'Матритсаи муқоисавӣ бар асоси меъёрҳои муҳим' : 'Asosiy mezonlar bo\'yicha qiyosiy baholash va reyting matritsasi'
+    },
+    {
+      layoutType: 'scenario_matrix',
+      suffix: {
+        uz: 'Rivojlanish Ssenariylari va Dinamik Prognoz',
+        ru: 'Сценарное моделирование и прогнозные горизонты',
+        en: 'Scenario Modeling & Forward-Looking Projections',
+        tg: 'Моделсозии сенарияҳо ва дурнамои пешгӯӣ'
+      },
+      sub: (lang === 'ru') ? 'Базовый, консервативный и прогрессивный вектор развития' : (lang === 'en') ? 'Baseline, risk-adjusted, and accelerated expansion pathways' : (lang === 'tg') ? 'Сенарияҳои асосӣ, эҳтиёткорона ва рушди босуръат' : 'Asosiy, konservativ va progressiv rivojlanish vektorlari'
+    },
+    {
+      layoutType: 'team_stakeholders',
+      suffix: {
+        uz: 'Manfaatdor Tomonlar va Ekspertlar Tarmog\'i',
+        ru: 'Заинтересованные стороны и экспертная экосистема',
+        en: 'Key Stakeholders & Expert Governance Network',
+        tg: 'Ҷонибҳои манфиатдор ва шабакаи коршиносон'
+      },
+      sub: (lang === 'ru') ? 'Институциональные роли, эксперты и распределение ответственности' : (lang === 'en') ? 'Institutional ownership, steering councils, and delivery roles' : (lang === 'tg') ? 'Нақшҳои сохторӣ ва тақсимоти масъулият' : 'Institutsional rollar, ekspertlar va javobgarlik taqsimoti'
+    },
+    {
+      layoutType: 'profile_card',
+      suffix: {
+        uz: 'Tizim Pasporti: Kuchli va Zaif Tomonlar Tahlili',
+        ru: 'Паспорт системы: анализ преимуществ и ограничений',
+        en: 'Architecture Profile: Strengths & Boundary Constraints',
+        tg: 'Шиносномаи низом: таҳлили бартариятҳо ва маҳдудиятҳо'
+      },
+      sub: (lang === 'ru') ? 'Комплексный профиль характеристик, преимуществ и областей применения' : (lang === 'en') ? 'Technical datasheet, functional pros/cons, and target environments' : (lang === 'tg') ? 'Тавсифи техникӣ, бартариятҳо ва соҳаҳои мувофиқ' : 'Texnik pasport, afzalliklar va qo\'llash sohalari tahlili'
+    },
+    {
+      layoutType: 'quote_editorial',
+      suffix: {
+        uz: 'Xalqaro Ekspertlar Bahosi va Muhim Tahliliy Insight',
+        ru: 'Экспертная верификация и ключевой аналитический инсайт',
+        en: 'Executive Insight & International Benchmark Verdict',
+        tg: 'Хулосаи коршиносон ва нуқтаи назари муҳими таҳлилӣ'
+      },
+      sub: (lang === 'ru') ? 'Авторитетная академическая позиция и стратегические уроки' : (lang === 'en') ? 'Authoritative institutional guidance and strategic principles' : (lang === 'tg') ? 'Мавқеи бонуфузи илмӣ ва принсипҳои стратегӣ' : 'Xalqaro nufuzli ilmiy xulosalar va amaliy saboqlar'
+    },
+    {
+      layoutType: 'horizontal_flowchart',
+      suffix: {
+        uz: 'To\'liq Siklli Jarayonlar Oqimi va Operatsion Zanjir',
+        ru: 'Сквозная процессная цепочка и операционный поток',
+        en: 'End-to-End Operational Lifecycle & Flow Architecture',
+        tg: 'Занҷираи пайдарпайи амалиётӣ ва ҷараёни кор'
+      },
+      sub: (lang === 'ru') ? 'Последовательный сквозной поток от инициации к валидации' : (lang === 'en') ? 'Sequential workflow execution from initialization to verification' : (lang === 'tg') ? 'Ҷараёни муттасили кор аз оғоз то санҷиши ниҳоӣ' : 'Boshlang\'ich bosqichdan yakuniy natijagacha bo\'lgan uzluksiz oqim'
+    },
+    {
       layoutType: 'spotlight',
       suffix: {
         uz: 'Xatarlar Tahlili, Himoya Mexanizmlari va Muhim Xulosa',
@@ -682,6 +792,16 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
         tg: 'Таҳлили хатарҳо, механизмҳои ҳимоя ва хулосаи калидӣ'
       },
       sub: subs.spotlight
+    },
+    {
+      layoutType: 'cinematic',
+      suffix: {
+        uz: 'Kelajak Istiqbollari va Global Transformatsiya',
+        ru: 'Стратегическое видение и глобальная трансформация',
+        en: 'Long-Term Horizon & Global Strategic Transformation',
+        tg: 'Дурнамои стратегӣ ва дигаргунсозии глобалӣ'
+      },
+      sub: subs.conclusion
     }
   ];
 

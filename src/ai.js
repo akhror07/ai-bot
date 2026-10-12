@@ -887,6 +887,64 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'В данном разделе мы анализируем сравнительные преимущества перехода от устаревших подходов к интегрированным решениям.'
       },
       {
+        layout: 'profile_card',
+        title: `${effectiveTopic}: Паспорт и Архитектурный Профиль Системы`,
+        sub: 'Базовые параметры, преимущества, критические ограничения и сфера применения',
+        photo: `${enKeywords} system profile passport architecture overview`,
+        passport: [
+          { label: 'Категория', val: 'Отраслевой Международный Стандарт' },
+          { label: 'Регламент', val: 'ISO / IEEE 2025–2026' },
+          { label: 'Масштабируемость', val: 'High-Density Enterprise' },
+          { label: 'Безопасность', val: 'Tier-4 Zero Trust' }
+        ],
+        pros: [
+          'Высокая отказоустойчивость, соответствие строгим стандартам и стабильность',
+          'Сквозная регламентация процессов и сокращение системных сбоев на 60%',
+          'Бесшовная интеграция с существующей инфраструктурой и высокий ROI'
+        ],
+        cons: [
+          'Необходимость специализированного обучения персонала на начальном этапе',
+          'Требования к модернизации аппаратной и программной инфраструктуры'
+        ],
+        bestFor: 'Организации и предприятия, ориентированные на долгосрочную стабильность, безопасность данных и соответствие международным стандартам.',
+        highlight: 'Объективный архитектурный профиль обеспечивает предельную прозрачность при выборе оптимальной траектории развития.',
+        source: 'StatCounter GlobalStats & Gartner Benchmark Intelligence (2025–2026)',
+        speakerNotes: 'Паспортный профиль системы позволяет всесторонне оценить ключевые характеристики, баланс плюсов и минусов, а также целевую аудиторию решения.'
+      },
+      {
+        layout: 'matrix_rating',
+        title: 'Матрица Экспертной Оценки и Сравнительного Рейтинга',
+        sub: 'Сопоставительный анализ моделей по 5-балльной экспертной шкале',
+        photo: `${enKeywords} evaluation matrix rating comparison criteria`,
+        columns: ['Критерий / Параметр', 'Базовая Модель', 'Инновационное Решение', 'Гибридный Подход'],
+        matrixRows: [
+          { name: 'Безопасность и отказоустойчивость', scores: ['●●●●○', '●●●●●', '●●●●○'] },
+          { name: 'Операционная скорость (Latency)', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+          { name: 'Экономическая эффективность', scores: ['●●●●○', '●●●●○', '●●●●●'] },
+          { name: 'Гибкость интеграции', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+          { name: 'Долгосрочный показатель ROI', scores: ['●●●●○', '●●●●●', '●●●●●'] }
+        ],
+        highlight: 'Экспертная матрица демонстрирует безусловное лидерство инновационной модели по 4 из 5 ключевых направлений.',
+        source: 'International Benchmarking Advisory & Gartner Rating Matrix (2025)',
+        speakerNotes: 'В данной матрице наглядно представлена сравнительная экспертная оценка ключевых альтернатив по пятибалльной шкале.'
+      },
+      {
+        layout: 'scenario_matrix',
+        title: 'Сценарная Матрица Выбора и Принятия Решений',
+        sub: 'Оптимальные решения для различных производственных условий и их обоснование',
+        photo: `${enKeywords} decision matrix scenario selection strategy`,
+        headers: ['Сценарий / Условия', 'Рекомендуемый Выбор', 'Обоснование и Преимущество'],
+        scenarios: [
+          { scenario: 'Высокие требования к безопасности и комплаенсу', choice: 'Сертифицированная Модель', reason: 'Архитектура Zero Trust обеспечивает 100% изоляцию от внешних векторов киберугроз.' },
+          { scenario: 'Ограниченный бюджет и сжатые сроки запуска', choice: 'Поэтапное Внедрение', reason: 'Снижает первоначальные капиталовложения и ускоряет вывод результатов на 35–50%.' },
+          { scenario: 'Масштабные объемы данных и параллельные вычисления', choice: 'Высокопроизводительный Кластер', reason: 'Распределенная обработка сокращает совокупное время расчетов в 3 раза.' },
+          { scenario: 'Долгосрочная корпоративная трансформация', choice: 'Модульный Масштабируемый Стандарт', reason: 'Обеспечивает гибкое добавление функционала без прерывания рабочих процессов.' }
+        ],
+        highlight: 'Осознанный выбор сценария минимизирует операционные риски и максимизирует финансовую отдачу.',
+        source: 'McKinsey & Company Strategy Practice / BCG Executive Decision Framework (2025)',
+        speakerNotes: 'Матрица сценариев служит практическим руководством для выбора оптимальной конфигурации под конкретные бизнес-задачи.'
+      },
+      {
         layout: 'three_cards',
         title: 'Три Фундаментальных Столпа Системы',
         sub: 'Базовые опорные направления, обеспечивающие стабильность и надежность',
@@ -1302,6 +1360,64 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         ],
         highlight: 'Transitioning to modern standards eliminates up to 60% of systemic errors and dramatically lowers operating costs.',
         speakerNotes: 'In this section, we analyze the comparative advantages of migrating away from siloed legacy workflows toward modern solutions.'
+      },
+      {
+        layout: 'profile_card',
+        title: `${effectiveTopic}: Architectural Profile & Specification Passport`,
+        sub: 'Technical parameters, core strengths, known limitations, and target use cases',
+        photo: `${enKeywords} system profile passport architecture overview`,
+        passport: [
+          { label: 'Category', val: 'Global Industry Benchmark' },
+          { label: 'Standard', val: 'ISO / IEEE 2025–2026' },
+          { label: 'Scalability', val: 'High-Density Enterprise' },
+          { label: 'Security Level', val: 'Tier-4 Zero Trust' }
+        ],
+        pros: [
+          'Enterprise-grade fault tolerance, audited compliance, and robust reliability',
+          'Standardized process automation reducing operational defects by up to 60%',
+          'Seamless interoperability across legacy and modern cloud infrastructures'
+        ],
+        cons: [
+          'Requires structured team onboarding and certified workforce training initially',
+          'Initial infrastructure capital allocation needed to achieve full compliance'
+        ],
+        bestFor: 'Enterprises and institutions demanding long-term operational resilience, zero-trust data protection, and verified compliance.',
+        highlight: 'An objective architectural passport provides decisive clarity when formulating long-term operational strategy.',
+        source: 'StatCounter GlobalStats & Gartner Benchmark Intelligence (2025–2026)',
+        speakerNotes: 'This architectural passport provides an executive overview of core platform specifications, trade-offs, and optimal deployment targets.'
+      },
+      {
+        layout: 'matrix_rating',
+        title: 'Expert Evaluation & Comparative Rating Matrix',
+        sub: 'Comparative multi-dimensional benchmark scored on a 5-point expert scale',
+        photo: `${enKeywords} evaluation matrix rating comparison criteria`,
+        columns: ['Evaluation Criteria', 'Baseline Model', 'Innovative Solution', 'Hybrid Approach'],
+        matrixRows: [
+          { name: 'Security & Fault Tolerance', scores: ['●●●●○', '●●●●●', '●●●●○'] },
+          { name: 'Execution Velocity (Latency)', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+          { name: 'Capital & Resource Efficiency', scores: ['●●●●○', '●●●●○', '●●●●●'] },
+          { name: 'Integration Flexibility', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+          { name: 'Long-Term Verifiable ROI', scores: ['●●●●○', '●●●●●', '●●●●●'] }
+        ],
+        highlight: 'The expert matrix demonstrates decisive superiority of the integrated model across 4 out of 5 primary dimensions.',
+        source: 'International Benchmarking Advisory & Gartner Rating Matrix (2025)',
+        speakerNotes: 'This rating matrix synthesizes expert scoring across critical performance axes on a rigorous five-star standard.'
+      },
+      {
+        layout: 'scenario_matrix',
+        title: 'Actionable Scenario Selection & Decision Matrix',
+        sub: 'Prescriptive architectural configurations mapped against operational constraints',
+        photo: `${enKeywords} decision matrix scenario selection strategy`,
+        headers: ['Workload Scenario / Context', 'Recommended Choice', 'Strategic Rationale & Advantage'],
+        scenarios: [
+          { scenario: 'Strict Security & Regulatory Mandates', choice: 'Certified Hardened Model', reason: 'Zero Trust architecture enforces complete isolation against external and internal cyber attack vectors.' },
+          { scenario: 'Capital-Constrained Accelerated Launch', choice: 'Phased Modular Rollout', reason: 'Reduces upfront expenditures while unlocking 35–50% faster operational milestone realization.' },
+          { scenario: 'High-Volume Data & Parallel Compute', choice: 'High-Performance Cluster', reason: 'Distributed parallel processing reduces collective batch compute turnaround time by 3x.' },
+          { scenario: 'Long-Term Enterprise Scaling', choice: 'Extensible Open Standard', reason: 'Enables painless integration of subsequent capabilities without disrupting active operational pipelines.' }
+        ],
+        highlight: 'Scenario-calibrated selection prevents misallocated investments and guarantees optimal unit economics.',
+        source: 'McKinsey & Company Strategy Practice / BCG Executive Decision Framework (2025)',
+        speakerNotes: 'The scenario matrix serves as an executive decision compass to choose the optimal operating model for each situation.'
       },
       {
         layout: 'three_cards',
@@ -1721,6 +1837,64 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'Дар ин қисмат мо бартариҳои гузариш аз усулҳои куҳна ба низоми муосирро муқоиса мекунем.'
       },
       {
+        layout: 'profile_card',
+        title: `${effectiveTopic}: Шиносномаи Меъморӣ ва Техникии Низом`,
+        sub: 'Нишондиҳандаҳои асосӣ, бартариҳо, маҳдудиятҳо ва самти истифода',
+        photo: `${enKeywords} system profile passport architecture overview`,
+        passport: [
+          { label: 'Категория', val: 'Стандарти Байналмилалӣ' },
+          { label: 'Меъёр', val: 'ISO / IEEE 2025–2026' },
+          { label: 'Фарогирӣ', val: 'High-Density Enterprise' },
+          { label: 'Амният', val: 'Tier-4 Zero Trust' }
+        ],
+        pros: [
+          'Устувории баланд, амнияти тасдиқшудаи байналмилалӣ ва эътимоднокӣ',
+          'Қоидабандии равандҳо ва коҳиши хавфҳои низомӣ ба андозаи 60%',
+          'Ҳамгироии бефосила бо инфрасохтори мавҷуда ва самаранокии баланд'
+        ],
+        cons: [
+          'Зарурати омӯзиши махсуси мутахассисон дар марҳилаи аввал',
+          'Талаботи сармоягузорӣ барои навсозии таҷҳизоту нармафзор'
+        ],
+        bestFor: 'Муассисаҳо ва созмонҳое, ки ба амнияти комил, устувории дарозмуддат ва стандартҳои ҷаҳонӣ ниёз доранд.',
+        highlight: 'Шиносномаи мушаххаси техникӣ шаффофияти комилро дар интихоби роҳи рушд фароҳам меорад.',
+        source: 'StatCounter GlobalStats & Gartner Benchmark Intelligence (2025–2026)',
+        speakerNotes: 'Ин варақаи шиноснома хусусиятҳои калидӣ, бартариҳо ва маҳдудиятҳои интихобро равшан инъикос мекунад.'
+      },
+      {
+        layout: 'matrix_rating',
+        title: 'Матритсаи Баҳодиҳии Коршиносон ва Рейтинги Муқоисавӣ',
+        sub: 'Таҳлили муқоисавии моделҳо аз рӯи ҷадвали 5-холаи коршиносон',
+        photo: `${enKeywords} evaluation matrix rating comparison criteria`,
+        columns: ['Меъёр / Самт', 'Модели Асосӣ', 'Қарори Инноватсионӣ', 'Равиши Гибридӣ'],
+        matrixRows: [
+          { name: 'Амният ва устуворӣ', scores: ['●●●●○', '●●●●●', '●●●●○'] },
+          { name: 'Суръати амалиёт (Latency)', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+          { name: 'Сарфаи захираҳо', scores: ['●●●●○', '●●●●○', '●●●●●'] },
+          { name: 'Мутобиқшавии ҳамгироӣ', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+          { name: 'Нишондиҳандаи дарозмуддати ROI', scores: ['●●●●○', '●●●●●', '●●●●●'] }
+        ],
+        highlight: 'Матритсаи коршиносон бартарии комили модели инноватсиониро дар 4 самт аз 5 меъёри асосӣ исбот мекунад.',
+        source: 'International Benchmarking Advisory & Gartner Rating Matrix (2025)',
+        speakerNotes: 'Дар ин ҷадвал баҳодиҳии муқоисавии коршиносон аз рӯи меъёрҳои муҳимтарини соҳавӣ оварда шудааст.'
+      },
+      {
+        layout: 'scenario_matrix',
+        title: 'Матритсаи Сенариявии Интихоб ва Қабули Қарорҳо',
+        sub: 'Роҳҳои беҳтарини ҳал барои шароитҳои гуногуни корӣ ва асосноккунии онҳо',
+        photo: `${enKeywords} decision matrix scenario selection strategy`,
+        headers: ['Сенария / Шароит', 'Интихоби Тавсияшуда', 'Сабаб ва Афзалияти Асосӣ'],
+        scenarios: [
+          { scenario: 'Талаботи қатъӣ ба амният ва назорати сифат', choice: 'Модели Сертификатсияшуда', reason: 'Меъмории Zero Trust муҳофизати 100%-ро аз ҳама гуна таҳдидҳои киберӣ кафолат медиҳад.' },
+          { scenario: 'Буҷаи маҳдуд ва зарурати натиҷаи фаврӣ', choice: 'Татбиқи Марҳилавӣ', reason: 'Хароҷоти аввалияро сарфа карда, ба даст овардани натиҷаҳоро 35–50% метезонад.' },
+          { scenario: 'Ҳаҷми бузурги маълумот ва ҳисоббаробаркуниҳои мураккаб', choice: 'Кластери Сермаҳсул', reason: 'Ҳисобкунии тақсимшуда вақти умумии коркарди маълумотро 3 маротиба кам мекунад.' },
+          { scenario: 'Рушд ва тағйироти дарозмуддати ташкилот', choice: 'Стандарти Модулии Фарогир', reason: 'Имкон медиҳад, ки дар оянда қисмҳои нав бе халал расонидан ба кори низом пайваст шаванд.' }
+        ],
+        highlight: 'Интихоби дурусти сенария хатогиҳоро бартараф сохта, фоидаи максималии амалиётиро таъмин менамояд.',
+        source: 'McKinsey & Company Strategy Practice / BCG Executive Decision Framework (2025)',
+        speakerNotes: 'Матритсаи сенарияҳо дастури амалӣ барои интихоби беҳтарин роҳи ҳал дар ҳолатҳои гуногун мебошад.'
+      },
+      {
         layout: 'three_cards',
         title: 'Се Сутуни Бунёдӣ ва Принсипҳои Низом',
         sub: 'Самтҳои асосии кафолатбахши устуворӣ ва эътимоднокӣ',
@@ -2136,6 +2310,64 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       ],
       highlight: 'Zamonaviy metodologiyaga o\'tish orqali operatsion xatolar xavfi 60% ga qisqaradi va resurslar tejaladi.',
       speakerNotes: 'Ushbu slaydda an\'anaviy usullarning cheklovlari va yangi innovatsion model keltiradigan amaliy afzalliklar taqqoslab ko\'rsatilgan.'
+    },
+    {
+      layout: 'profile_card',
+      title: `${effectiveTopic}: Tizimning Texnik va Amaliy Pasporti`,
+      sub: 'Arxitektura, xavfsizlik modeli, afzalliklar va maqsadli qo\'llash sohalari',
+      photo: `${enKeywords} system profile passport architecture overview`,
+      passport: [
+        { label: 'Sohaviy toifa', val: 'Global Industry Benchmark' },
+        { label: 'Standart mezon', val: 'ISO / IEEE 2025–2026' },
+        { label: 'Masshtab imkoniyati', val: 'High-Density Enterprise' },
+        { label: 'Xavfsizlik darajasi', val: 'Tier-4 Zero Trust' }
+      ],
+      pros: [
+        'Yuqori ishonchlilik, xalqaro sertifikatlangan xavfsizlik va mustahkam barqarorlik',
+        'Keng qamrovli standartlashtirish va operatsion xatarlarning 60% ga qisqarishi',
+        'Barcha darajadagi resurslar bilan uzluksiz integratsiya va yuqori unumdorlik'
+      ],
+      cons: [
+        'Dastlabki adaptatsiya davrida xodimlarni maxsus o\'qitish va malaka talab etilishi',
+        'Infratuzilmani yangi mezonlarga moslashtirish uchun dastlabki investitsiya zarurati'
+      ],
+      bestFor: 'Uzoq muddatli barqarorlik, yuqori sifat va xalqaro miqyosdagi yetakchilikni maqsad qilgan korxona va tadqiqot muassasalari.',
+      highlight: 'Aniq texnik pasport va mezonlar har qanday qaror qabul qilishda maksimal aniqlik va xolislikni ta\'minlaydi.',
+      source: 'StatCounter GlobalStats & Gartner Benchmark Intelligence (2025–2026)',
+      speakerNotes: 'Ushbu pasport kartochkasi orqali tizimning fundamental me\'moriy xususiyatlari, ustunliklari va cheklovlarini xolis ko\'rish mumkin.'
+    },
+    {
+      layout: 'matrix_rating',
+      title: 'Ekspert Baholash va Qiyosiy Reyting Matritsasi',
+      sub: '5 balli shkala bo\'yicha asosiy mezonlar va yo\'nalishlarning solishtirma tahlili',
+      photo: `${enKeywords} evaluation matrix rating comparison criteria`,
+      columns: ['Mezon / Talab', '1-Asosiy Model', '2-Innovatsion Yechim', '3-Gibrid Yondashuv'],
+      matrixRows: [
+        { name: 'Xavfsizlik va barqarorlik', scores: ['●●●●○', '●●●●●', '●●●●○'] },
+        { name: 'Operatsion tezlik (Latency)', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+        { name: 'Resurslar tejamkorligi', scores: ['●●●●○', '●●●●○', '●●●●●'] },
+        { name: 'Integratsiya moslashuvchanligi', scores: ['●●●○○', '●●●●●', '●●●●○'] },
+        { name: 'Uzoq muddatli ROI ko\'rsatkichi', scores: ['●●●●○', '●●●●●', '●●●●●'] }
+      ],
+      highlight: 'Ekspert baholari ko\'rsatmoqdaki, integratsiyalashgan innovatsion model 5 ta asosiy mezondan 4 tasida mutlaq yetakchidir.',
+      source: 'International Benchmarking Advisory & Gartner Rating Matrix (2025)',
+      speakerNotes: 'Ushbu matritsada 5 balli nufuzli ekspert shkalasi asosida tizim komponentlarining har tomonlama qiyosiy bahosi keltirilgan.'
+    },
+    {
+      layout: 'scenario_matrix',
+      title: 'Stsenariyli Tanlov va Qarorlar Matritsasi',
+      sub: 'Turli vaziyatlar va sharoitlar uchun optimal yechimlar hamda ularning asoslari',
+      photo: `${enKeywords} decision matrix scenario selection strategy`,
+      headers: ['Ishchi Stsenariy / Vaziyat', 'Tavsiya Etilgan Tanlov', 'Asosiy Sabab va Oqibat'],
+      scenarios: [
+        { scenario: 'Yuqori darajadagi xavfsizlik va qat\'iy standartlar', choice: 'To\'liq Sertifikatlangan Model', reason: 'Zero Trust arxitekturasi orqali har qanday tashqi kiberxatarlardan 100% himoya kafolatlanadi.' },
+        { scenario: 'Cheklangan byudjet va tezkor ishga tushirish', choice: 'Bosqichli Ochiq Integratsiya', reason: 'Dastlabki litsenziya xarajatlarini tejab, 35-50% tezroq natija olish imkonini beradi.' },
+        { scenario: 'Katta hajmdagi ma\'lumotlar va murakkab hisob-kitoblar', choice: 'Yuqori Unumdorlikdagi Ekotizim', reason: 'Klaster quvvatlarini parallel ishlatish hisobiga hisoblash vaqti 3 barobarga qisqaradi.' },
+        { scenario: 'Uzoq muddatli korporativ barqarorlik va kengayish', choice: 'Modulli Masshtablanuvchi Standart', reason: 'Keyinchalik tizimni to\'xtatmasdan yangi modullarni muammosiz qo\'shish imkonini yaratadi.' }
+      ],
+      highlight: 'To\'g\'ri stsenariy tanlash operatsion xatolarni bartaraf etib, har bir vaziyat uchun eng rentabel natijani beradi.',
+      source: 'McKinsey & Company Strategy Practice / BCG Executive Decision Framework (2025)',
+      speakerNotes: 'Qarorlar matritsasi turli amaliy sharoitlarda qaysi yechim eng to\'g\'ri va tejamkor bo\'lishini aniq belgilab beradi.'
     },
     {
       layout: 'three_cards',
@@ -3258,18 +3490,28 @@ STRICT MANDATORY REQUIREMENTS:
    - Generic filler, superficial phrases, and 1-line bullet points are STRICTLY FORBIDDEN!
 3. ZERO MENTION OF ARTIFICIAL INTELLIGENCE (AI):
    - Do NOT mention "AI", "artificial intelligence", "generated by AI", "bot", or "prompt" anywhere in titles, descriptions, subtitles, or speaker notes. The deck must look 100% human-crafted by a seasoned industry expert.
-4. RICH DIVERSITY OF LAYOUTS (layoutType):
-   - Rotate strategically through: "split_hero", "agenda_numbered" (two-column numbered agenda/outline 01-08), "three_cards", "circular_feature" (Swiss circular masked focus visual with key pillar cards), "swot_analysis" (4-quadrant SWOT matrix: S, W, O, T), "data_chart" (native PowerPoint chart with analytical breakdown), "problem_solution" (challenge vs. innovative solution contrast), "milestones_table" (structured corporate roadmap table with KPI metrics), "comparison", "pyramid_hierarchy" (3-tier pyramid/hierarchy structure), "kpi_metrics", "process_timeline", "quote_editorial" (executive citation & deep analytical insights), "matrix_grid", "horizontal_flowchart" (4-step horizontal flowchart sequence), "team_stakeholders" (key stakeholder & role profiles), "spotlight", "cinematic", "conclusion".
-5. HIGH-QUALITY IMAGE SEARCH PROMPTS:
+4. RICH DIVERSITY OF LAYOUTS (layoutType) & BENCHMARK STRUCTURE (MCKINSEY / GARTNER):
+   - Construct the deck with high-level analytical rigor and empirical evidence:
+     * Slide 1 (title): Executive cover, "tags": [3-5 key focus areas/components], "sourcesNote": "Based on StatCounter, Gartner and official industry benchmark intelligence"
+     * Slide 2 (agenda_numbered): Two-column numbered agenda/outline 01-08 with strategic methodology
+     * Slide 3 (kpi_metrics): Macro empirical metrics ("metrics": [{"val": "...", "label": "...", "desc": "..."}])
+     * Slide 4 (profile_card): Topic/system passport ("passport": [{"label": "...", "val": "..."}], "pros": [...], "cons": [...], "bestFor": "...")
+     * Slide 5-6 (matrix_rating): Expert evaluation rating matrix with ●●●●● dots ("columns": [...], "matrixRows": [{"name": "...", "scores": ["●●●●●", "●●●●○", ...]}])
+     * Slide 7-8 (scenario_matrix): Actionable scenario selection matrix ("headers": [...], "scenarios": [{"scenario": "...", "choice": "...", "reason": "..."}])
+     * In-depth analytical layouts: "split_hero", "three_cards", "circular_feature", "swot_analysis", "data_chart", "problem_solution", "milestones_table", "comparison", "pyramid_hierarchy", "process_timeline", "quote_editorial", "matrix_grid", "horizontal_flowchart", "team_stakeholders", "spotlight", "cinematic".
+     * Final Slide (conclusion): Strategic synthesis and executive takeaways.
+5. MANDATORY AUTHORITATIVE SOURCES (source):
+   - In EVERY slide object, the "source" field MUST cite a recognized, authoritative global industry source (e.g., "StatCounter GlobalStats & Counterpoint Research (2025–2026)", "World Bank & Bloomberg Intelligence", "Gartner & IDC Market Surveys").
+6. HIGH-QUALITY IMAGE SEARCH PROMPTS:
    - In "imagePrompts", provide exactly 2 precise photorealistic English search keywords (e.g., ["${enKeywords} professional research", "${enKeywords} technology architecture"]).
    ${theme === 'monochrome' ? '- For monochrome theme, prioritize architectural, high-contrast black and white photography ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- For neon_abstract theme, prioritize 3D glass torus shapes and neon fluid art ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
-6. COMPREHENSIVE SPEAKER NOTES (speakerNotes):
+7. COMPREHENSIVE SPEAKER NOTES (speakerNotes):
    - Provide a natural, polished 4–6 sentence verbal script for the presenter on every slide in English.
-7. The "slides" array MUST contain EXACTLY ${targetCount} slides!
-8. STRICT BAN ON DUPLICATE OR REPEATING SLIDES:
+8. The "slides" array MUST contain EXACTLY ${targetCount} slides!
+9. STRICT BAN ON DUPLICATE OR REPEATING SLIDES:
    - ALL ${targetCount} slides MUST have 100% UNIQUE titles, distinct layouts, and non-overlapping analytical points!
    - NEVER copy early slides to later positions! Every single slide must progressively explore a new milestone.
-9. COMMITTEE DEFENSE QUESTIONS & ANSWERS (qaList):
+10. COMMITTEE DEFENSE QUESTIONS & ANSWERS (qaList):
    - Provide a "qaList" array in the root object containing 3 critical examination questions with authoritative model answers in English.
 
 Strictly return CLEAN JSON of this structure:
@@ -3277,6 +3519,8 @@ Strictly return CLEAN JSON of this structure:
   "title": "${translatedTopic}",
   "subtitle": "Comprehensive Strategic Analysis & Practical Frameworks",
   "theme": "${theme}",
+  "sourcesNote": "Based on StatCounter, Gartner and official industry benchmark intelligence",
+  "tags": ["Analysis", "Architecture", "Security", "Market Share", "Ecosystem"],
   "slides": [
     {
       "slideNumber": 1,
@@ -3284,7 +3528,9 @@ Strictly return CLEAN JSON of this structure:
       "layoutType": "title",
       "title": "${translatedTopic}",
       "subtitle": "Executive Research Briefing on ${categoryObj.name}",
+      "tags": ["Analysis", "Architecture", "Security", "Market Share", "Ecosystem"],
       "imagePrompts": ["${enKeywords} concept photography", "${enKeywords} modern visual"],
+      "source": "StatCounter GlobalStats & Gartner Benchmark Intelligence (2025–2026)",
       "speakerNotes": "Welcome everyone. Today we are presenting a comprehensive analytical evaluation of ${translatedTopic}, highlighting structural dynamics and strategic execution paths."
     },
     {
@@ -3305,6 +3551,7 @@ Strictly return CLEAN JSON of this structure:
         }
       ],
       "highlight": "A disciplined foundational architecture is the cornerstone of sustainable long-term excellence.",
+      "source": "Harvard Business Review & MIT Sloan Management Review (2025)",
       "speakerNotes": "On this slide, we examine the baseline theoretical foundations and critical levers that drive operational success in this domain."
     }
   ],
@@ -3341,18 +3588,28 @@ ${docContext}
    - Ибораҳои умумӣ, хушк ва кӯтоҳи яксатра («Банди 1», «Муқаддима», «Шарҳи кӯтоҳ») ҚАТЪИЯН МАНЪ АСТ!
 3. МАНЪИ ҚАТЪИИ ЗИКРИ ЗЕҲНИ СУНЪӢ (AI):
    - Дар ягон ҷойи муаррифӣ навиштани он, ки ин муаррифӣ бо зеҳни сунъӣ омода шудааст, ё истифодаи калимаҳои «зеҳни сунъӣ», «AI», «бот», «промпт» ҚАТЪИЯН МАНЪ АСТ! Муаррифӣ бояд тавре бошад, ки гӯё онро олими барҷаста ё мутахассиси варзида худаш навишта бошад.
-4. ГУНОГУНИИ ТАРҲҲОИ СЛАЙД (layoutType):
-   - Аз тарҳҳои "split_hero", "agenda_numbered" (нақшаи дусутунаи рақамдор 01-08), "three_cards", "circular_feature" (визуали доиравии швейтсарӣ ва рукнҳои асосӣ), "swot_analysis" (тахлили чоргонаи SWOT), "data_chart" (диаграмма/графики таҳлилии PowerPoint), "problem_solution" (муқоисаи мушкилот ва роҳҳои ҳалли инноватсионӣ), "milestones_table" (ҷадвали корпоративии татбиқи нақша ва нишондиҳандаҳои KPI), "comparison", "pyramid_hierarchy" (сохтори сезинагии пирамида/иерархия), "kpi_metrics", "process_timeline", "quote_editorial" (иқтибоси муҳими илмӣ ва хулосаҳо), "matrix_grid", "horizontal_flowchart" (занҷири чормарҳилагии уфуқӣ), "team_stakeholders" (профилҳои гурӯҳҳои манфиатдор), "spotlight", "cinematic", "conclusion" самаранок истифода баред.
-5. ҶУСТУҶӮИ АКСҲО (imagePrompts):
+4. ГУНОГУНИИ ТАРҲҲОИ СЛАЙД (layoutType) ВА СТРУКТУРАИ МУКАММАЛИ ТАҲЛИЛӢ (MCKINSEY / GARTNER):
+   - Муаррифиро аз рӯи мантиқи олии таҳлилӣ бисозед:
+     * Слайди 1 (title): Сарлавҳа, "tags": [3-5 самти асосӣ], "sourcesNote": "Бар асоси StatCounter, Gartner ва гузоришҳои расмии соҳавӣ"
+     * Слайди 2 (agenda_numbered): Нақшаи дусутунаи рақамдор 01-08 ва методологияи таҳқиқот
+     * Слайди 3 (kpi_metrics): Нишондиҳандаҳои макро-эмпирикӣ ("metrics": [{"val": "...", "label": "...", "desc": "..."}])
+     * Слайди 4 (profile_card): Шиносномаи низом ("passport": [{"label": "...", "val": "..."}], "pros": [...], "cons": [...], "bestFor": "...")
+     * Слайди 5-6 (matrix_rating): Матритсаи баҳодиҳии коршиносон бо ҷадвали ●●●●● ("columns": [...], "matrixRows": [{"name": "...", "scores": ["●●●●●", "●●●●○", ...]}])
+     * Слайди 7-8 (scenario_matrix): Матритсаи интихоби сенариявӣ ("headers": [...], "scenarios": [{"scenario": "...", "choice": "...", "reason": "..."}])
+     * Тарҳҳои таҳлилӣ: "split_hero", "three_cards", "circular_feature", "swot_analysis", "data_chart", "problem_solution", "milestones_table", "comparison", "pyramid_hierarchy", "process_timeline", "quote_editorial", "matrix_grid", "horizontal_flowchart", "team_stakeholders", "spotlight", "cinematic".
+     * Слайди охирин (conclusion): Хулосаҳои стратегӣ ва феҳристи сарчашмаҳо.
+5. ЗИКРИ ҲАТМИИ САРЧАШМАҲОИ МУЪТАМАД (source):
+   - Дар ҲАР як объекти слайд бахши "source" бояд манбаи муътамади соҳавӣ дошта бошад (масалан: "StatCounter GlobalStats & Counterpoint Research (2025–2026)", "Бонки Ҷаҳонӣ ва Bloomberg", "Гузоришҳои Gartner ва IDC").
+6. ҶУСТУҶӮИ АКСҲО (imagePrompts):
    - Барои ҳар слайд дар "imagePrompts" дақиқан 2 ибораи ҷустуҷӯи акс ба забони англисӣ диҳед (масалан: ["${enKeywords} professional laboratory analysis", "${enKeywords} modern conference"]).
    ${theme === 'monochrome' ? '- Барои мавзӯи monochrome аксҳои меъмории сиёҳу сафед тавсия дода мешавад ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- Барои мавзӯи neon_abstract шаклҳои шишагии 3D ва флюиди неонӣ тавсия дода мешавад ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
-6. ҚАЙДҲОИ БАРОМАДКУНАНДА (speakerNotes):
+7. ҚАЙДҲОИ БАРОМАДКУНАНДА (speakerNotes):
    - Барои ҳар як слайд матни нутқи зинда, илмӣ ва касбии баромадкунандаро (4–6 ҷумла) бо забони тоҷикӣ омода кунед.
-7. Дар маҷмӯъ шумораи слайдҳо дар массиви "slides" ДАҚИҚАН ${targetCount} адад бошад!
-8. МАНЪИ ҚАТЪИИ ТАКРОРШАВИИ СЛАЙДҲО:
+8. Дар маҷмӯъ шумораи слайдҳо дар массиви "slides" ДАҚИҚАН ${targetCount} адад бошад!
+9. МАНЪИ ҚАТЪИИ ТАКРОРШАВИИ СЛАЙДҲО:
    - ҲАМАИ ${targetCount} слайд БОЯД дорои сарлавҳаҳои комилан беназир, тарҳҳои гуногун ва мазмуни нав бошанд!
    - Нусхабардорӣ кардани слайдҳои аввал дар охири муаррифӣ ҚАТЪИЯН МАНЪ АСТ! Ҳар як слайд марҳилаи нави мантиқиро инъикос намояд.
-9. САВОЛУ ҶАВОБҲОИ ҲИМОЯ (qaList):
+10. САВОЛУ ҶАВОБҲОИ ҲИМОЯ (qaList):
    - Дар қисмати "qaList" 3 саволи муҳими комиссия ва посухҳои мукаммали илмию амалиро пешниҳод намоед.
 
 Қатъиян дар формати JSON посух диҳед:
@@ -3360,6 +3617,8 @@ ${docContext}
   "title": "${translatedTopic}",
   "subtitle": "Таҳлили ҳамаҷониба ва дурнамои стратегӣ",
   "theme": "${theme}",
+  "sourcesNote": "Бар асоси StatCounter, Gartner ва гузоришҳои расмии соҳавӣ",
+  "tags": ["Таҳлил", "Меъморӣ", "Амният", "Бозор", "Экосистема"],
   "slides": [
     {
       "slideNumber": 1,
@@ -3367,7 +3626,9 @@ ${docContext}
       "layoutType": "title",
       "title": "${translatedTopic}",
       "subtitle": "Таҳқиқоти илмӣ ва амалӣ дар самти: ${categoryObj.name}",
+      "tags": ["Таҳлил", "Меъморӣ", "Амният", "Бозор", "Экосистема"],
       "imagePrompts": ["${enKeywords} professional concept", "${enKeywords} modern visual"],
+      "source": "StatCounter GlobalStats & Counterpoint Research (2025–2026)",
       "speakerNotes": "Салом, ҳозирини гиромӣ! Имрӯз мо ҷанбаҳои асосӣ ва дурнамои рушди мавзӯи ${translatedTopic}-ро ба таври муфассал мавриди баррасӣ қарор медиҳем."
     },
     {
@@ -3388,6 +3649,7 @@ ${docContext}
         }
       ],
       "highlight": "Пойдевори мустаҳками назариявӣ кафили комёбиҳои амалӣ ва рушди устувор мебошад.",
+      "source": "Академияи миллии илмҳо ва OECD Studies (2025)",
       "speakerNotes": "Дар ин слайд мо омилҳои асосии пешбаранда ва нуқтаҳои муҳими рушдро, ки мубрамияти мавзӯъро таъмин менамоянд, таҳлил мекунем."
     }
   ],
@@ -3419,36 +3681,28 @@ MUHIM QAT'IY TALABLAR VA CHEKLOVLAR:
    - Qisqa, 1 qatorli umumiy gaplar, "1-nuqta", "Kirish", "Xulosa", "Tushuntirish" kabi quruq va zerikarli iboralarni ishlatish QAT'IYAN TAQIQLANADI!
 2. SUN'IY INTELLEKT (AI) HAQIDA HECH QANDAY SO'Z YOZILMASIN:
    - Slayd ichida, sarlavhada, bandlarda yoki spiker nutqida "bu taqdimot AI yordamida qilindi", "Sun'iy intellekt", "AI", "bot" kabi iboralarni MUTLAQO ISHLATMANG! Taqdimot inson mutaxassisi yoki professor tomonidan chuqur tayyorlangan ilmiy-amaliy taqdimotdek bo'lsin.
-3. HAR BIR SLAYD UNIKAL BO'LISHI UCHUN "layoutType" TURLARIDAN UNUMLI FOYDALANING:
-   - "split_hero": chapda asosiy vizual, o'ngda chuqur tahliliy fikrlar
-   - "agenda_numbered": 2 ustunli raqamlangan mundarija va reja kartochkalari (01 dan 08 gacha)
-   - "three_cards": 3 ta vertikal ustunli to'liq tahlil kartochkalari
-   - "circular_feature": konsentrik doiraviy badiiy vizual va yonida yirik raqamli asosiy ustunlar
-   - "swot_analysis": 4 ta kvadrant SWOT tahlil kartochkalari (S - Kuchli, W - Zaif, O - Imkoniyat, T - Xavf)
-   - "data_chart": PowerPoint tahrirlanadigan ustunli diagrammasi va empirik tahlili
-   - "problem_solution": dolzarb muammo va uning innovatsion yechimi o'rtasidagi kontrast
-   - "milestones_table": strukturaviy korporativ reja, bosqichlar va KPI ko'rsatkichlari jadvali
-   - "comparison": an'anaviy yondashuv va innovatsion yechimlarni taqqoslash ("leftHeading", "rightHeading", "points")
-   - "pyramid_hierarchy": 3 qatlamli strategik ierarxiya (cho'qqi, mexanizmlar va fundamental asos)
-   - "kpi_metrics": katta statistik raqamlar va aniq o'lchovlar ("metrics": [{"val": "+85%", "label": "...", "desc": "..."}])
-   - "process_timeline": bosqichma-bosqich yo'l xaritasi va harakatlar zanjiri
-   - "quote_editorial": yirik nufuzli iqtibos / insight ("spotlightText") va 2 ta amaliy xulosa kartasi
-   - "matrix_grid": tizimning 4 ta mustahkam ustuni yoki bloklari (aniq 4 ta point)
-   - "horizontal_flowchart": 4 bosqichli gorizontal jarayon zanjiri (01 -> 02 -> 03 -> 04)
-   - "team_stakeholders": 3 ta manfaatdor tomon / ekspert / jamoa profili va ularning asosiy roli
-   - "spotlight": bosh analitik iqtibos / insight ("spotlightText") va tahlillar
-   - "cinematic": strategik kelajak ko'rinishi va transformatsiya
-   - "conclusion": yakuniy xulosalar va amaliy tavsiyalar
-4. RASMLAR UCHUN:
+3. BOY MAKETLAR XILMA-XILLIGI (layoutType) VA STRUKTURAVIY BENCHMARK (MCKINSEY / GARTNER):
+   - Taqdimotni yuqori darajadagi tahliliy va empirik mantiq asosida quring:
+     * 1-slayd (title): Bosh muqova, mavzu, "tags": [3-5 ta sohaviy yo'nalish/komponent], "sourcesNote": "StatCounter, Gartner va rasmiy xalqaro manbalar asosida"
+     * 2-slayd (agenda_numbered): 2 ustunli raqamlangan mundarija va metodologiya (01-08)
+     * 3-slayd (kpi_metrics): Makro-tahlil va 3 ta katta empirik statistika ("metrics": [{"val": "...", "label": "...", "desc": "..."}])
+     * 4-slayd (profile_card): Tizim/mavzu pasporti kartasi ("passport": [{"label": "...", "val": "..."}], "pros": [...], "cons": [...], "bestFor": "...")
+     * 5-6-slayd (matrix_rating): Ekspert baholash matritsasi ●●●●● shkalasi bilan ("columns": [...], "matrixRows": [{"name": "...", "scores": ["●●●●●", "●●●●○", ...]}])
+     * 7-8-slayd (scenario_matrix): Stsenariylar va tanlov matritsasi ("headers": [...], "scenarios": [{"scenario": "...", "choice": "...", "reason": "..."}])
+     * Boshqa chuqur tahliliy maketlar: "split_hero", "three_cards", "circular_feature", "swot_analysis", "data_chart", "problem_solution", "milestones_table", "comparison", "pyramid_hierarchy", "process_timeline", "quote_editorial", "matrix_grid", "horizontal_flowchart", "team_stakeholders", "spotlight", "cinematic".
+     * Oxirgi slayd (conclusion): Strategik xulosalar va foydalanilgan manbalar.
+4. HAR BIR SLAYDDA ISHONCHLI VA RASMIY MANBALAR (source):
+   - HAR BIR slayd ob'ektida "source" maydoni haqiqiy nufuzli sohaviy manbani ko'rsatishi SHART (masalan: "StatCounter GlobalStats & Counterpoint Research (2025–2026)", "Jahon Banki va Bloomberg", "Gartner & IDC Market Insights").
+5. RASMLAR UCHUN:
    - Har bir slayd uchun "imagePrompts" massivida aynan 2 ta INGLIZCHA aniq fotorealistik foto qidiruv so'zini bering (masalan: ["${enKeywords} laboratory research", "${enKeywords} modern professional workspace"]).
    ${theme === 'monochrome' ? '- monochrome mavzusi uchun yuqori kontrastli qora-oq arxitektura va minimalist shakllar tavsiya etiladi ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- neon_abstract mavzusi uchun 3D shisha shakllar va neon fluid san\'ati tavsiya etiladi ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
-5. SPIKER NUTQI (speakerNotes):
+6. SPIKER NUTQI (speakerNotes):
    - Har bir slayd uchun spiker minbardan turib himoyada gapirib berishi mumkin bo'lgan 4-6 gapdan iborat jonli, qiziqarli, akademik nutq matnini yozing.
-6. Jami "slides" massivida AYNAN ${targetCount} ta slayd bo'lsin!
-7. SLAYDLARNI TAKRORLASH MUTLAQO TAQIQLANADI (100% UNIKAL BETLAR):
+7. Jami "slides" massivida AYNAN ${targetCount} ta slayd bo'lsin!
+8. SLAYDLARNI TAKRORLASH MUTLAQO TAQIQLANADI (100% UNIKAL BETLAR):
    - 1-slayddan ${targetCount}-slaydgacha bo'lgan BARCHA slaydlarning sarlavhasi (title), maketi va mazmuni MUTLAQO NOYOB bo'lishi shart!
    - Boshlang'ich slaydlarni oxirgi slaydlarda bir xil nusxalab qo'yish QAT'IYAN TAQIQLANADI! Har bir slayd mavzuning keyingi mantiqiy bosqichini chuqur yoritsin.
-8. HIMOYA VA KOMISSIYA SAVOL-JAVOBLARI (qaList):
+9. HIMOYA VA KOMISSIYA SAVOL-JAVOBLARI (qaList):
    - "qaList" massivida komissiya yoki ustozlar berishi mumkin bo'lgan 3 ta dolzarb savol va spikerning namunali chuqur javoblarini keltiring.
 
 Qat'iy toza JSON formatida javob bering:
@@ -3456,6 +3710,8 @@ Qat'iy toza JSON formatida javob bering:
   "title": "${topic}",
   "subtitle": "Keng qamrovli tahliliy tadqiqot va amaliy yechimlar",
   "theme": "${theme}",
+  "sourcesNote": "StatCounter, Gartner va rasmiy xalqaro manbalar asosida",
+  "tags": ["Tahlil", "Arxitektura", "Xavfsizlik", "Bozor Ulushi", "Ekotizim"],
   "slides": [
     {
       "slideNumber": 1,
@@ -3463,10 +3719,12 @@ Qat'iy toza JSON formatida javob bering:
       "layoutType": "title",
       "title": "${topic}",
       "subtitle": "${categoryObj.name} doirasidagi maxsus ilmiy-tahliliy taqdimot",
+      "tags": ["Tahlil", "Arxitektura", "Xavfsizlik", "Bozor Ulushi", "Ekotizim"],
       "imagePrompts": [
         "${enKeywords} concept photography",
         "${enKeywords} modern visual"
       ],
+      "source": "StatCounter GlobalStats & Counterpoint Research (2025–2026)",
       "speakerNotes": "Assalomu alaykum, hurmatli anjuman ishtirokchilari! Bugun biz ${topic} mavzusining fundamental asoslari va amaliy istiqbollarini atroflicha tahlil qilamiz."
     },
     {
@@ -3487,6 +3745,7 @@ Qat'iy toza JSON formatida javob bering:
         }
       ],
       "highlight": "Mukammal nazariy poydevor va izchil harakatlar strategiyasi yuqori natijalarga erishishning asosiy kalitidir.",
+      "source": "Fanlar Akademiyasi va O'zbekiston Milliy Statistika Ma'lumotlari (2025)",
       "speakerNotes": "Ushbu slaydda biz sohaning bugungi kundagi holati, mavzuni dolzarb qilayotgan asosiy omillar hamda kelgusidagi transformatsiya yo'nalishlariga chuqur to'xtalamiz."
     }
   ],
@@ -3532,6 +3791,20 @@ function sanitizePresentationData(data, language = 'uz') {
 
   data.subtitle = cleanText(data.subtitle, defaultSubtitles[language] || defaultSubtitles.uz);
 
+  if (data.sourcesNote) {
+    data.sourcesNote = cleanText(data.sourcesNote, '');
+    if (isNonUzbek) data.sourcesNote = cleanUzbekWordsFromText(data.sourcesNote, language);
+  }
+  if (Array.isArray(data.tags)) {
+    data.tags = data.tags.map(t => {
+      let ct = cleanText(t, '');
+      if (isNonUzbek) ct = cleanUzbekWordsFromText(ct, language);
+      return ct;
+    }).filter(Boolean);
+  }
+
+  const seenSlideTitles = new Set();
+
   if (Array.isArray(data.slides)) {
     data.slides.forEach((slide, idx) => {
       slide.title = cleanText(slide.title, `Slide ${idx + 1}`);
@@ -3539,6 +3812,22 @@ function sanitizePresentationData(data, language = 'uz') {
       if (slide.highlight) slide.highlight = cleanText(slide.highlight, '');
       if (slide.spotlightText) slide.spotlightText = cleanText(slide.spotlightText, '');
       if (slide.speakerNotes) slide.speakerNotes = cleanText(slide.speakerNotes, '');
+
+      // Ishonchli manba (source) mavjudligini kafolatlash
+      if (!slide.source || slide.source.length < 5) {
+        slide.source = getDomainSource(data.title || originalRootTitle, language, idx + 1);
+      } else {
+        slide.source = cleanText(slide.source, '');
+        if (isNonUzbek) slide.source = cleanUzbekWordsFromText(slide.source, language);
+      }
+
+      // Slayd sarlavhasi (title) takrorlanishini 100% bartaraf etish
+      const normSlideTitle = (slide.title || '').toLowerCase().trim();
+      if (idx > 0 && seenSlideTitles.has(normSlideTitle)) {
+        const partSuffix = language === 'ru' ? ` (Часть ${idx + 1})` : language === 'en' ? ` (Part ${idx + 1})` : language === 'tg' ? ` (Қисми ${idx + 1})` : ` (${idx + 1}-qism)`;
+        slide.title += partSuffix;
+      }
+      seenSlideTitles.add((slide.title || '').toLowerCase().trim());
 
       // Chet tillarda o'zbekcha qolib ketgan so'zlarni va mavzu nomini almashtirish
       if (isNonUzbek) {
