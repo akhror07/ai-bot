@@ -142,6 +142,78 @@ export const themes = {
     text: 'FFFFFF',
     subtext: 'CBD5E1',
     border: '595C8A',
+  },
+  latte: {
+    id: 'latte',
+    name: 'Soft Latte & Cream',
+    desc: 'Estetika, gumanitar fanlar, psixologiya va kitobxonlik',
+    bg: '181412',
+    cardBg: '261E1A',
+    primary: 'D4A373',     // Warm camel/gold
+    accent: 'FAEDCD',      // Soft cream
+    text: 'FFFDF9',
+    subtext: 'DDBEA9',
+    border: '43342C',
+  },
+  cosmic: {
+    id: 'cosmic',
+    name: 'Cosmic Nebula',
+    desc: 'Koinot, sun\'iy intellekt, chuqur fan va astronomiya',
+    bg: '0A0716',
+    cardBg: '16102D',
+    primary: 'A78BFA',     // Violet 400
+    accent: '818CF8',      // Indigo 400
+    text: 'F8F7FF',
+    subtext: 'C4B5FD',
+    border: '2E2252',
+  },
+  sage: {
+    id: 'sage',
+    name: 'Sage & Olive',
+    desc: 'Agro, o\'simliklar, ekologiya, bio va sog\'lom hayot',
+    bg: '0B1610',
+    cardBg: '14261C',
+    primary: '86EFAC',     // Green 300
+    accent: '4ADE80',      // Green 400
+    text: 'F0FDF4',
+    subtext: 'BBF7D0',
+    border: '1E3B2C',
+  },
+  tokyo_tech: {
+    id: 'tokyo_tech',
+    name: 'Tokyo Modern',
+    desc: 'Zamonaviy yapon texno-minimalizmi va osmono\'par binolar',
+    bg: '0A0E17',
+    cardBg: '141C2B',
+    primary: '38BDF8',     // Sky 400
+    accent: 'FB7185',      // Rose 400
+    text: 'F8FAFC',
+    subtext: '94A3B8',
+    border: '233148',
+  },
+  terracotta: {
+    id: 'terracotta',
+    name: 'Warm Terracotta',
+    desc: 'Madaniyat, tarix, arxitektura va loyiha san\'ati',
+    bg: '180F0D',
+    cardBg: '291814',
+    primary: 'F87171',     // Red/Coral 400
+    accent: 'FB923C',      // Orange 400
+    text: 'FFF1F2',
+    subtext: 'FECDD3',
+    border: '45241E',
+  },
+  amethyst: {
+    id: 'amethyst',
+    name: 'Deep Amethyst',
+    desc: 'Nufuzli tahlillar, strategiya, falsafa va oliy ta\'lim',
+    bg: '100A1C',
+    cardBg: '1D1230',
+    primary: 'C084FC',     // Purple 400
+    accent: 'E879F9',      // Fuchsia 400
+    text: 'FAF5FF',
+    subtext: 'E9D5FF',
+    border: '382259',
   }
 };
 

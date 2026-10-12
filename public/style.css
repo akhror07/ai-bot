@@ -435,6 +435,12 @@ body {
 .royal-gradient { background: linear-gradient(135deg, #0a1628, #1e3a8a); border: 1px solid #60a5fa; }
 .monochrome-gradient { background: linear-gradient(135deg, #ffffff, #27272a); border: 1px solid #18181b; }
 .neon_abstract-gradient { background: linear-gradient(135deg, #1c2c3b, #44466a, #f88196); border: 1px solid #f88196; }
+.latte-gradient { background: linear-gradient(135deg, #181412, #43342c); border: 1px solid #d4a373; }
+.cosmic-gradient { background: linear-gradient(135deg, #0a0716, #2e2252); border: 1px solid #a78bfa; }
+.sage-gradient { background: linear-gradient(135deg, #0b1610, #1e3b2c); border: 1px solid #86efac; }
+.tokyo_tech-gradient { background: linear-gradient(135deg, #0a0e17, #233148); border: 1px solid #38bdf8; }
+.terracotta-gradient { background: linear-gradient(135deg, #180f0d, #45241e); border: 1px solid #f87171; }
+.amethyst-gradient { background: linear-gradient(135deg, #100a1c, #382259); border: 1px solid #c084fc; }
 
 .theme-info {
   display: flex;

@@ -67,6 +67,12 @@ const THEME_NAMES = {
   royal: '🏛️ Royal Navy',
   monochrome: '🖤 Monochrome Swiss',
   neon_abstract: '🎨 Neon Abstract Art',
+  latte: '☕ Soft Latte & Cream',
+  cosmic: '🌌 Cosmic Nebula',
+  sage: '🍃 Sage & Olive',
+  tokyo_tech: '🏙️ Tokyo Modern',
+  terracotta: '🏺 Warm Terracotta',
+  amethyst: '🔮 Deep Amethyst',
 };
 
 // Tillarning chiroyli nomlari
@@ -118,7 +124,7 @@ function getSlideCountKeyboard() {
     .text('❌ Bekor qilish', 'cancel_action');
 }
 
-// 3. Dizayn uslubi klaviaturasi (10 xil boy va zamonaviy mavzular)
+// 3. Dizayn uslubi klaviaturasi (18 xil boy va zamonaviy mavzular)
 function getThemeKeyboard() {
   return new InlineKeyboard()
     .text('🌊 Ocean Blue', 'theme_ocean')
@@ -138,6 +144,15 @@ function getThemeKeyboard() {
     .row()
     .text('🖤 Monochrome Swiss', 'theme_monochrome')
     .text('🎨 Neon Abstract Art', 'theme_neon_abstract')
+    .row()
+    .text('☕ Soft Latte & Cream', 'theme_latte')
+    .text('🌌 Cosmic Nebula', 'theme_cosmic')
+    .row()
+    .text('🍃 Sage & Olive', 'theme_sage')
+    .text('🏙️ Tokyo Modern', 'theme_tokyo_tech')
+    .row()
+    .text('🏺 Warm Terracotta', 'theme_terracotta')
+    .text('🔮 Deep Amethyst', 'theme_amethyst')
     .row()
     .text('❌ Bekor qilish', 'cancel_action');
 }
