@@ -106,6 +106,53 @@ function getI18n(lang = 'uz') {
         passport: 'TIZIM PASPORTI'
       },
       coverSources: 'StatCounter, Gartner va rasmiy xalqaro manbalar asosida',
+      chartLabels: ['Boshlang\'ich', 'O\'rta bosqich', 'Amaliy natija', 'Maqsadli prognoz'],
+      keyMetricFallback: 'Omil',
+      indicatorFallback: 'Ko\'rsatkich',
+      milestonesPhases: [
+        { period: '1-Bosqich (Q1)', resp: 'Boshqaruv & Audit', kpi: '100% Audit' },
+        { period: '2-Bosqich (Q2)', resp: 'Texnik Departament', kpi: '+35% Tezlik' },
+        { period: '3-Bosqich (Q3)', resp: 'Operatsion Bo\'lim', kpi: '95% Samaradorlik' },
+        { period: '4-Bosqich (Q4)', resp: 'Sifat Nazorati', kpi: 'Barqaror O\'sish' },
+      ],
+      problemSolutionDefaults: {
+        probHeading: 'Tizimdagi Asosiy Kamchiliklar',
+        probDesc: 'Eski an\'anaviy metodologiyalar yuqori resurs yo\'qotishlariga va past samaradorlikka olib kelmoqda.',
+        solHeading: 'Ilg\'or Texnologik Mexanizm',
+        solDesc: 'Avtomatlashtirilgan tahlil va zamonaviy mexanizmlar orqali jarayonlar to\'liq optimallashtiriladi.',
+      },
+      matrixRatingCols: ['Mezon', 'Variant A', 'Variant B', 'Variant C', 'Variant D', 'Variant E'],
+      matrixRatingRows: [
+        { name: 'Ekotizim & Qamrov', scores: ['●●●●●', '●●●●○', '●●●○○', '●●●●●', '●●●●○'] },
+        { name: 'Xavfsizlik & Maxfiylik', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Moslashtirish Erkinligi', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●○', '●●○○○'] },
+        { name: 'Resurs Samaradorligi', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Kirish Narxi & Tejamkorlik', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●●', '●●○○○'] },
+      ],
+      criterionFallback: 'Mezon',
+      scenarioHeaders: ['Foydalanish Stsenariysi / Vazifa', 'Tavsiya Etilgan Tanlov', 'Asosiy Sabab & Strategik Afzallik'],
+      scenarioFallback: [
+        { scenario: 'Korporativ Ofis & Boshqaruv', choice: 'Standart Model A', reason: 'Keng qamrovli ekotizim, markaziy audit va integratsiya qulayligi.' },
+        { scenario: 'Kreativ Ish & Dizayn', choice: 'Premium Model B', reason: 'Maksimal rang aniqligi, unumdorlik va energiya samaradorligi balansi.' },
+        { scenario: 'Dasturlash & Infratuzilma', choice: 'Ochiq Model C', reason: 'UNIX/POSIX muhiti, konteynerlar va litsenziya xarajatlarining yo\'qligi.' },
+        { scenario: 'Ommaviy Bozor & Mass Market', choice: 'Moslashuvchan Model D', reason: 'Keng apparat tanlovi, har qanday byudjetga moslik va erkinlik.' },
+        { scenario: 'Eski yoki Cheklangan Resurs', choice: 'Yengil Model E', reason: 'Minimal talablar bilan barqaror ishlash va tejamkorlik.' },
+      ],
+      recommendationBadge: 'Tavsiya',
+      taskFallback: 'Vazifa',
+      choiceBadge: 'Tanlov',
+      profilePassportDefaults: [
+        { label: 'Turi', val: 'Arxitektura / Tizim' },
+        { label: 'Yadro', val: 'Gibrid / Modular' },
+        { label: 'Litsenziya', val: 'Proprietar / Ochiq' },
+        { label: 'Qamrov', val: '~75% Segment' },
+      ],
+      profileConsDefaults: [
+        'Yuqori apparat talablari va resurs sarfi.',
+        'Maxfiylik va telemetriya parametrlarining cheklanganligi.',
+      ],
+      profileBestForDefault: 'Korporativ ofis, ilmiy tadqiqotlar va keng qamrovli ekotizim.',
+      stakeholderUserFallback: 'Foydalanuvchi',
     },
     ru: {
       badge: 'ПРЕЗЕНТАЦИЯ',
@@ -153,6 +200,53 @@ function getI18n(lang = 'uz') {
         passport: 'ПАСПОРТ СИСТЕМЫ'
       },
       coverSources: 'На основе StatCounter, Gartner и официальных отраслевых отчетов',
+      chartLabels: ['Начальный уровень', 'Промежуточный этап', 'Практический результат', 'Целевой прогноз'],
+      keyMetricFallback: 'Фактор',
+      indicatorFallback: 'Показатель',
+      milestonesPhases: [
+        { period: '1-й Этап (Q1)', resp: 'Управление & Аудит', kpi: '100% Аудит' },
+        { period: '2-й Этап (Q2)', resp: 'Технический Департамент', kpi: '+35% Скорость' },
+        { period: '3-й Этап (Q3)', resp: 'Операционный Отдел', kpi: '95% Эффективность' },
+        { period: '4-й Этап (Q4)', resp: 'Контроль Качества', kpi: 'Стабильный Рост' },
+      ],
+      problemSolutionDefaults: {
+        probHeading: 'Ключевые Системные Барьеры',
+        probDesc: 'Устаревшие традиционные методологии приводят к высоким потерям ресурсов и низкой эффективности.',
+        solHeading: 'Передовой Технологический Подход',
+        solDesc: 'Комплексная автоматизация и современные инструменты обеспечивают оптимизацию и масштабируемость.',
+      },
+      matrixRatingCols: ['Критерий', 'Вариант A', 'Вариант B', 'Вариант C', 'Вариант D', 'Вариант E'],
+      matrixRatingRows: [
+        { name: 'Экосистема & Охват', scores: ['●●●●●', '●●●●○', '●●●○○', '●●●●●', '●●●●○'] },
+        { name: 'Безопасность & Конфиденциальность', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Гибкость Настройки', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●○', '●●○○○'] },
+        { name: 'Эффективность Ресурсов', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Экономичность Внедрения', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●●', '●●○○○'] },
+      ],
+      criterionFallback: 'Критерий',
+      scenarioHeaders: ['Сценарий Использования / Задача', 'Рекомендуемый Выбор', 'Обоснование & Преимущества'],
+      scenarioFallback: [
+        { scenario: 'Корпоративное Управление & Офис', choice: 'Стандартная Модель A', reason: 'Глубокая экосистема, централизованный аудит и простота интеграции.' },
+        { scenario: 'Креативные Задачи & Дизайн', choice: 'Премиум Модель B', reason: 'Прецизионная точность цветопередачи и высокая энергоэффективность.' },
+        { scenario: 'Разработка ПО & Серверы', choice: 'Открытая Модель C', reason: 'Среда UNIX/POSIX, контейнеризация и отсутствие лицензионных издержек.' },
+        { scenario: 'Массовый Сегмент & Масштабирование', choice: 'Гибкая Модель D', reason: 'Широкая аппаратная совместимость и адаптивность под любой бюджет.' },
+        { scenario: 'Ограниченные Аппаратные Ресурсы', choice: 'Облегченная Модель E', reason: 'Минимальные системные требования и стабильная бесперебойная работа.' },
+      ],
+      recommendationBadge: 'Рекомендация',
+      taskFallback: 'Задача',
+      choiceBadge: 'Выбор',
+      profilePassportDefaults: [
+        { label: 'Тип', val: 'Архитектура / Система' },
+        { label: 'Ядро', val: 'Гибридное / Модульное' },
+        { label: 'Лицензия', val: 'Проприетарная / Open Source' },
+        { label: 'Охват', val: '~75% Сегмента' },
+      ],
+      profileConsDefaults: [
+        'Повышенные системные требования и потребление ресурсов.',
+        'Ограниченная гибкость настройки телеметрии и приватности.',
+      ],
+      profileBestForDefault: 'Корпоративный сектор, академические исследования и масштабируемые экосистемы.',
+      stakeholderUserFallback: 'Пользователь',
     },
     en: {
       badge: 'PRESENTATION',
@@ -200,6 +294,53 @@ function getI18n(lang = 'uz') {
         passport: 'SYSTEM PROFILE'
       },
       coverSources: 'Based on StatCounter, Gartner, and official global data benchmarks',
+      chartLabels: ['Baseline Level', 'Mid-term Milestone', 'Practical Outcome', 'Target Forecast'],
+      keyMetricFallback: 'Factor',
+      indicatorFallback: 'Metric',
+      milestonesPhases: [
+        { period: 'Phase 1 (Q1)', resp: 'Governance & Audit', kpi: '100% Audited' },
+        { period: 'Phase 2 (Q2)', resp: 'Technical Department', kpi: '+35% Velocity' },
+        { period: 'Phase 3 (Q3)', resp: 'Operations Team', kpi: '95% Efficiency' },
+        { period: 'Phase 4 (Q4)', resp: 'Quality Assurance', kpi: 'Sustainable Growth' },
+      ],
+      problemSolutionDefaults: {
+        probHeading: 'Core Systemic Barriers',
+        probDesc: 'Legacy methodologies result in high resource attrition and suboptimal operational velocity.',
+        solHeading: 'Advanced Strategic Framework',
+        solDesc: 'Automated analytics and modern architectural tooling ensure complete workflow optimization.',
+      },
+      matrixRatingCols: ['Criterion', 'Option A', 'Option B', 'Option C', 'Option D', 'Option E'],
+      matrixRatingRows: [
+        { name: 'Ecosystem & Coverage', scores: ['●●●●●', '●●●●○', '●●●○○', '●●●●●', '●●●●○'] },
+        { name: 'Security & Privacy', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Customization Flexibility', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●○', '●●○○○'] },
+        { name: 'Resource Efficiency', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Cost Optimization', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●●', '●●○○○'] },
+      ],
+      criterionFallback: 'Criterion',
+      scenarioHeaders: ['Use Case Scenario / Objective', 'Recommended Choice', 'Rationale & Strategic Advantage'],
+      scenarioFallback: [
+        { scenario: 'Enterprise Governance & Office', choice: 'Standard Model A', reason: 'Unified ecosystem, centralized governance, and seamless integration.' },
+        { scenario: 'Creative Media & High-End Design', choice: 'Premium Model B', reason: 'Maximum color calibration, raw processing power, and efficiency.' },
+        { scenario: 'Software Engineering & Cloud', choice: 'Open Model C', reason: 'Robust UNIX/POSIX toolchain, native containerization, zero licensing overhead.' },
+        { scenario: 'Mass Market & Broad Deployment', choice: 'Flexible Model D', reason: 'Broad hardware compatibility, modular scalability, and budget adaptability.' },
+        { scenario: 'Resource-Constrained Environments', choice: 'Lightweight Model E', reason: 'Minimal system footprint, high resilience, and low operational cost.' },
+      ],
+      recommendationBadge: 'Recommendation',
+      taskFallback: 'Objective',
+      choiceBadge: 'Choice',
+      profilePassportDefaults: [
+        { label: 'Type', val: 'Architecture / System' },
+        { label: 'Core', val: 'Hybrid / Modular' },
+        { label: 'License', val: 'Proprietary / Open Source' },
+        { label: 'Adoption', val: '~75% Coverage' },
+      ],
+      profileConsDefaults: [
+        'Elevated hardware requirements and intensive resource consumption.',
+        'Constraints in bespoke telemetry configuration and data privacy.',
+      ],
+      profileBestForDefault: 'Enterprise leadership, rigorous scientific research, and complex ecosystems.',
+      stakeholderUserFallback: 'Stakeholder',
     },
     tg: {
       badge: 'МУАРРИФӢ',
@@ -247,6 +388,53 @@ function getI18n(lang = 'uz') {
         passport: 'ШИНОСНОМАИ НИЗОМ'
       },
       coverSources: 'Дар асоси StatCounter, Gartner ва омори расмии ҷаҳонӣ',
+      chartLabels: ['Сатҳи ибтидоӣ', 'Марҳилаи мобайнӣ', 'Натиҷаи амалӣ', 'Пешгӯии ҳадаф'],
+      keyMetricFallback: 'Омил',
+      indicatorFallback: 'Нишондиҳанда',
+      milestonesPhases: [
+        { period: 'Марҳилаи 1 (Q1)', resp: 'Идоракунӣ ва Аудит', kpi: '100% Аудит' },
+        { period: 'Марҳилаи 2 (Q2)', resp: 'Шӯъбаи Техникӣ', kpi: '+35% Суръат' },
+        { period: 'Марҳилаи 3 (Q3)', resp: 'Шӯъбаи Амалиётӣ', kpi: '95% Самаранокӣ' },
+        { period: 'Марҳилаи 4 (Q4)', resp: 'Назорати Сифат', kpi: 'Рушди Устувор' },
+      ],
+      problemSolutionDefaults: {
+        probHeading: 'Маҳдудиятҳои Асосии Низом',
+        probDesc: 'Усулҳои кӯҳна ба талафоти баланди захираҳо ва самаранокии паст оварда мерасонанд.',
+        solHeading: 'Равиши Пешқадами Технологӣ',
+        solDesc: 'Автоматикунонии ҳамаҷониба ва воситаҳои муосир оптимизатсияи пурраро таъмин менамоянд.',
+      },
+      matrixRatingCols: ['Меъёр', 'Варианти A', 'Варианти B', 'Варианти C', 'Варианти D', 'Варианти E'],
+      matrixRatingRows: [
+        { name: 'Экосистема ва Фарогирӣ', scores: ['●●●●●', '●●●●○', '●●●○○', '●●●●●', '●●●●○'] },
+        { name: 'Амният ва Махфият', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Озодии Танзим', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●○', '●●○○○'] },
+        { name: 'Самаранокии Захираҳо', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
+        { name: 'Сарфакории Хароҷот', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●●', '●●○○○'] },
+      ],
+      criterionFallback: 'Меъёр',
+      scenarioHeaders: ['Сценарияи Истифода / Вазифа', 'Интихоби Тавсияшаванда', 'Сабаби Асосӣ ва Бартарии Стратегӣ'],
+      scenarioFallback: [
+        { scenario: 'Идоракунии Корпоратӣ ва Офис', choice: 'Модели Стандартии A', reason: 'Экосистемаи васеъ, назорати марказӣ ва ҳамгироии осон.' },
+        { scenario: 'Корҳои Эҷодӣ ва Дизайн', choice: 'Модели Премиуми B', reason: 'Дақиқии баланд, маҳсулнокӣ ва мувозинати сарфаи энергия.' },
+        { scenario: 'Барномасозӣ ва Инфрасохтор', choice: 'Модели Кушодаи C', reason: 'Муҳити UNIX/POSIX, контейнерҳо ва набудани хароҷоти литсензия.' },
+        { scenario: 'Бозори Оммавӣ ва Маҳаллӣ', choice: 'Модели Мутобиқшавандаи D', reason: 'Интихоби васеи сахтафзор ва мувофиқат ба ҳама гуна буҷет.' },
+        { scenario: 'Захираҳои Маҳдуд', choice: 'Модели Сабуки E', reason: 'Талаботи ҳадди ақал ва фаъолияти боэътимод.' },
+      ],
+      recommendationBadge: 'Тавсия',
+      taskFallback: 'Вазифа',
+      choiceBadge: 'Интихоб',
+      profilePassportDefaults: [
+        { label: 'Намуд', val: 'Меъморӣ / Низом' },
+        { label: 'Асос', val: 'Гибридӣ / Модулӣ' },
+        { label: 'Литсензия', val: 'Хусусӣ / Кушода' },
+        { label: 'Фарогирӣ', val: '~75% Ҳаҷм' },
+      ],
+      profileConsDefaults: [
+        'Талаботи баланди техникӣ ва хароҷоти захираҳо.',
+        'Маҳдудият дар танзими амният ва махфият.',
+      ],
+      profileBestForDefault: 'Бахши корпоративӣ, таҳқиқоти илмӣ ва экосистемаҳои васеъ.',
+      stakeholderUserFallback: 'Истифодабаранда',
     },
   };
   return dict[lang] || dict.uz;
@@ -412,7 +600,7 @@ function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalS
 function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false, i18n = null) {
   if (!text) return;
 
-  const prefix = i18n?.highlightPrefix || '💡 Xulosa: ';
+  const prefix = i18n?.highlightPrefix || '💡 ';
   const boxH = 0.82;
   slide.addShape(pres.ShapeType.roundRect, {
     x: 0.8, y, w: 11.73, h: boxH,
@@ -1135,20 +1323,20 @@ function renderChartLayout(slide, pres, theme, item, num, total, img, data, i18n
       chartType = pres.ChartType.doughnut;
     }
   } else if (item.metrics && item.metrics.length >= 2) {
-    chartLabels = item.metrics.map(m => m.label?.substring(0, 16) || 'Omil');
+    chartLabels = item.metrics.map(m => m.label?.substring(0, 16) || i18n.keyMetricFallback || 'Omil');
     chartValues = item.metrics.map(m => {
       const parsed = parseInt(String(m.val).replace(/[^\d]/g, ''), 10);
       return isNaN(parsed) || parsed === 0 ? 50 : parsed;
     });
   } else {
     // Aqlli standart tahliliy ko'rsatkichlar
-    chartLabels = ['Boshlang\'ich', 'O\'rta bosqich', 'Amaliy natija', 'Maqsadli prognoz'];
+    chartLabels = i18n.chartLabels || ['Boshlang\'ich', 'O\'rta bosqich', 'Amaliy natija', 'Maqsadli prognoz'];
     chartValues = [35, 62, 84, 96];
   }
 
   const chartData = [
     {
-      name: item.title ? item.title.substring(0, 24) : 'Ko\'rsatkich',
+      name: item.title ? item.title.substring(0, 24) : (i18n.indicatorFallback || 'Ko\'rsatkich'),
       labels: chartLabels,
       values: chartValues,
     }
@@ -1474,7 +1662,7 @@ function renderMilestonesTableLayout(slide, pres, theme, item, num, total, img, 
   // Jadval sarlavhasi
   const headers = i18n.tableHeaders || ['Bosqich / Davr', 'Asosiy Vazifa & Strategiya', 'Mas\'ul Bo\'lim & Resurs', 'Kutilayotgan KPI'];
 
-  const defaultPhases = [
+  const defaultPhases = i18n.milestonesPhases || [
     { period: '1-Bosqich (Q1)', resp: 'Boshqaruv & Audit', kpi: '100% Audit' },
     { period: '2-Bosqich (Q2)', resp: 'Texnik Departament', kpi: '+35% Tezlik' },
     { period: '3-Bosqich (Q3)', resp: 'Operatsion Bo\'lim', kpi: '95% Samaradorlik' },
@@ -1641,13 +1829,13 @@ function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, 
     align: 'center', valign: 'middle', fit: 'shrink',
   });
 
-  slide.addText(p1.heading || 'Tizimdagi Asosiy Kamchiliklar', {
+  slide.addText(p1.heading || i18n.problemSolutionDefaults?.probHeading || 'Tizimdagi Asosiy Kamchiliklar', {
     x: leftX + 0.35, y: contentY + 0.85, w: colW - 0.7, h: 0.70,
     fontFace: 'Arial', fontSize: 14, bold: true, color: 'EF4444',
     valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  slide.addText(p1.description || 'Eski an\'anaviy metodologiyalar yuqori resurs yo\'qotishlariga va past samaradorlikka olib kelmoqda.', {
+  slide.addText(p1.description || i18n.problemSolutionDefaults?.probDesc || 'Eski an\'anaviy metodologiyalar yuqori resurs yo\'qotishlariga va past samaradorlikka olib kelmoqda.', {
     x: leftX + 0.35, y: contentY + 1.65, w: colW - 0.7, h: contentH - 1.85,
     fontFace: 'Arial', fontSize: 11, color: theme.text,
     align: 'left', valign: 'top', wrap: true, fit: 'shrink',
@@ -1681,13 +1869,13 @@ function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, 
     align: 'center', valign: 'middle', fit: 'shrink',
   });
 
-  slide.addText(p2.heading || 'Ilg\'or Texnologik Mexanizm', {
+  slide.addText(p2.heading || i18n.problemSolutionDefaults?.solHeading || 'Ilg\'or Texnologik Mexanizm', {
     x: rightX + 0.35, y: contentY + 0.85, w: colW - 0.7, h: 0.70,
     fontFace: 'Arial', fontSize: 14, bold: true, color: '10B981',
     valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  slide.addText(p2.description || 'Avtomatlashtirilgan tahlil va zamonaviy mexanizmlar orqali jarayonlar to\'liq optimallashtiriladi.', {
+  slide.addText(p2.description || i18n.problemSolutionDefaults?.solDesc || 'Avtomatlashtirilgan tahlil va zamonaviy mexanizmlar orqali jarayonlar to\'liq optimallashtiriladi.', {
     x: rightX + 0.35, y: contentY + 1.65, w: colW - 0.7, h: contentH - 1.85,
     fontFace: 'Arial', fontSize: 11, color: theme.text,
     align: 'left', valign: 'top', wrap: true, fit: 'shrink',
@@ -1714,10 +1902,11 @@ function renderPyramidHierarchyLayout(slide, pres, theme, item, num, total, img,
   const rightW = 6.73;
 
   const tierH = (contentH - 0.30) / 3;
+  const pLabels = i18n.pyramidLevelLabels || ['01. STRATEGIK CHO\'QQI', '02. AMALIY MEXANIZMLAR', '03. FUNDAMENTAL ASOS'];
   const tiers = [
-    { label: '01. STRATEGIK CHO\'QQI', w: 2.8, fill: theme.primary, textCol: '#FFFFFF' },
-    { label: '02. AMALIY MEXANIZMLAR', w: 3.7, fill: theme.accent || theme.primary, textCol: '#FFFFFF' },
-    { label: '03. FUNDAMENTAL ASOS', w: 4.6, fill: theme.cardBg, borderCol: theme.primary, textCol: theme.text },
+    { label: pLabels[0] || '01. STRATEGIK CHO\'QQI', w: 2.8, fill: theme.primary, textCol: '#FFFFFF' },
+    { label: pLabels[1] || '02. AMALIY MEXANIZMLAR', w: 3.7, fill: theme.accent || theme.primary, textCol: '#FFFFFF' },
+    { label: pLabels[2] || '03. FUNDAMENTAL ASOS', w: 4.6, fill: theme.cardBg, borderCol: theme.primary, textCol: theme.text },
   ];
 
   tiers.forEach((t, idx) => {
@@ -1868,7 +2057,8 @@ function renderHorizontalFlowchartLayout(slide, pres, theme, item, num, total, i
       line: { color: '#FFFFFF', width: 1.2 },
       rectRadius: 0.18,
     });
-    slide.addText(`0${idx + 1}-BOSQICH`, {
+    const stepBadgeLabel = i18n.stepBadge ? i18n.stepBadge(idx + 1) : `0${idx + 1}-BOSQICH`;
+    slide.addText(stepBadgeLabel, {
       x: x + (cardW - 1.5) / 2, y: contentY + 0.08, w: 1.5, h: 0.44,
       fontFace: 'Arial', fontSize: 9.5, bold: true, color: '#FFFFFF',
       align: 'center', valign: 'middle', fit: 'shrink',
@@ -1957,7 +2147,7 @@ function renderTeamStakeholdersLayout(slide, pres, theme, item, num, total, img,
       align: 'center', valign: 'middle', fit: 'shrink',
     });
 
-    slide.addText(p.heading || `Asosiy Foydalanuvchi ${idx + 1}`, {
+    slide.addText(p.heading || `${i18n.stakeholderUserFallback || 'Foydalanuvchi'} ${idx + 1}`, {
       x: x + 0.2, y: contentY + 1.95, w: cardW - 0.4, h: 0.55,
       fontFace: 'Arial', fontSize: 13, bold: true, color: theme.text,
       align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
@@ -1987,7 +2177,7 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
   const isMonochrome = theme.id === 'monochrome';
   const isNeon = theme.id === 'neon_abstract';
 
-  const defaultCols = ['Mezon', 'Variant A', 'Variant B', 'Variant C', 'Variant D', 'Variant E'];
+  const defaultCols = i18n.matrixRatingCols || ['Mezon', 'Variant A', 'Variant B', 'Variant C', 'Variant D', 'Variant E'];
   const columns = (item.columns && item.columns.length) ? item.columns : (item.headers && item.headers.length ? item.headers : defaultCols);
   const colCount = columns.length;
 
@@ -2007,7 +2197,7 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
     }))
   ];
 
-  const defaultRows = [
+  const defaultRows = i18n.matrixRatingRows || [
     { name: 'Ekotizim & Qamrov', scores: ['●●●●●', '●●●●○', '●●●○○', '●●●●●', '●●●●○'] },
     { name: 'Xavfsizlik & Maxfiylik', scores: ['●●●○○', '●●●●○', '●●●●●', '●●●○○', '●●●●●'] },
     { name: 'Moslashtirish Erkinligi', scores: ['●●●○○', '●●○○○', '●●●●●', '●●●●○', '●●○○○'] },
@@ -2023,7 +2213,7 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
     const rowBg = isEven ? theme.cardBg : theme.bg;
     const rowCells = [
       {
-        text: r.name || r.criterion || `Mezon 0${rIdx + 1}`,
+        text: r.name || r.criterion || `${i18n.criterionFallback || 'Mezon'} 0${rIdx + 1}`,
         options: {
           fill: rowBg,
           color: isMonochrome ? '111111' : theme.primary,
@@ -2090,7 +2280,7 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
   const isMonochrome = theme.id === 'monochrome';
   const isNeon = theme.id === 'neon_abstract';
 
-  const defaultHeaders = ['Foydalanish Stsenariysi / Vazifa', 'Tavsiya Etilgan Tanlov', 'Asosiy Sabab & Strategik Afzallik'];
+  const defaultHeaders = i18n.scenarioHeaders || ['Foydalanish Stsenariysi / Vazifa', 'Tavsiya Etilgan Tanlov', 'Asosiy Sabab & Strategik Afzallik'];
   const headers = (item.headers && item.headers.length) ? item.headers : defaultHeaders;
 
   const headerBg = isMonochrome ? '111111' : (isNeon ? '1C2C3B' : theme.primary);
@@ -2104,7 +2294,7 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
     ]
   ];
 
-  const defaultScenarios = [
+  const defaultScenarios = i18n.scenarioFallback || [
     { scenario: 'Korporativ Ofis & Boshqaruv', choice: 'Standart Model A', reason: 'Keng qamrovli ekotizim, markaziy audit va integratsiya qulayligi.' },
     { scenario: 'Kreativ Ish & Dizayn', choice: 'Premium Model B', reason: 'Maksimal rang aniqligi, unumdorlik va energiya samaradorligi balansi.' },
     { scenario: 'Dasturlash & Infratuzilma', choice: 'Ochiq Model C', reason: 'UNIX/POSIX muhiti, konteynerlar va litsenziya xarajatlarining yo\'qligi.' },
@@ -2114,7 +2304,7 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
 
   const scenarios = (item.scenarios && item.scenarios.length) ? item.scenarios : (item.points ? item.points.map(p => ({
     scenario: p.heading,
-    choice: p.choice || p.tag || 'Tavsiya',
+    choice: p.choice || p.tag || (i18n.recommendationBadge || 'Tavsiya'),
     reason: p.description
   })) : defaultScenarios);
 
@@ -2125,8 +2315,8 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
     const rowBg = isEven ? theme.cardBg : theme.bg;
 
     tableRows.push([
-      { text: sc.scenario || `Vazifa 0${r + 1}`, options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'left', fontSize: 10 } },
-      { text: sc.choice || 'Tanlov', options: { fill: rowBg, color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary), bold: true, align: 'center', fontSize: 10.5 } },
+      { text: sc.scenario || `${i18n.taskFallback || 'Vazifa'} 0${r + 1}`, options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'left', fontSize: 10 } },
+      { text: sc.choice || (i18n.choiceBadge || 'Tanlov'), options: { fill: rowBg, color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary), bold: true, align: 'center', fontSize: 10.5 } },
       { text: sc.reason || '', options: { fill: rowBg, color: theme.text, fontSize: 9.5 } },
     ]);
   }
@@ -2173,7 +2363,7 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
     rectRadius: 0.1,
   });
 
-  const passportFields = item.passport || [
+  const passportFields = item.passport || i18n.profilePassportDefaults || [
     { label: 'Turi', val: item.typeDesc || 'Operatsion Tizim' },
     { label: 'Yadro', val: item.kernel || 'Gibrid / Modular' },
     { label: 'Litsenziya', val: item.license || 'Proprietar / GPL' },
@@ -2254,10 +2444,10 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
   });
 
   const cons = (item.cons && item.cons.length) ? item.cons : (item.weaknesses && item.weaknesses.length ? item.weaknesses : (item.points ? item.points.slice(3, 6) : []));
-  const consList = cons.length ? cons : [
+  const consList = cons.length ? cons : (i18n.profileConsDefaults || [
     'Yuqori apparat talablari va resurs sarfi.',
     'Maxfiylik va telemetriya parametrlarining cheklanganligi.'
-  ];
+  ]);
   const consText = consList.map(p => `• ${typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`}`).join('\n\n');
   slide.addText(consText, {
     x: rightX + 0.25, y: colY + 0.48, w: colW - 0.5, h: colH - 0.58,
@@ -2273,7 +2463,7 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
     line: { color: theme.border, width: 1 },
     rectRadius: 0.08,
   });
-  const bestForText = item.bestFor || item.targetUse || 'Korporativ ofis, ilmiy tadqiqotlar va keng qamrovli ekotizim.';
+  const bestForText = item.bestFor || item.targetUse || (i18n.profileBestForDefault || 'Korporativ ofis, ilmiy tadqiqotlar va keng qamrovli ekotizim.');
   slide.addText([
     { text: `🎯 ${i18n.profileHeadings?.bestFor || 'ENG MOS SOHALAR'}: `, options: { bold: true, fontSize: 10, color: isNeon ? '#FFFFFF' : theme.primary } },
     { text: bestForText, options: { bold: false, fontSize: 10, color: theme.text } },

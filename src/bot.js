@@ -107,25 +107,46 @@ function getCategoryKeyboard() {
     .text('❌ Bekor qilish', 'cancel_action');
 }
 
-// 2. Slaydlar soni klaviaturasi
-function getSlideCountKeyboard() {
+// 2. Slaydlar soni klaviaturasi (ko'p tilli)
+function getSlideCountKeyboard(lang = 'uz') {
+  const labels = {
+    ru: (n) => `${n} слайдов`,
+    en: (n) => `${n} slides`,
+    tg: (n) => `${n} слайд`,
+    uz: (n) => `${n} ta`,
+  }[lang] || ((n) => `${n} ta`);
+
+  const cancelLabel = {
+    ru: '❌ Отмена',
+    en: '❌ Cancel',
+    tg: '❌ Бекор кардан',
+    uz: '❌ Bekor qilish',
+  }[lang] || '❌ Bekor qilish';
+
   return new InlineKeyboard()
-    .text('5 ta', 'count_5')
-    .text('8 ta', 'count_8')
-    .text('10 ta', 'count_10')
+    .text(labels(5), 'count_5')
+    .text(labels(8), 'count_8')
+    .text(labels(10), 'count_10')
     .row()
-    .text('12 ta', 'count_12')
-    .text('15 ta', 'count_15')
-    .text('18 ta', 'count_18')
+    .text(labels(12), 'count_12')
+    .text(labels(15), 'count_15')
+    .text(labels(18), 'count_18')
     .row()
-    .text('20 ta', 'count_20')
-    .text('25 ta', 'count_25')
+    .text(labels(20), 'count_20')
+    .text(labels(25), 'count_25')
     .row()
-    .text('❌ Bekor qilish', 'cancel_action');
+    .text(cancelLabel, 'cancel_action');
 }
 
 // 3. Dizayn uslubi klaviaturasi (18 xil boy va zamonaviy mavzular)
-function getThemeKeyboard() {
+function getThemeKeyboard(lang = 'uz') {
+  const cancelLabel = {
+    ru: '❌ Отмена',
+    en: '❌ Cancel',
+    tg: '❌ Бекор кардан',
+    uz: '❌ Bekor qilish',
+  }[lang] || '❌ Bekor qilish';
+
   return new InlineKeyboard()
     .text('🌊 Ocean Blue', 'theme_ocean')
     .text('🌙 Modern Dark', 'theme_dark')
@@ -154,7 +175,7 @@ function getThemeKeyboard() {
     .text('🏺 Warm Terracotta', 'theme_terracotta')
     .text('🔮 Deep Amethyst', 'theme_amethyst')
     .row()
-    .text('❌ Bekor qilish', 'cancel_action');
+    .text(cancelLabel, 'cancel_action');
 }
 
 // Rasmiy kanal sozlamalari (Majburiy a'zolik)
@@ -449,9 +470,9 @@ bot.callbackQuery('action_balance', async (ctx) => {
 
 bot.callbackQuery('action_create', async (ctx) => {
   await ctx.answerCallbackQuery();
-  userSessions[ctx.chat.id] = { step: 'awaiting_topic' };
+  sessions.set(ctx.chat.id, { step: 'awaiting_topic' });
   await ctx.reply(
-    `✍️ *Yangi taqdimot mavzusini yozing:*\n\nMasalan: _"Raqamli iqtisodiyot va fintex istiqbollari"_ yoki _"Kardiologiya profilaktikasi"_`,
+    `✍️ *Yangi taqdimot mavzusini yozing:*\n\nMasalan: _"Raqamli iqtisodiyot va fintex istiqbollari"_ yoki _"Kardiologiya profilaktikasi"_\n\n_(🇷🇺 Напишите тему презентации | 🇬🇧 Enter presentation topic)_`,
     { parse_mode: 'Markdown' }
   );
 });
@@ -1087,9 +1108,26 @@ bot.command('cancel', async (ctx) => {
 });
 
 bot.callbackQuery('cancel_action', async (ctx) => {
+  const session = sessions.get(ctx.chat.id);
+  const langKey = session?.language || 'uz';
   sessions.delete(ctx.chat.id);
-  await ctx.answerCallbackQuery({ text: 'Bekor qilindi' });
-  await ctx.reply("❌ Taqdimot yaratish bekor qilindi.");
+
+  const answerTxt = {
+    ru: 'Отменено',
+    en: 'Cancelled',
+    tg: 'Бекор шуд',
+    uz: 'Bekor qilindi',
+  }[langKey] || 'Bekor qilindi';
+
+  const replyTxt = {
+    ru: '❌ Создание презентации отменено. Вы можете написать новую тему в любое время.',
+    en: '❌ Presentation creation cancelled. You can enter a new topic anytime.',
+    tg: '❌ Сохтани муаррифӣ бекор шуд. Шумо метавонед мавзӯи навро нависед.',
+    uz: '❌ Taqdimot yaratish bekor qilindi. Yangi taqdimot uchun mavzu yozishingiz mumkin.',
+  }[langKey] || '❌ Taqdimot yaratish bekor qilindi. Yangi taqdimot uchun mavzu yozishingiz mumkin.';
+
+  await ctx.answerCallbackQuery({ text: answerTxt });
+  await ctx.reply(replyTxt);
 });
 
 // 1-qadam: Soha / Kategoriya tanlanganda -> Til tanlashga o'tish
@@ -1135,13 +1173,18 @@ bot.callbackQuery(/^lang_([a-z]+)$/, async (ctx) => {
 
   const langTitle = LANG_NAMES[langKey] || langKey;
   await ctx.answerCallbackQuery();
-  await ctx.reply(
-    `✅ Til: *${langTitle}*\n\n3️⃣ *Necha betli taqdimot tayyorlaymiz?*\nTugmalardan tanlang yoki istalgan sonni (masalan: *18*) yozing:`,
-    {
-      parse_mode: 'Markdown',
-      reply_markup: getSlideCountKeyboard(),
-    }
-  );
+
+  const countPrompt = {
+    ru: `✅ Язык: *${langTitle}*\n\n3️⃣ *Сколько слайдов подготовить?*\nВыберите кнопкой или напишите любое число (например: *18*):`,
+    en: `✅ Language: *${langTitle}*\n\n3️⃣ *How many slides would you like?*\nSelect from options or type any number (e.g., *18*):`,
+    tg: `✅ Забон: *${langTitle}*\n\n3️⃣ *Чанд слайд омода кунем?*\nАз тугмаҳо интихоб кунед ё рақамро нависед (масалан: *18*):`,
+    uz: `✅ Til: *${langTitle}*\n\n3️⃣ *Necha betli taqdimot tayyorlaymiz?*\nTugmalardan tanlang yoki istalgan sonni (masalan: *18*) yozing:`,
+  }[langKey] || `✅ Til: *${langTitle}*\n\n3️⃣ *Necha betli taqdimot tayyorlaymiz?*\nTugmalardan tanlang yoki istalgan sonni (masalan: *18*) yozing:`;
+
+  await ctx.reply(countPrompt, {
+    parse_mode: 'Markdown',
+    reply_markup: getSlideCountKeyboard(langKey),
+  });
 });
 
 // 3-qadam: Slaydlar soni tanlanganda -> Fon uslubiga o'tish
@@ -1159,14 +1202,20 @@ bot.callbackQuery(/^count_(\d+)$/, async (ctx) => {
   session.step = 'ASK_THEME';
   sessions.set(ctx.chat.id, session);
 
+  const langKey = session.language || 'uz';
   await ctx.answerCallbackQuery();
-  await ctx.reply(
-    `✅ Slaydlar soni: *${count} ta*\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
-    {
-      parse_mode: 'Markdown',
-      reply_markup: getThemeKeyboard(),
-    }
-  );
+
+  const themePrompt = {
+    ru: `✅ Слайды: *${count}*\n\n4️⃣ *Теперь выберите тему оформления и визуальный стиль:*`,
+    en: `✅ Slide count: *${count}*\n\n4️⃣ *Now choose the visual style & design theme:*`,
+    tg: `✅ Шумораи слайдҳо: *${count}*\n\n4️⃣ *Акнун тарҳ ва услуби мавзӯъро интихоб намоед:*`,
+    uz: `✅ Slaydlar soni: *${count} ta*\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
+  }[langKey] || `✅ Slaydlar soni: *${count} ta*\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`;
+
+  await ctx.reply(themePrompt, {
+    parse_mode: 'Markdown',
+    reply_markup: getThemeKeyboard(langKey),
+  });
 });
 
 // 4-qadam: Fon uslubi tanlanganda va generatsiya boshlash
@@ -1280,10 +1329,31 @@ bot.callbackQuery(/^theme_([a-z_]+)$/, async (ctx) => {
     }[langKey] || `✅ *${data.title}*\n\n🎯 Soha: ${catObj.name}\n🌐 Til: ${langName}\n📄 Slaydlar: ${data.slides?.length || session.slideCount} ta\n🎨 Uslub: ${themeName}\n🪙 Qolgan imkoniyatlaringiz: *${isVip ? '💎 VIP' : user.coins + ' ta'}*\n\n_Faylni PowerPoint dasturida ochishingiz mumkin._`;
 
     const successMarkup = new InlineKeyboard();
+    const miniAppLabel = {
+      ru: '🌐 Открыть в Mini App',
+      en: '🌐 Open in Mini App',
+      tg: '🌐 Кушодан дар Mini App',
+      uz: '🌐 Mini App\'da ochish',
+    }[langKey] || '🌐 Mini App\'da ochish';
+
+    const newPresLabel = {
+      ru: '➕ Новая презентация',
+      en: '➕ New Presentation',
+      tg: '➕ Баёноти нав',
+      uz: '➕ Yangi taqdimot',
+    }[langKey] || '➕ Yangi taqdimot';
+
+    const balanceLabel = {
+      ru: '💎 Баланс & VIP',
+      en: '💎 Balance & VIP',
+      tg: '💎 Бақия & VIP',
+      uz: '💎 Balans & VIP',
+    }[langKey] || '💎 Balans & VIP';
+
     if (config.webAppUrl) {
-      successMarkup.webApp("🌐 Mini App'da ochish", config.webAppUrl).row();
+      successMarkup.webApp(miniAppLabel, config.webAppUrl).row();
     }
-    successMarkup.text('➕ Yangi taqdimot', 'action_create').text('💎 Balans & VIP', 'action_balance');
+    successMarkup.text(newPresLabel, 'action_create').text(balanceLabel, 'action_balance');
 
     await ctx.replyWithDocument(
       new InputFile(filePath, `${data.title || 'prezentatsiya'}.pptx`),
@@ -1657,13 +1727,18 @@ bot.on('message:text', async (ctx) => {
       session.step = 'ASK_THEME';
       sessions.set(ctx.chat.id, session);
 
-      await ctx.reply(
-        `✅ Slaydlar soni: *${customCount} ta* deb belgilandi.\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
-        {
-          parse_mode: 'Markdown',
-          reply_markup: getThemeKeyboard(),
-        }
-      );
+      const langKey = session.language || 'uz';
+      const themePrompt = {
+        ru: `✅ Слайды: *${customCount}*\n\n4️⃣ *Теперь выберите тему оформления и визуальный стиль:*`,
+        en: `✅ Slide count: *${customCount}*\n\n4️⃣ *Now choose the visual style & design theme:*`,
+        tg: `✅ Шумораи слайдҳо: *${customCount}*\n\n4️⃣ *Акнун тарҳ ва услуби мавзӯъро интихоб намоед:*`,
+        uz: `✅ Slaydlar soni: *${customCount} ta* deb belgilandi.\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`,
+      }[langKey] || `✅ Slaydlar soni: *${customCount} ta* deb belgilandi.\n\n4️⃣ *Endi taqdimot fon va dizayn uslubini tanlang:*`;
+
+      await ctx.reply(themePrompt, {
+        parse_mode: 'Markdown',
+        reply_markup: getThemeKeyboard(langKey),
+      });
       return;
     }
   }
