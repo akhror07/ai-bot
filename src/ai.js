@@ -349,6 +349,58 @@ async function generateViaOpenRouter(prompt) {
 export function getSmartDomainMetrics(topic = '', stageIndex = 4, language = 'uz') {
   const t = (topic || '').toLowerCase();
 
+  // 0. Ekologiya / Yashil Energetika / Global Isish / Iqlim / Tabiat / Parnik
+  if (t.includes('ekolog') || t.includes('yashil') || t.includes('energetika') || t.includes('iqlim') || t.includes('quyosh') || t.includes('shamol') || t.includes('isish') || t.includes('global') || t.includes('harorat') || t.includes('parnik') || t.includes('muzlik') || t.includes('co2') || t.includes('uglerod') || t.includes('emissiy') || t.includes('climate') || t.includes('warming') || t.includes('tabiat')) {
+    if (stageIndex === 12 || stageIndex === 13) {
+      const data = {
+        uz: [
+          { val: '422.4 ppm', label: 'CO2 Konsentratsiyasi', desc: 'Atmosferadagi karbonat angidrid miqdori (sanoatgacha bo\'lgan 280 ppm ga nisbatan)' },
+          { val: '+1.15°C', label: 'Harorat Anomaliyasi', desc: 'Global o\'rtacha haroratning sanoatgacha bo\'lgan davrga nisbatan ko\'tarilishi' },
+          { val: '37.4 Gt', label: 'Yillik Emissiya', desc: 'Antropogen omillar hisobiga atmosferaga chiqarilayotgan issiqxona gazlari' }
+        ],
+        ru: [
+          { val: '422.4 ppm', label: 'Концентрация CO2', desc: 'Текущий уровень диоксида углерода (против доиндустриальных 280 ppm)' },
+          { val: '+1.15°C', label: 'Температурная аномалия', desc: 'Рост среднеглобальной приземной температуры выше доиндустриального уровня' },
+          { val: '37.4 Гт', label: 'Годовые выбросы', desc: 'Объем глобальных антропогенных эмиссий парниковых газов в атмосферу' }
+        ],
+        en: [
+          { val: '422.4 ppm', label: 'Atmospheric CO2 Level', desc: 'Carbon dioxide concentration versus pre-industrial baseline of 280 ppm' },
+          { val: '+1.15°C', label: 'Global Mean Anomaly', desc: 'Surface temperature anomaly above pre-industrial long-term benchmark' },
+          { val: '37.4 Gt', label: 'Annual GHG Emissions', desc: 'Anthropogenic greenhouse emissions released into the atmosphere' }
+        ],
+        tg: [
+          { val: '422.4 ppm', label: 'Консентратсияи CO2', desc: 'Сатҳи гази карбонат дар атмосфера нисбат ба давраи то саноатӣ' },
+          { val: '+1.15°C', label: 'Тағйирёбии ҳарорат', desc: 'Баландшавии миёнаи ҳарорати глобалӣ нисбат ба меъёри пешина' },
+          { val: '37.4 Гт', label: 'Партовҳои солона', desc: 'Ҳаҷми солонаи партови газҳои гулхонаӣ ба муҳити зист' }
+        ]
+      };
+      return data[language] || data.uz;
+    }
+    const data = {
+      uz: [
+        { val: '-13.1%', label: 'Arktika Muzliklari / 10 y', desc: 'Har 10 yilda qutb dengiz muzliklari maydonining qisqarish sur\'ati' },
+        { val: '1.5°C', label: 'Parij Bitimi Maqsadi', desc: 'IPCC xalqaro konvensiyasi bo\'yicha belgilangan kritik harorat chegarasi' },
+        { val: '$4.5 trln', label: 'Yillik Yashil Investitsiya', desc: '2030 yilgacha qayta tiklanuvchi energiya va dekarbonizatsiya ehtiyoji' }
+      ],
+      ru: [
+        { val: '-13.1%', label: 'Таяние льдов Арктики', desc: 'Декадное сокращение площади морского ледового покрова Арктики' },
+        { val: '1.5°C', label: 'Цель Парижского соглашения', desc: 'Критический порог потепления по сценариям шестого отчета МГЭИК' },
+        { val: '$4.5 трлн', label: 'Зеленые инвестиции', desc: 'Ежегодные капвложения в чистую энергетику для достижения углеродной нейтральности' }
+      ],
+      en: [
+        { val: '-13.1%', label: 'Arctic Ice Loss / Decade', desc: 'Rate of sea ice minimum decline per decade relative to historical baselines' },
+        { val: '1.5°C', label: 'Paris Accord Limit', desc: 'Stringent threshold ceiling modeled by the IPCC Sixth Assessment Report' },
+        { val: '$4.5T', label: 'Annual Clean Investment', desc: 'Capital deployment necessary to meet 2030 renewable transition targets' }
+      ],
+      tg: [
+        { val: '-13.1%', label: 'Камшавии пиряхҳои Арктика', desc: 'Суръати обшавии қабати яхии Арктика дар ҳар даҳсола' },
+        { val: '1.5°C', label: 'Ҳадафи созишномаи Париж', desc: 'Ҳадди ниҳоии гармшавӣ тибқи гузоришҳои расмии байналмилалӣ' },
+        { val: '$4.5 трлн', label: 'Сармоягузории сабз', desc: 'Сармояи зарурӣ барои гузариш ба манбаъҳои тозаи энергетикӣ то соли 2030' }
+      ]
+    };
+    return data[language] || data.uz;
+  }
+
   // 1. Tibbiyot / Salomatlik / Farmakologiya / Anatomiya
   if (t.includes('tibbiy') || t.includes('salomat') || t.includes('shifokor') || t.includes('kasal') || t.includes('davo') || t.includes('klinik') || t.includes('farm') || t.includes('yurak') || t.includes('med') || t.includes('stomat') || t.includes('pediatr')) {
     if (stageIndex === 12 || stageIndex === 13) {
@@ -617,6 +669,15 @@ export function getSmartDomainCharts(topic = '', stageIndex = 6, language = 'uz'
 
   // 1-Chart: Stage 6 (Slide 8) — Tarixiy va joriy o'sish dinamikasi
   if (stageIndex === 6) {
+    if (t.includes('ekolog') || t.includes('yashil') || t.includes('energetika') || t.includes('iqlim') || t.includes('isish') || t.includes('global') || t.includes('harorat') || t.includes('co2') || t.includes('climate') || t.includes('warming')) {
+      const labels = {
+        uz: ['1990 (Baza)', '2010 (O\'sish)', '2024 (Hozirgi)', '2030 (Prognoz)'],
+        ru: ['1990 (База)', '2010 (Рост)', '2024 (Текущий)', '2030 (Прогноз)'],
+        en: ['1990 (Baseline)', '2010 (Expansion)', '2024 (Current)', '2030 (Projected)'],
+        tg: ['1990 (Асос)', '2010 (Рушд)', '2024 (Ҷорӣ)', '2030 (Пешгӯӣ)']
+      }[language] || ['1990 (Baza)', '2010 (O\'sish)', '2024 (Hozirgi)', '2030 (Prognoz)'];
+      return { labels, values: [22.4, 33.1, 37.4, 43.8] };
+    }
     if (t.includes('tibbiy') || t.includes('salomat') || t.includes('kasal') || t.includes('davo')) {
       const labels = {
         uz: ['Boshlang\'ich skrining', 'Klinik terapiya', 'Kombinatsiyalashgan', 'To\'liq remissiya'],
@@ -4162,6 +4223,74 @@ Raw JSON qaytar:
 }
 
 /**
+ * AI orqali slaydlar partiyasini (2-3 ta slayd) mavzuga 100% mos ilmiy faktlar va aniq raqamlar bilan kengaytirish
+ */
+export async function generateSlideBatchAI(topic, outlineBatch, language = 'uz') {
+  if (!outlineBatch || !outlineBatch.length) return [];
+  const lang = (['uz', 'ru', 'en', 'tg'].includes(language)) ? language : 'uz';
+
+  const batchPrompt = `Mavzu: "${topic}"
+Til: ${lang}
+Slaydlar:
+${JSON.stringify(outlineBatch.map(s => ({
+  slideNumber: s.slideNumber,
+  layoutType: s.layoutType,
+  title: s.title,
+  subtitle: s.subtitle,
+  sections: s.sections
+})), null, 2)}
+
+VAZIFA: Yuqoridagi slaydlar uchun faqat "${topic}" mavzusiga oid CHUQUR ILMIY, FAKTIK, STATISTIK matnlarni yoz.
+Har bir slaydda mavzuning haqiqiy faktlari, raqamlari (ppm, darajalar, yillar, tashkilotlar, formulalar, aniq ko'rsatkichlar) bo'lsin.
+UMUMIY SO'ZLAR ("zamonaviy yondashuv", "optimallashtirish", "1-bosqich", "qo'l mehnati", "tizimli islohotlar") QAT'IYAN TAQIQLANADI!
+Har bir point description kamida 3-4 ta to'liq jumlali chuqur ilmiy tahlil bo'lsin.
+
+Qaytishi kerak bo'lgan JSON massiv:
+[
+  {
+    "slideNumber": ...,
+    "layoutType": "...",
+    "title": "...",
+    "subtitle": "...",
+    "points": [
+      { "heading": "...", "description": "3-4 jumlali chuqur ilmiy va faktik tahlil..." }
+    ],
+    "metrics": [ ...agar kpi_metrics bo'lsa haqiqiy 4 ta raqam: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "leftHeading": "...agar comparison bo'lsa...",
+    "rightHeading": "...agar comparison bo'lsa...",
+    "highlight": "Muhim xulosa...",
+    "speakerNotes": "Ma'ruza nutqi matni..."
+  }
+]`;
+
+  try {
+    const res = await fetch('https://text.pollinations.ai/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: 'You are an elite academic researcher and presentation expert. Return raw JSON array ONLY without any markdown codeblocks or preamble.' },
+          { role: 'user', content: batchPrompt }
+        ],
+        model: 'openai',
+        jsonMode: true,
+        temperature: 0.65
+      })
+    });
+    if (res.ok) {
+      const raw = await res.text();
+      const slides = extractSlidesFromAiResponse(raw);
+      if (slides && Array.isArray(slides) && slides.length > 0) {
+        return slides;
+      }
+    }
+  } catch (err) {
+    console.warn('[AI Engine] Batch AI expansion uzilishi:', err.message);
+  }
+  return null;
+}
+
+/**
  * Foydalanuvchi mavzusi va sohasi asosida 2 bosqichli intellektual taqdimot generatsiyasi:
  * 1-bosqich: Mavzuga to'liq mos reja (Outline) tuzish
  * 2-bosqich: Rejani boy faktik mazmun, KPI va jadvallar bilan to'ldirish
@@ -4181,12 +4310,65 @@ export async function generatePresentationData({ topic, slideCount = 6, language
 
   if (typeof onProgress === 'function') onProgress('content');
 
-  // 2-QADAM: Rejani boy faktik tahliliy kontent bilan to'ldirish
+  // 2-QADAM: Dastlab to'liq kafolatlangan semantik asos tayyorlash
   const enriched = expandSemanticContent({
     outline,
     language,
     organization
   });
+
+  // 3-QADAM: Oraliq slaydlarni (2-slayddan oxirgi xulosagacha) AI orqali kichik guruhlarda (2 tadan) chuqur faktlar bilan boyitish
+  const middleSlides = outline.slides.filter(s => s.layoutType !== 'title' && s.layoutType !== 'agenda_numbered' && s.layoutType !== 'conclusion');
+  if (middleSlides.length > 0) {
+    const batchSize = 2;
+    const batches = [];
+    for (let i = 0; i < middleSlides.length; i += batchSize) {
+      batches.push(middleSlides.slice(i, i + batchSize));
+    }
+
+    try {
+      console.log(`[AI Engine] ${middleSlides.length} ta slayd uchun ${batches.length} ta AI batch expansion ishga tushirildi...`);
+      // Parallel batch so'rovlar (tezkor va yuqori unumdorlik)
+      const aiResults = await Promise.allSettled(
+        batches.map(b => generateSlideBatchAI(topic, b, language))
+      );
+
+      const aiSlidesMap = new Map();
+      for (let bIdx = 0; bIdx < batches.length; bIdx++) {
+        const r = aiResults[bIdx];
+        const batch = batches[bIdx];
+        if (r.status === 'fulfilled' && Array.isArray(r.value) && r.value.length > 0) {
+          for (let sIdx = 0; sIdx < batch.length; sIdx++) {
+            const origSlide = batch[sIdx];
+            // Birinchi o'rinda slideNumber mosligi yoki index bo'yicha topamiz
+            const aiSlide = r.value.find(x => x && x.slideNumber === origSlide.slideNumber) || r.value[sIdx];
+            if (aiSlide) {
+              aiSlidesMap.set(origSlide.slideNumber, aiSlide);
+            }
+          }
+        }
+      }
+
+      if (aiSlidesMap.size > 0) {
+        enriched.slides.forEach(s => {
+          const aiSlide = aiSlidesMap.get(s.slideNumber);
+          if (aiSlide) {
+            if (aiSlide.title && aiSlide.title.length > 3) s.title = aiSlide.title;
+            if (aiSlide.subtitle && aiSlide.subtitle.length > 3) s.subtitle = aiSlide.subtitle;
+            if (Array.isArray(aiSlide.points) && aiSlide.points.length > 0) s.points = aiSlide.points;
+            if (Array.isArray(aiSlide.metrics) && aiSlide.metrics.length > 0) s.metrics = aiSlide.metrics;
+            if (aiSlide.leftHeading) s.leftHeading = aiSlide.leftHeading;
+            if (aiSlide.rightHeading) s.rightHeading = aiSlide.rightHeading;
+            if (aiSlide.highlight && aiSlide.highlight.length > 15) s.highlight = aiSlide.highlight;
+            if (aiSlide.speakerNotes && aiSlide.speakerNotes.length > 20) s.speakerNotes = aiSlide.speakerNotes;
+          }
+        });
+        console.log(`[AI Engine] ${aiSlidesMap.size}/${middleSlides.length} ta slayd AI faktlari bilan to'liq yangilandi!`);
+      }
+    } catch (bErr) {
+      console.warn('[AI Engine] Batch expansion xatosi, semantik kontent ishlatildi:', bErr.message);
+    }
+  }
 
   // Rasm promptlarini biriktirish
   enriched.slides.forEach(slide => {

@@ -1242,6 +1242,180 @@ export function expandSemanticContent({ outline, language = 'uz', organization =
       return base;
     }
 
+    if (base.layoutType === 'matrix_grid') {
+      base.points = [
+        { heading: (lang === 'ru') ? '1. Нормативный базис' : (lang === 'en') ? '1. Regulatory Baseline' : (lang === 'tg') ? '1. Пояи меъёрӣ' : '1. Me\'yoriy-huquqiy baza', description: (lang === 'ru') ? `Регламентация стандартов и нормативных требований по направлению "${topic}".` : (lang === 'en') ? `Establishing rigorous governance and compliance standards for "${topic}".` : (lang === 'tg') ? `Муайян намудани стандартҳо ва меъёрҳои қонунӣ дар мавзӯи "${topic}".` : `"${topic}" bo'yicha me'yoriy talablar va qat'iy standartlarni joriy etish.` },
+        { heading: (lang === 'ru') ? '2. Аналитический контур' : (lang === 'en') ? '2. Analytical Framework' : (lang === 'tg') ? '2. Доираи таҳлилӣ' : '2. Tahliliy monitoring tizimi', description: (lang === 'ru') ? `Непрерывный сбор эмпирических данных и прогнозное моделирование ключевых рисков.` : (lang === 'en') ? `Continuous empirical data collection and forward-looking risk modeling.` : (lang === 'tg') ? 'Ҷамъоварии маълумот ва моделсозии хатарҳои эҳтимолӣ.' : 'Empirik ma\'lumotlar yig\'ish va yuzaga kelishi mumkin bo\'lgan xatarlarni modellashtirish.' },
+        { heading: (lang === 'ru') ? '3. Технологический драйвер' : (lang === 'en') ? '3. Technological Tooling' : (lang === 'tg') ? '3. Фишанги технологӣ' : '3. Ilg\'or texnologik vositalar', description: (lang === 'ru') ? `Автоматизация рутинных операций и внедрение высокоэффективных цифровых инструментов.` : (lang === 'en') ? `Automating operational pipelines and deploying high-throughput toolchains.` : (lang === 'tg') ? 'Автоматӣ кардани равандҳо ва ҷорӣ кардани воситаҳои рақамӣ.' : 'Jarayonlarni avtomatlashtirish va yuqori unumli zamonaviy instrumentlarni qo\'llash.' },
+        { heading: (lang === 'ru') ? '4. Контроль результативности' : (lang === 'en') ? '4. Performance Governance' : (lang === 'tg') ? '4. Назорати натиҷаҳо' : '4. Sifat va natijadorlik auditi', description: (lang === 'ru') ? `Многоступенчатая верификация контрольных показателей и институциональный аудит.` : (lang === 'en') ? `Multi-tier verification of milestone deliverables and continuous governance audit.` : (lang === 'tg') ? 'Арзёбии бисёрзинагии нишондиҳандаҳо ва санҷиши сифат.' : 'Bosqichma-bosqich nazorat mexanizmlari va muntazam sifat tekshiruvi.' }
+      ];
+      base.highlight = (lang === 'ru') ? 'Матричная структура исключает пробелы в управлении и гарантирует синергию.' : (lang === 'en') ? 'The four-tier matrix eliminates operational silos and guarantees systemic alignment.' : (lang === 'tg') ? 'Сохтори матритсавӣ камбудиҳоро бартараф карда, ҳамоҳангиро таъмин мекунад.' : 'Matritsaviy tuzilma tizimdagi uzilishlarning oldini oladi va o\'zaro uyg\'unlikni ta\'minlaydi.';
+      base.speakerNotes = 'Matritsaning to\'rtta o\'lchovi barqaror rivojlanishning mustahkam karkasini tashkil etadi.';
+      return base;
+    }
+
+    if (base.layoutType === 'data_chart') {
+      base.chart = {
+        labels: (lang === 'ru') ? ['База', 'Оптимизация', 'Пилот', 'Масштаб'] : (lang === 'en') ? ['Baseline', 'Optimized', 'Piloted', 'Scaled'] : (lang === 'tg') ? ['Асос', 'Танзим', 'Озмоиш', 'Миқёс'] : ['Boshlang\'ich', 'Optimizatsiya', 'Pilot natija', 'To\'liq miqyos'],
+        values: [28, 52, 79, 96]
+      };
+      base.points = [
+        { heading: (lang === 'ru') ? 'Позитивная динамика внедрения' : (lang === 'en') ? 'Measurable Progress Velocity' : (lang === 'tg') ? 'Рушди мусбати нишондиҳандаҳо' : 'Izchil o\'sish va samaradorlik sur\'ati', description: (lang === 'ru') ? `Эмпирический график подтверждает стабильное увеличение показателей на каждом этапе реализации стратегии по теме "${topic}".` : (lang === 'en') ? `Quantitative trendlines confirm consistent metric acceleration across every milestone phase for "${topic}".` : (lang === 'tg') ? `Диаграмма нишон медиҳад, ки дар ҳар як марҳила нишондиҳандаҳои "${topic}" боло мераванд.` : `Diagramma "${topic}" bo'yicha belgilangan har bir bosqichda ko'rsatkichlarning barqaror o'sish dinamikasini tasdiqlaydi.` },
+        { heading: (lang === 'ru') ? 'Прогнозируемый целевой результат' : (lang === 'en') ? 'Target Achievement Confidence' : (lang === 'tg') ? 'Натиҷаи пешбинишуда' : 'Kutilayotgan marraga erishish kafolati', description: (lang === 'ru') ? `Статистическая модель гарантирует выход на запланированные параметры качества с минимальным отклонением.` : (lang === 'en') ? `Statistical modeling indicates robust trajectory integrity toward long-term benchmarks with minimal variance.` : (lang === 'tg') ? 'Модели оморӣ ноил шудан ба ҳадафҳои асосиро бо камтарин хатогӣ таъмин менамояд.' : 'Statistik tahlillar belgilangan strategik natijalarga to\'liq va o\'z vaqtida erishilishini ko\'rsatadi.' }
+      ];
+      base.highlight = (lang === 'ru') ? 'Статистический тренд подтверждает правильность выбранного курса.' : (lang === 'en') ? 'Empirical trendlines conclusively validate strategic trajectory.' : (lang === 'tg') ? 'Тамоюли оморӣ дурустии роҳи интихобшударо собит месозад.' : 'Statistik o\'sish sur\'atlari tanlangan strategik yo\'nalish to\'g\'ri ekanligini isbotlaydi.';
+      base.speakerNotes = 'Ushbu diagrammada jarayonlar samaradorligining bosqichma-bosqich o\'sish dinamikasi yaqqol tasvirlangan.';
+      return base;
+    }
+
+    if (base.layoutType === 'problem_solution') {
+      base.problems = [
+        (lang === 'ru') ? 'Устаревшие фрагментированные методы приводят к перерасходу ресурсов до 40%.' : (lang === 'en') ? 'Legacy siloed practices cause up to 40% structural overhead friction.' : (lang === 'tg') ? 'Усулҳои куҳна боиси то 40% исрофи беҳудаи захираҳо мегарданд.' : 'Eski tarqoq yondashuvlar sababli resurslarning 40% gacha qismi samarasiz sarflanmoqda.',
+        (lang === 'ru') ? 'Отсутствие сквозных стандартов увеличивает операционные риски и сбои.' : (lang === 'en') ? 'Absence of unified protocols amplifies vulnerability and operational failure.' : (lang === 'tg') ? 'Набудани стандартҳои ягона хатарҳои амалиётиро афзун менамояд.' : 'Yagona standartlarning yo\'qligi tizimli xatolar va kechikishlar ehtimolini oshiradi.'
+      ];
+      base.solutions = [
+        (lang === 'ru') ? `Внедрение единого регламентированного контура по теме "${topic}".` : (lang === 'en') ? `Deploying an integrated standardized architecture for "${topic}".` : (lang === 'tg') ? `Татбиқи низоми ягонаи стандартӣ дар мавзӯи "${topic}".` : `"${topic}" yo'nalishida yagona integratsiyalashgan boshqaruv tizimini joriy etish.`,
+        (lang === 'ru') ? 'Автоматизированный мониторинг качества и превентивный контроль рисков.' : (lang === 'en') ? 'Automated telemetry validation and proactive friction containment.' : (lang === 'tg') ? 'Назорати автоматии сифат ва пешгирии саривақтии хатарҳо.' : 'Avtomatlashtirilgan sifat nazorati va xatarlarni erta bartaraf etish mexanizmlari.'
+      ];
+      base.points = [
+        { heading: (lang === 'ru') ? 'Системный разрыв vs. Новое решение' : (lang === 'en') ? 'Systemic Friction vs. Resolution' : (lang === 'tg') ? 'Мушкилоти ҷорӣ ва роҳи ҳал' : 'Tizimli to\'siqlar va ularning innovatsion yechimi', description: (lang === 'ru') ? `Переход от разрозненных действий к интегрированным решениям снимает ключевые барьеры развития.` : (lang === 'en') ? `Transitioning from ad-hoc patches to unified solutions dissolves legacy friction points.` : (lang === 'tg') ? 'Гузариш ба усулҳои муосир монеаҳои асосиро бартараф мекунад.' : 'Tarqoq harakatlardan integratsiyalashgan yechimga o\'tish asosiy operatsion to\'siqlarni butunlay yo\'q qiladi.' }
+      ];
+      base.highlight = (lang === 'ru') ? 'Каждая проблема устраняется выверенным институциональным решением.' : (lang === 'en') ? 'Every structural vulnerability is directly answered with an institutional safeguard.' : (lang === 'tg') ? 'Ҳар як мушкил роҳи ҳалли мушаххаси худро дорад.' : 'Har bir aniqlangan tizimli muammo aniq va samarali mexanizm orqali bartaraf etiladi.';
+      base.speakerNotes = 'Muammo va yechimlar tahlili loyihaning amaliy qiymatini asoslab beradi.';
+      return base;
+    }
+
+    if (base.layoutType === 'swot_analysis') {
+      base.swot = {
+        strengths: [(lang === 'ru') ? 'Высокая технологичность и адаптивность' : (lang === 'en') ? 'Operational flexibility and architecture' : (lang === 'tg') ? 'Мутобиқшавии баланд ва сифат' : 'Yuqori texnologik moslashuvchanlik va standartlar', (lang === 'ru') ? 'Опытный экспертный потенциал' : (lang === 'en') ? 'Strong multidisciplinary expertise' : (lang === 'tg') ? 'Мутахассисони ботаҷриба' : 'Tajribali kadrlar va kuchli ilmiy baza'],
+        weaknesses: [(lang === 'ru') ? 'Необходимость первоначальных инвестиций' : (lang === 'en') ? 'Initial capital deployment requirements' : (lang === 'tg') ? 'Ниёз ба сармоягузории аввалия' : 'Dastlabki resurslar va o\'tish davri xarajatlari', (lang === 'ru') ? 'Потребность в переподготовке персонала' : (lang === 'en') ? 'Required workforce upskilling cadence' : (lang === 'tg') ? 'Зарурати бозомӯзии кормандон' : 'Xodimlarni yangi tartibga moslashtirish vaqti'],
+        opportunities: [(lang === 'ru') ? 'Выход на лидерские отраслевые позиции' : (lang === 'en') ? 'Capturing category leadership advantage' : (lang === 'tg') ? 'Баромадан ба мавқеи пешсафӣ' : 'Sohada yetakchi mavqega chiqish va barqaror o\'sish', (lang === 'ru') ? 'Масштабирование лучших практик' : (lang === 'en') ? 'Scaling proven methodologies across divisions' : (lang === 'tg') ? 'Паҳн кардани таҷрибаи пешқадам' : 'Ilg\'or amaliyotlarni keng masshtabda qo\'llash'],
+        threats: [(lang === 'ru') ? 'Макроэкономическая волатильность' : (lang === 'en') ? 'Macroeconomic turbulence and friction' : (lang === 'tg') ? 'Ноустувории иқтисодӣ' : 'Tashqi bozor va iqtisodiy tebranishlar', (lang === 'ru') ? 'Регуляторные изменения' : (lang === 'en') ? 'Rapidly shifting regulatory policy' : (lang === 'tg') ? 'Тағйироти қонунгузорӣ' : 'Me\'yoriy talablarning kutilmagan o\'zgarishi']
+      };
+      base.points = [
+        { heading: 'S - Kuchli Tomonlar', description: base.swot.strengths.join('; ') },
+        { heading: 'W - Zaif Jihatlar', description: base.swot.weaknesses.join('; ') },
+        { heading: 'O - Yangi Imkoniyatlar', description: base.swot.opportunities.join('; ') },
+        { heading: 'T - Ehtimoliy Xatarlar', description: base.swot.threats.join('; ') }
+      ];
+      base.highlight = (lang === 'ru') ? 'SWOT-матрица формирует сбалансированную дорожную карту действий.' : (lang === 'en') ? 'Balanced SWOT intelligence informs resilient strategic navigation.' : (lang === 'tg') ? 'Таҳлили SWOT заминаи қабули қарорҳои дурустро фароҳам меорад.' : 'SWOT tahlili kuchli tomonlarni kuchaytirib, zaifliklarni bartaraf etish strategiyasini belgilaydi.';
+      base.speakerNotes = 'SWOT matritsasi strategik qarorlar qabul qilish uchun to\'liq muvozanatli tahlilni beradi.';
+      return base;
+    }
+
+    if (base.layoutType === 'pyramid_hierarchy') {
+      base.points = [
+        { heading: (lang === 'ru') ? 'Вершина: Стратегическая цель' : (lang === 'en') ? 'Peak: Strategic Vision' : (lang === 'tg') ? 'Қулла: Ҳадафи стратегӣ' : 'Cho\'qqi: Strategik maqsad va natija', description: (lang === 'ru') ? `Достижение устойчивого отраслевого лидерства и максимальной эффективности по теме "${topic}".` : (lang === 'en') ? `Achieving sustained institutional benchmark excellence and leadership in "${topic}".` : (lang === 'tg') ? `Расидан ба ҳадафҳои асосӣ ва рушди устувор дар мавзӯи "${topic}".` : `"${topic}" bo'yicha barqaror yetakchilik va yuqori samaradorlikka erishish.` },
+        { heading: (lang === 'ru') ? 'Средний ярус: Операционный контур' : (lang === 'en') ? 'Middle: Operational Engine' : (lang === 'tg') ? 'Сатҳи миёна: Иҷрои амалиётӣ' : 'O\'rta qatlam: Boshqaruv va mexanizmlar', description: (lang === 'ru') ? 'Интегрированные процессы, регламенты качества и постоянное обучение специалистов.' : (lang === 'en') ? 'Integrated workflow execution, continuous quality audits, and personnel upskilling.' : (lang === 'tg') ? 'Равандҳои ҳамоҳангшуда, назорати сифат ва бозомӯзии мутахассисон.' : 'Tizimli jarayonlar, sifat standartlari va xodimlarning doimiy malakasini oshirish.' },
+        { heading: (lang === 'ru') ? 'Базис: Фундаментальная основа' : (lang === 'en') ? 'Base: Foundational Backbone' : (lang === 'tg') ? 'Поя: Пойдевори асосӣ' : 'Baza: Fundamental poydevor va mezonlar', description: (lang === 'ru') ? 'Нормативная база, технологическая инфраструктура и надежная ресурсная база.' : (lang === 'en') ? 'Governance baseline, state-of-the-art infrastructure, and secured resource capacity.' : (lang === 'tg') ? 'Заминаи қонунӣ, инфрасохтори техникӣ ва захираҳои боэътимод.' : 'Ilmiy-metodologik asos, texnologik infratuzilma va moddiy-moliyaviy ta\'minot.' }
+      ];
+      base.highlight = (lang === 'ru') ? 'Прочный фундамент определяет устойчивость всей архитектуры.' : (lang === 'en') ? 'Foundational architectural depth determines summit resilience.' : (lang === 'tg') ? 'Пойдевори мустаҳкам устувории тамоми сохторро таъмин месозад.' : 'Mustahkam poydevor barcha yuqori bo\'g\'inlarning ishonchli ishlash kafolatidir.';
+      base.speakerNotes = 'Ierarxik piramida uchta asosiy sathning o\'zaro bo\'ysunuvchanligini ko\'rsatadi.';
+      return base;
+    }
+
+    if (base.layoutType === 'matrix_rating') {
+      base.tableRows = [
+        { criteria: (lang === 'ru') ? 'Скорость и оперативность' : (lang === 'en') ? 'Velocity & Turnaround' : (lang === 'tg') ? 'Суръати амалиёт' : 'Operatsion tezlik va moslashuv', weight: '30%', baseline: '62%', target: '94%', verdict: 'A+' },
+        { criteria: (lang === 'ru') ? 'Качество и стандарты' : (lang === 'en') ? 'Quality Compliance' : (lang === 'tg') ? 'Сифат ва стандартҳо' : 'Standartlarga muvofiqlik darajasi', weight: '25%', baseline: '70%', target: '98%', verdict: 'A+' },
+        { criteria: (lang === 'ru') ? 'Ресурсная эффективность' : (lang === 'en') ? 'Resource Optimization' : (lang === 'tg') ? 'Сарфакории захираҳо' : 'Resurslar tejamkorligi va ROI', weight: '25%', baseline: '55%', target: '88%', verdict: 'A' },
+        { criteria: (lang === 'ru') ? 'Отказоустойчивость' : (lang === 'en') ? 'Fault Resilience' : (lang === 'tg') ? 'Устувории низом' : 'Tizim barqarorligi va xavfsizlik', weight: '20%', baseline: '74%', target: '99%', verdict: 'A+' }
+      ];
+      base.points = base.tableRows.map(r => ({ heading: r.criteria, description: `${r.baseline} bazadan ${r.target} maqsadli ko'rsatkichga erishish (Bahosi: ${r.verdict})` }));
+      base.highlight = (lang === 'ru') ? 'Комплексный рейтинг подтверждает соответствие международным стандартам.' : (lang === 'en') ? 'Composite evaluation confirms strict alignment with premier standards.' : (lang === 'tg') ? 'Баҳодиҳии ҳамаҷониба мутобиқатро ба стандартҳо тасдиқ мекунад.' : 'Baholash reytingi barcha yo\'nalishlar bo\'yicha yuqori mezonlarga erishilganini ko\'rsatadi.';
+      base.speakerNotes = 'Reyting matritsasi asosiy parametrlar bo\'yicha aniq empirik baholarni taqdim etadi.';
+      return base;
+    }
+
+    if (base.layoutType === 'scenario_matrix') {
+      base.scenarios = [
+        { name: (lang === 'ru') ? 'Консервативный' : (lang === 'en') ? 'Conservative' : (lang === 'tg') ? 'Эҳтиёткорона' : 'Konservativ Ssenariy', growth: '+15-20%', risk: (lang === 'ru') ? 'Минимальный' : (lang === 'en') ? 'Low' : (lang === 'tg') ? 'Ҳадди ақал' : 'Minimal', desc: (lang === 'ru') ? 'Поэтапное улучшение существующих процессов без масштабных капиталовложений.' : (lang === 'en') ? 'Incremental optimization of legacy processes with restrained capital outlay.' : (lang === 'tg') ? 'Бе сармоягузории калон беҳтар кардани равандҳои ҷорӣ.' : 'Katta xarajatlarsiz mavjud jarayonlarni bosqichma-bosqich takomillashtirish.' },
+        { name: (lang === 'ru') ? 'Базовый (Оптимальный)' : (lang === 'en') ? 'Baseline (Target)' : (lang === 'tg') ? 'Асосӣ (Оптималӣ)' : 'Bazaviy (Maqsadli) Ssenariy', growth: '+35-50%', risk: (lang === 'ru') ? 'Контролируемый' : (lang === 'en') ? 'Managed' : (lang === 'tg') ? 'Идорашаванда' : 'Nazorat ostidagi', desc: (lang === 'ru') ? 'Комплексное внедрение цифровых инструментов и структурная оптимизация.' : (lang === 'en') ? 'Full deployment of digital toolchains coupled with workflow restructuring.' : (lang === 'tg') ? 'Ҷорисозии пурраи усулҳои нав ва сохтори мукаммал.' : 'Ilg\'or standartlarni to\'liq joriy etish va tizimli optimallashtirish.' },
+        { name: (lang === 'ru') ? 'Прогрессивный' : (lang === 'en') ? 'Accelerated Vision' : (lang === 'tg') ? 'Пешқадам' : 'Progressiv Ssenariy', growth: '+75-90%', risk: (lang === 'ru') ? 'Умеренный' : (lang === 'en') ? 'Calculated' : (lang === 'tg') ? 'Муътадил' : 'Hisoblangan', desc: (lang === 'ru') ? 'Радикальная трансформация, лидерство в отрасли и масштабное тиражирование.' : (lang === 'en') ? 'Transformative innovation capturing unquestioned category leadership.' : (lang === 'tg') ? 'Дигаргунсозии куллӣ ва расидан ба қуллаҳои баланд.' : 'Keng qamrovli transformatsiya va sohada mutlaq yetakchilikka erishish.' }
+      ];
+      base.points = base.scenarios.map(s => ({ heading: `${s.name}: ${s.growth}`, description: `${s.desc} (Xatarlar darajasi: ${s.risk})` }));
+      base.highlight = (lang === 'ru') ? 'Базовый сценарный вектор обеспечивает оптимальный баланс роста и рисков.' : (lang === 'en') ? 'The baseline trajectory balances aggressive expansion with disciplined safeguards.' : (lang === 'tg') ? 'Сенарияи асосӣ мувозинати комили рушдро таъмин менамояд.' : 'Bazaviy ssenariy eng maqbul samaradorlik va xavfsizlik muvozanatini kafolatlaydi.';
+      base.speakerNotes = 'Ssenariylar tahlili har qanday vaziyatga moslashish imkonini beradi.';
+      return base;
+    }
+
+    if (base.layoutType === 'team_stakeholders') {
+      base.stakeholders = [
+        { role: (lang === 'ru') ? 'Стратегическое руководство' : (lang === 'en') ? 'Steering Executive' : (lang === 'tg') ? 'Роҳбарияти стратегӣ' : 'Strategik Boshqaruv', resp: (lang === 'ru') ? 'Определение приоритетов, утверждение бюджетов и контроль KPI' : (lang === 'en') ? 'Priority ratification, capital allocation, executive KPI governance' : (lang === 'tg') ? 'Муайян кардани самтҳо ва назорати умумӣ' : 'Maqsadlarni belgilash, resurslar ajratish va umumiy monitoring' },
+        { role: (lang === 'ru') ? 'Экспертная группа' : (lang === 'en') ? 'Technical Advisory Squad' : (lang === 'tg') ? 'Гурӯҳи коршиносон' : 'Tahliliy Ekspertlar Guruhi', resp: (lang === 'ru') ? 'Методология, аудит качества и внедрение лучших практик' : (lang === 'en') ? 'Methodological design, rigorous QA, and standard enforcement' : (lang === 'tg') ? 'Тарҳрезии методӣ ва назорати сифат' : 'Metodologik nazorat, ilmiy tahlil va sifat kafolati' },
+        { role: (lang === 'ru') ? 'Операционные исполнители' : (lang === 'en') ? 'Delivery Operations' : (lang === 'tg') ? 'Гурӯҳи иҷроия' : 'Amaliy Ijrochilar', resp: (lang === 'ru') ? 'Непосредственная реализация задач и обратная связь с полей' : (lang === 'en') ? 'Day-to-day milestone fulfillment and empirical field feedback' : (lang === 'tg') ? 'Иҷрои бевоситаи вазифаҳо дар амал' : 'Vazifalarning bevosita ijrosi va amaliy natijalarni ta\'minlash' }
+      ];
+      base.points = base.stakeholders.map(st => ({ heading: st.role, description: st.resp }));
+      base.highlight = (lang === 'ru') ? 'Четкое разделение ответственности гарантирует бесперебойную реализацию.' : (lang === 'en') ? 'Transparent delegation protocols secure uncompromised operational velocity.' : (lang === 'tg') ? 'Тақсимоти дақиқи масъулият кори босифатро кафолат медиҳад.' : 'Vazifalar va javobgarlikning aniq taqsimlanishi tizim muvaffaqiyatini belgilaydi.';
+      base.speakerNotes = 'Ushbu slaydda barcha asosiy ishtirokchilar va ularning javobgarlik doirasi belgilangan.';
+      return base;
+    }
+
+    if (base.layoutType === 'profile_card') {
+      base.passport = [
+        { label: (lang === 'ru') ? 'Тип решения' : (lang === 'en') ? 'System Class' : (lang === 'tg') ? 'Навъи қарор' : 'Tizim Toifasi', val: (lang === 'ru') ? 'Интегрированный' : (lang === 'en') ? 'Integrated Tier-1' : (lang === 'tg') ? 'Ҳамаҷониба' : 'Kompleks Tizim' },
+        { label: (lang === 'ru') ? 'Охват' : (lang === 'en') ? 'Coverage' : (lang === 'tg') ? 'Фарогирӣ' : 'Qamrov Doirasi', val: (lang === 'ru') ? 'Отраслевой' : (lang === 'en') ? 'Enterprise Scale' : (lang === 'tg') ? 'Сарфароз' : 'Sohaviy Keng Miqyos' },
+        { label: (lang === 'ru') ? 'Зрелость' : (lang === 'en') ? 'Maturity' : (lang === 'tg') ? 'Сатҳи рушд' : 'Tayyorgarlik', val: (lang === 'ru') ? 'Высокая (TRL-8)' : (lang === 'en') ? 'Production Ready' : (lang === 'tg') ? 'Омодагии пурра' : 'Amaliyotga Tayyor' },
+        { label: (lang === 'ru') ? 'Стандарт' : (lang === 'en') ? 'Standard' : (lang === 'tg') ? 'Стандарт' : 'Sifat Standarti', val: 'ISO / Xalqaro' }
+      ];
+      base.pros = [
+        (lang === 'ru') ? 'Высокая скорость обработки и полная отказоустойчивость.' : (lang === 'en') ? 'Superior throughput throughput and complete system resilience.' : (lang === 'tg') ? 'Суръати баланд ва устувории комил.' : 'Yuqori operatsion tezlik va to\'liq barqarorlik kafolati.',
+        (lang === 'ru') ? 'Масштабируемая модульная архитектура и прозрачный аудит.' : (lang === 'en') ? 'Modular composability enabling straightforward scaling.' : (lang === 'tg') ? 'Сохтори модулӣ ва шаффофияти кор.' : 'Modulli masshtablanuvchan arxitektura va shaffof monitoring.'
+      ];
+      base.cons = [
+        (lang === 'ru') ? 'Необходимость адаптации персонала и первичного тренинга.' : (lang === 'en') ? 'Requires disciplined personnel training during initial phase.' : (lang === 'tg') ? 'Зарурати омӯзиши аввалияи кормандон.' : 'Xodimlarni dastlabki bosqichda tizimli o\'qitish zarurati.',
+        (lang === 'ru') ? 'Регулярная калибровка параметров качества.' : (lang === 'en') ? 'Periodic calibration required to preserve peak throughput.' : (lang === 'tg') ? 'Танзими мунтазами нишондиҳандаҳо.' : 'Mezonlarni doimiy ravishda kalibratsiya qilib borish talabi.'
+      ];
+      base.targetUse = (lang === 'ru') ? 'Профессиональные организации, научные центры и масштабные институты.' : (lang === 'en') ? 'Enterprise corporate divisions, research centers, and public institutions.' : (lang === 'tg') ? 'Муассисаҳои давлатӣ, илмӣ ва марказҳои таҳлилӣ.' : 'Sohaviy korxonalar, ilmiy markazlar va davlat boshqaruvi institutlari.';
+      base.points = [
+        ...base.pros.map(p => ({ heading: 'Afzallik', description: p })),
+        ...base.cons.map(c => ({ heading: 'Cheklov', description: c }))
+      ];
+      base.highlight = (lang === 'ru') ? 'Профиль решения подтверждает его высокую конкурентоспособность.' : (lang === 'en') ? 'Architecture datasheet confirms substantial institutional competitive moats.' : (lang === 'tg') ? 'Тавсифи қарор рақобатпазирии баланди онро собит месозад.' : 'Tizim pasporti uning amaliy jihatdan puxta va raqobatbardosh ekanini tasdiqlaydi.';
+      base.speakerNotes = 'Tizim pasporti kuchli va zaif tomonlar tahlilini yaxlit shaklda ifodalaydi.';
+      return base;
+    }
+
+    if (base.layoutType === 'quote_editorial') {
+      base.spotlightText = (lang === 'ru')
+        ? `«Успех сложных систем определяется не громкими заявлениями, а дисциплиной исполнения базовых стандартов на каждом этапе».`
+        : (lang === 'en')
+        ? `“Sustainable excellence is never accidental; it is the compounding output of disciplined standards applied daily.”`
+        : (lang === 'tg')
+        ? `«Муваффақият на аз шиорҳои баланд, балки аз риояи пайгиронаи стандартҳо дар ҳар як марҳила вобаста аст».`
+        : `«Haqiqiy muvaffaqiyat balandparvoz so'zlarda emas, balki har bir bosqichda belgilangan standartlarga qat'iy intizom bilan amal qilishda namoyon bo'ladi».`;
+      base.points = [
+        { heading: (lang === 'ru') ? 'Институциональный консенсус' : (lang === 'en') ? 'Institutional Consensus' : (lang === 'tg') ? 'Ҳамдигарфаҳмии илмӣ' : 'Ilmiy va amaliy hamfikrlik', description: (lang === 'ru') ? `Ведущие эксперты сходятся во мнении, что системный подход по теме "${topic}" безальтернативен.` : (lang === 'en') ? `Global industry authorities agree that an integrated roadmap for "${topic}" is strictly necessary.` : (lang === 'tg') ? `Коршиносони пешқадам равиши низоммандро дар мавзӯи "${topic}" муҳимтарин омил мешуморанд.` : `Yetakchi ekspertlar "${topic}" yo'nalishida kompleks yondashuv yagona to'g'ri strategiya ekanligini ta'kidlaydilar.` },
+        { heading: (lang === 'ru') ? 'Практический ориентир' : (lang === 'en') ? 'Operational Principle' : (lang === 'tg') ? 'Роҳнамои амалӣ' : 'Uzoq muddatli amaliy yo\'nalish', description: (lang === 'ru') ? 'Ориентация на проверяемые факты и прозрачные метрики исключает стратегические ошибки.' : (lang === 'en') ? 'Anchoring execution in verifiable facts and transparent KPIs eliminates costly missteps.' : (lang === 'tg') ? 'Такя ба далелҳои дақиқ ва ченакҳои шаффоф аз хатогиҳои стратегӣ пешгирӣ мекунад.' : 'Aniq faktlar va shaffof ko\'rsatkichlarga tayanish tizimni har qanday xatoliklardan himoya qiladi.' }
+      ];
+      base.highlight = (lang === 'ru') ? 'Авторитетная экспертиза подтверждает фундаментальную правильность концепции.' : (lang === 'en') ? 'Institutional verdict provides definitive validation for our framework.' : (lang === 'tg') ? 'Хулосаи коршиносон дурустии консепсияро собит менамояд.' : 'Xalqaro ilmiy xulosa konseptual asoslarning to\'liq to\'g\'ri ekanligini yana bir bor tasdiqlaydi.';
+      base.speakerNotes = 'Ushbu slaydda yetakchi xalqaro ekspertlarning tahliliy xulosasi keltirilgan.';
+      return base;
+    }
+
+    if (base.layoutType === 'horizontal_flowchart') {
+      base.flowSteps = [
+        { step: '01', title: (lang === 'ru') ? 'Диагностика' : (lang === 'en') ? 'Audit' : (lang === 'tg') ? 'Ташхис' : 'Audit va Tahlil', desc: (lang === 'ru') ? 'Оценка исходного состояния' : (lang === 'en') ? 'Baseline capture' : (lang === 'tg') ? 'Арзёбии аввалия' : 'Mavjud holatni o\'rganish' },
+        { step: '02', title: (lang === 'ru') ? 'Проектирование' : (lang === 'en') ? 'Design' : (lang === 'tg') ? 'Лоиҳакашӣ' : 'Loyihalash', desc: (lang === 'ru') ? 'Архитектурный каркас' : (lang === 'en') ? 'Architecture drafting' : (lang === 'tg') ? 'Тарҳрезии нақша' : 'Yangi tizim modeli' },
+        { step: '03', title: (lang === 'ru') ? 'Интеграция' : (lang === 'en') ? 'Integrate' : (lang === 'tg') ? 'Татбиқ' : 'Tatbiq Etish', desc: (lang === 'ru') ? 'Пилотный запуск и тесты' : (lang === 'en') ? 'Controlled execution' : (lang === 'tg') ? 'Озмоиши амалӣ' : 'Amaliyotga kiritish' },
+        { step: '04', title: (lang === 'ru') ? 'Верификация' : (lang === 'en') ? 'Verify' : (lang === 'tg') ? 'Санҷиш' : 'Sifat Auditi', desc: (lang === 'ru') ? 'Фиксация целевых KPI' : (lang === 'en') ? 'Target KPI signoff' : (lang === 'tg') ? 'Назорати натиҷаҳо' : 'Natijalarni baholash' }
+      ];
+      base.points = base.flowSteps.map(f => ({ heading: `${f.step}. ${f.title}`, description: f.desc }));
+      base.highlight = (lang === 'ru') ? 'Последовательный сквозной поток исключает хаотичные решения.' : (lang === 'en') ? 'Disciplined end-to-end execution eliminates ad-hoc friction.' : (lang === 'tg') ? 'Ҷараёни муттасили кор бесарусомониро пешгирӣ мекунад.' : 'Bosqichma-bosqich jarayonlar zanjiri barcha harakatlarning mantiqiy va uzluksiz bo\'lishini ta\'minlaydi.';
+      base.speakerNotes = 'To\'rt bosqichli gorizontal jarayonlar oqimi to\'liq siklni qamrab oladi.';
+      return base;
+    }
+
+    if (base.layoutType === 'cinematic') {
+      base.points = [
+        { heading: (lang === 'ru') ? 'Стратегический горизонт будущего' : (lang === 'en') ? 'Long-Term Horizon' : (lang === 'tg') ? 'Дурнамои стратегии оянда' : 'Strategik ufq va kelajak marralari', description: (lang === 'ru') ? `Реализация стратегии по направлению "${topic}" формирует прочный задел для масштабирования на годы вперед.` : (lang === 'en') ? `Execution across "${topic}" establishes an impregnable foundation for sustained expansion.` : (lang === 'tg') ? `Татбиқи стратегия дар мавзӯи "${topic}" заминаи мустаҳкамро барои рушди оянда мегузорад.` : `"${topic}" bo'yicha belgilangan maqsadlarga erishish uzoq yillik barqaror o'sish poydevorini shakllantiradi.` },
+        { heading: (lang === 'ru') ? 'Трансформация и институциональный рост' : (lang === 'en') ? 'Institutional Transformation' : (lang === 'tg') ? 'Дигаргунсозӣ ва рушди низомманд' : 'Tizimli transformatsiya va yetakchilik', description: (lang === 'ru') ? 'Синергия технологий, стандартов и команды выводит организацию на качественно новый уровень.' : (lang === 'en') ? 'Synergizing tooling, governance, and talent unlocks breakthrough operational performance.' : (lang === 'tg') ? 'Ҳамоҳангии технология ва кадрҳо низомро ба сатҳи комилан нав мебарорад.' : 'Texnologiyalar, qat\'iy standartlar va mutaxassislar sinergiyasi sohada sifat jihatidan mutlaqo yangi bosqichni ochib beradi.' }
+      ];
+      base.highlight = (lang === 'ru') ? 'Будущее принадлежит тем, кто инвестирует в системное качество уже сегодня.' : (lang === 'en') ? 'The competitive future belongs to those who institutionalize systemic quality today.' : (lang === 'tg') ? 'Оянда аз они онҳоест, ки ба сифати низомманд имрӯз сармоягузорӣ мекунанд.' : 'Kelajak bugun tizimli sifat va intellektual standartlarga sarmoya kiritayotganlarga tegishlidir.';
+      base.speakerNotes = 'Ushbu slayd kelajak istiqbollari va global transformatsiya ko\'rinishini xulosalaydi.';
+      return base;
+    }
+
     if (base.layoutType === 'conclusion') {
       const concPoints = {
         uz: [

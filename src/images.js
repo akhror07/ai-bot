@@ -129,6 +129,17 @@ const DICTIONARY = {
   // Tabiat, Ekologiya va Qishloq xo'jaligi
   tabiat: 'nature landscape green environment forest',
   ekologiya: 'ecology green clean energy environment',
+  global: 'global climate earth planet warming',
+  isish: 'climate change global warming glacier melting',
+  iqlim: 'climate weather meteorology atmosphere earth',
+  muzlik: 'glacier ice arctic melting ice polar',
+  issiqxona: 'greenhouse effect climate emissions',
+  parnik: 'greenhouse gas emissions atmosphere',
+  uglerod: 'carbon footprint emissions green transition',
+  co2: 'carbon emissions greenhouse gas atmosphere',
+  harorat: 'temperature climate global warming atmosphere',
+  atmosfera: 'earth atmosphere planet ozone sky',
+  chiqindi: 'recycling circular economy waste clean',
   qishloq: 'agriculture farming field harvest rural',
   xojaligi: 'farming agriculture harvest crops field',
   hosil: 'harvest agriculture crops farm wheat',
@@ -140,6 +151,7 @@ const DICTIONARY = {
   energiya: 'clean green energy solar wind turbine',
   quyosh: 'solar energy panels sunshine technology',
   shamol: 'wind turbine clean energy nature',
+
 
   // Huquq va Davlat
   huquq: 'law justice courthouse legal courtroom',
