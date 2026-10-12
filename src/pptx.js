@@ -34,13 +34,23 @@ async function loadAllImages(slidesList, mainTitle) {
     slidesList.map(async (s, idx) => {
       let prompts = s.imagePrompts || (s.imagePrompt ? [s.imagePrompt] : []);
       if (!prompts || !prompts.length) {
-        prompts = [
-          idx === 0 ? `${mainTitle} concept photo` : `${s.title || mainTitle} illustration photo`,
-          `${mainTitle} professional visual`
-        ];
+        if (idx === 0) {
+          prompts = [`${mainTitle} professional landscape photo`, `${mainTitle} architecture visual`];
+        } else if (idx === slidesList.length - 1) {
+          prompts = [`${mainTitle} future perspective achievement`, `${mainTitle} strategic vision`];
+        } else {
+          prompts = [
+            `${s.title || mainTitle} specific concept photo`,
+            `${mainTitle} technology visual`
+          ];
+        }
       }
+      const isWideBackground = idx === 0 || idx === slidesList.length - 1 || s.layoutType === 'cinematic';
+      const w = isWideBackground ? 1920 : 1200;
+      const h = isWideBackground ? 1080 : 800;
+
       const images = await Promise.all(
-        prompts.slice(0, 2).map(p => fetchContextualImage(p))
+        prompts.slice(0, 2).map(p => fetchContextualImage(p, w, h))
       );
       return images.filter(Boolean);
     })
@@ -489,16 +499,16 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, 
     });
   }
 
-  // Rasm ustidagi badge
+  // Rasm ustidagi yuqori kontrastli badge
   slide.addShape(pres.ShapeType.roundRect, {
     x: 1.05, y: contentY + 0.25, w: 2.3, h: 0.38,
-    fill: { color: theme.bg, transparency: 15 },
-    line: { color: theme.primary, width: 1 },
+    fill: { color: '000000', transparency: 30 },
+    line: { color: theme.primary, width: 1.2 },
     rectRadius: 0.1,
   });
   slide.addText(i18n.mainVisual, {
     x: 1.05, y: contentY + 0.25, w: 2.3, h: 0.38,
-    fontFace: 'Arial', fontSize: 9.5, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
+    fontFace: 'Arial', fontSize: 9.5, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   // O'ng tomon: 3 ta qulay tahlil kartochkasi
@@ -893,12 +903,20 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
 // 7-LAYOUT: CINEMATIC FULL HERO (To'liq fon rasmi + shaffof kartalar)
 // ================================================================
 function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  const isLight = theme.id === 'minimal' || theme.id === 'monochrome';
   if (img) {
     slide.addImage({ data: img, x: 0, y: 0, w: 13.333, h: 7.5 });
+    const overlayTransparency = isLight ? 84 : 58;
     slide.addShape(pres.ShapeType.rect, {
       x: 0, y: 0, w: 13.333, h: 7.5,
-      fill: { color: theme.bg, transparency: 22 },
-      line: { color: theme.bg, transparency: 22 },
+      fill: { color: theme.bg, transparency: overlayTransparency },
+      line: { color: theme.bg, transparency: overlayTransparency },
+    });
+    // Pastki matnlar uchun yumshoq qo'shimcha soya qatlami
+    slide.addShape(pres.ShapeType.rect, {
+      x: 0, y: 3.8, w: 13.333, h: 3.7,
+      fill: { color: isLight ? 'FFFFFF' : '000000', transparency: isLight ? 90 : 74 },
+      line: { color: isLight ? 'FFFFFF' : '000000', transparency: 100 },
     });
   } else {
     applySlideBackground(slide, pres, theme);
@@ -920,7 +938,7 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, 
 
     slide.addShape(pres.ShapeType.roundRect, {
       x, y: contentY, w: cardW, h: contentH,
-      fill: { color: theme.cardBg, transparency: 18 },
+      fill: { color: theme.cardBg, transparency: 12 },
       line: { color: theme.border, width: 1.2 },
       rectRadius: 0.14,
     });
@@ -1175,7 +1193,25 @@ function renderChartLayout(slide, pres, theme, item, num, total, img, data, i18n
 // 10-LAYOUT: CONCLUSION & ACTION PLAN (Yakuniy xulosa va harakatlar)
 // ================================================================
 function renderConclusionLayout(slide, pres, theme, item, num, total, img, data, i18n) {
-  applySlideBackground(slide, pres, theme);
+  const isLight = theme.id === 'minimal' || theme.id === 'monochrome';
+  if (img) {
+    slide.addImage({ data: img, x: 0, y: 0, w: 13.333, h: 7.5 });
+    const overlayTransparency = isLight ? 84 : 60;
+    slide.addShape(pres.ShapeType.rect, {
+      x: 0, y: 0, w: 13.333, h: 7.5,
+      fill: { color: theme.bg, transparency: overlayTransparency },
+      line: { color: theme.bg, transparency: overlayTransparency },
+    });
+    // Pastki qism uchun yumshoq kontrast soyasi
+    slide.addShape(pres.ShapeType.rect, {
+      x: 0, y: 3.8, w: 13.333, h: 3.7,
+      fill: { color: isLight ? 'FFFFFF' : '000000', transparency: isLight ? 90 : 74 },
+      line: { color: isLight ? 'FFFFFF' : '000000', transparency: 100 },
+    });
+  } else {
+    applySlideBackground(slide, pres, theme);
+  }
+
   addSlideHeader(slide, pres, theme, item.title || i18n.conclusionHeading, item.subtitle || '', num, total, i18n);
 
   const points = item.points || [];
@@ -1196,7 +1232,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
 
     slide.addShape(pres.ShapeType.roundRect, {
       x: 0.8, y, w: leftW, h: cardH,
-      fill: { color: theme.cardBg },
+      fill: { color: theme.cardBg, transparency: img ? 12 : 0 },
       line: { color: theme.primary, width: 1.2 },
       rectRadius: 0.12,
     });
@@ -1218,7 +1254,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
   // O'ng tomon: Bosh xulosa bloki
   slide.addShape(pres.ShapeType.roundRect, {
     x: rightX, y: contentY, w: rightW, h: contentH,
-    fill: { color: theme.cardBg },
+    fill: { color: theme.cardBg, transparency: img ? 10 : 0 },
     line: { color: theme.primary, width: 2 },
     rectRadius: 0.15,
   });
@@ -2156,13 +2192,35 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
     });
   });
 
-  // 2. IKKI USTUNLI TAHLIL (Kuchli tomonlari vs Zaif tomonlari)
+  // 2. TAHLIL QISMI: Agar rasm bo'lsa 3 ta ustun (Rasm, Kuchli, Zaif), bo'lmasa 2 ta ustun
   const colY = contentY + passportH + 0.15;
   const colH = hasHighlight ? 2.15 : 2.95;
-  const colW = 5.65;
-  const gap = 0.43;
-  const leftX = 0.8;
-  const rightX = leftX + colW + gap;
+
+  let leftX, colW, rightX;
+  if (img) {
+    const imgW = 3.2;
+    // Chap foto kartochka
+    slide.addShape(pres.ShapeType.roundRect, {
+      x: 0.8, y: colY, w: imgW, h: colH,
+      fill: { color: theme.cardBg },
+      line: { color: theme.primary, width: 1.4 },
+      rectRadius: 0.12,
+    });
+    slide.addImage({
+      data: img,
+      x: 0.86, y: colY + 0.06,
+      w: imgW - 0.12, h: colH - 0.12,
+      rounding: true,
+    });
+
+    colW = 4.05;
+    leftX = 0.8 + imgW + 0.22;
+    rightX = leftX + colW + 0.22;
+  } else {
+    colW = 5.65;
+    leftX = 0.8;
+    rightX = leftX + colW + 0.43;
+  }
 
   // Chap karta: Kuchli tomonlari
   slide.addShape(pres.ShapeType.roundRect, {
@@ -2273,15 +2331,27 @@ export async function createPptx(data) {
   const coverImg = coverImages[0] || null;
   const coverImg2 = coverImages[1] || null;
 
+  const isLightTheme = theme.id === 'minimal' || theme.id === 'monochrome';
   if (coverImg) {
     titleSlide.addImage({
       data: coverImg,
       x: 0, y: 0, w: 13.333, h: 7.5,
     });
+    // O'ta muhim kontrast sozlamasi:
+    // PptxGenJS transparency: 0 = to'liq xira (solid), 100 = butunlay shaffof (transparent).
+    // Dark temalarda: 58% shaffoflik orqali fon rasmi juda jozibali, boy va tiniq namoyon bo'ladi!
+    // Light temalarda: 84% shaffoflik orqali matnlar ravshan o'qiladi.
+    const overlayTransparency = isLightTheme ? 84 : 58;
     titleSlide.addShape(pres.ShapeType.rect, {
       x: 0, y: 0, w: 13.333, h: 7.5,
-      fill: { color: theme.bg, transparency: 22 },
-      line: { color: theme.bg, transparency: 22 },
+      fill: { color: theme.bg, transparency: overlayTransparency },
+      line: { color: theme.bg, transparency: overlayTransparency },
+    });
+    // Pastki sarlavha va ma'lumotlar uchun yumshoq qo'shimcha kontrast qatlami (vignette scrim)
+    titleSlide.addShape(pres.ShapeType.rect, {
+      x: 0, y: 3.5, w: 13.333, h: 4.0,
+      fill: { color: isLightTheme ? 'FFFFFF' : '000000', transparency: isLightTheme ? 88 : 72 },
+      line: { color: isLightTheme ? 'FFFFFF' : '000000', transparency: 100 },
     });
   } else {
     titleSlide.background = { color: theme.bg };
@@ -2335,7 +2405,6 @@ export async function createPptx(data) {
   }
 
   const textW = coverImg2 ? 6.7 : 11.3;
-  const isLightTheme = theme.id === 'minimal' || theme.id === 'monochrome';
   const titleColor = isLightTheme ? (theme.primary || '111111') : '#FFFFFF';
 
   titleSlide.addText(data.title || titleData.title || '', {
