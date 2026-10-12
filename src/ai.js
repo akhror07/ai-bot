@@ -707,6 +707,22 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: `Здравствуйте, уважаемые коллеги! На данном слайде мы подробно рассмотрим концептуальные основы и стратегическую актуальность темы "${effectiveTopic}".`
       },
       {
+        layout: 'agenda_numbered',
+        title: 'Архитектурный План и Содержание Исследования',
+        sub: 'Поэтапная карта рассмотрения ключевых направлений и структура проекта',
+        photo: `${enKeywords} executive agenda presentation roadmap planning`,
+        points: [
+          { heading: 'Концептуальные основы и актуальность', description: 'Теоретический базис, внешние вызовы и системная необходимость трансформации.' },
+          { heading: 'Сравнительная диагностика моделей', description: 'Ограничения консервативных методов в сопоставлении с инновационными решениями.' },
+          { heading: 'Опорные столпы и методология', description: 'Фундаментальные архитектурные принципы и многоуровневая матрица верификации.' },
+          { heading: 'Эмпирические метрики и статистика', description: 'Количественные показатели эффективности, подтвержденные отраслевыми данными.' },
+          { heading: 'Дорожная карта и рубежи реализации', description: 'Поэтапный график внедрения, контрольные точки и целевые параметры KPI.' },
+          { heading: 'Стратегические выводы и эффект', description: 'Комплексные рекомендации для обеспечения устойчивого долгосрочного лидерства.' }
+        ],
+        highlight: 'Четкая структура исследования обеспечивает целостное понимание всех аспектов рассматриваемой проблемы.',
+        speakerNotes: 'На данном слайде представлена общая структура и логика нашего исследования, охватывающая все ключевые фазы от теории к практике.'
+      },
+      {
         layout: 'comparison',
         title: 'Диагностика Проблем: Традиционный vs Инновационный Подход',
         sub: 'Сопоставление консервативных ограничений и современных оптимизированных решений',
@@ -760,18 +776,17 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'Представленные количественные метрики служат объективным доказательством надежности и результативности модели.'
       },
       {
-        layout: 'comparison',
-        title: 'Оптимизация Ресурсов: Фрагментарность vs Синергия',
-        sub: 'Анализ временных и капитальных затрат при различных моделях управления',
-        photo: `${enKeywords} resource optimization efficiency strategy`,
-        leftHeading: 'Фрагментарное Управление',
-        rightHeading: 'Интегрированная Синергия',
+        layout: 'circular_feature',
+        title: 'Центральный Стратегический Фокус Системы',
+        sub: 'Управляющее ядро, системная координация и ключевые точки воздействия',
+        photo: `${enKeywords} architectural geometric circular perspective minimal focus`,
         points: [
-          { heading: 'Несогласованность и дублирование функций', description: 'Разрозненные каналы взаимодействия ведут к потере до 35% полезного времени и создают информационные барьеры.' },
-          { heading: 'Единая экосистема взаимодействия', description: 'Сквозная интеграция обеспечивает мгновенный обмен данными и синхронизацию усилий всех задействованных подразделений.' }
+          { heading: 'Централизованное ядро стратегического контроля', description: 'Консолидация ключевых процессов в едином управляющем контуре ускоряет принятие решений более чем в 2.5 раза и полностью устраняет операционные разрывы.' },
+          { heading: 'Интегрированные аналитические потоки данных', description: 'Непрерывный сквозной мониторинг телеметрии позволяет заблаговременно купировать системные риски и максимально эффективно перераспределять ресурсы.' },
+          { heading: 'Адаптивная дисциплина исполнения и ответственность', description: 'Четкое разграничение полномочий формирует устойчивый каркас, гарантирующий безошибочную реализацию задач при любых внешних изменениях.' }
         ],
-        highlight: 'Переход к единой экосистеме обеспечивает рост совокупной производительности более чем в 2.5 раза.',
-        speakerNotes: 'Сравнение моделей наглядно показывает, как устранение барьеров высвобождает значительный потенциал роста.'
+        highlight: 'Фокусировка на центральном ядре системы максимизирует отдачу от каждого задействованного ресурса.',
+        speakerNotes: 'Центральный фокус определяет ту критическую точку опоры, воздействие на которую дает максимальный системный мультипликативный эффект.'
       },
       {
         layout: 'data_chart',
@@ -827,17 +842,18 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'В данном разделе мы рассматриваем глобальные бенчмарки и механизмы их корректной локализации.'
       },
       {
-        layout: 'three_cards',
-        title: 'Стандартизация, Регламенты и Сертификация',
-        sub: 'Контроль соответствия, нормативная база и международные нормативы качества',
-        photo: `${enKeywords} compliance standards regulations quality certificate`,
+        layout: 'milestones_table',
+        title: 'Матрица Реализации и Квартальные Рубежи (Milestones)',
+        sub: 'Поэтапный график выполнения, распределение ресурсов и целевые показатели KPI',
+        photo: `${enKeywords} project milestones execution roadmap strategy planning`,
         points: [
-          { heading: 'Международные Стандарты (ISO)', description: 'Внедрение стандартизированных процедур управления качеством гарантирует признание результатов на мировом уровне.' },
-          { heading: 'Нормативно-Правовое Соответствие', description: 'Строгое следование регламентам защищает от юридических рисков и обеспечивает полную прозрачность деятельности.' },
-          { heading: 'Регулярный Внутренний Аудит', description: 'Систематический инспекционный контроль позволяет оперативно выявлять и устранять малейшие отклонения.' }
+          { phase: '1-й Этап (Q1)', heading: 'Комплексная диагностика и аудит', description: 'Глубокая инвентаризация инфраструктуры, аудит рисков и утверждение регламентов.', owner: 'Аналитическая Группа', kpi: '100% Аудит' },
+          { phase: '2-й Этап (Q2)', heading: 'Пилотное внедрение и апробация', description: 'Тестирование модели на выделенном сегменте, обучение специалистов и мониторинг метрик.', owner: 'Технический Отдел', kpi: '+35% Скорость' },
+          { phase: '3-й Этап (Q3)', heading: 'Полномасштабное развертывание', description: 'Сквозная интеграция стандартов по всем направлениям и координация подразделений.', owner: 'Операционный Департамент', kpi: '95% Охват' },
+          { phase: '4-й Этап (Q4)', heading: 'Контроль качества и оптимизация', description: 'Итоговая верификация KPI, устранение шероховатостей и запуск долгосрочной поддержки.', owner: 'Служба Качества', kpi: 'Устойчивый Рост' }
         ],
-        highlight: 'Соблюдение жестких стандартов качества — важнейший фактор институционального доверия и надежности.',
-        speakerNotes: 'Соответствие отраслевым стандартам и регулярный аудит формируют безупречную репутацию и исключают риски.'
+        highlight: 'Четко регламентированные этапы гарантируют предсказуемость сроков и достижение измеримых результатов.',
+        speakerNotes: 'Квартальная таблица рубежей детализирует план реализации с указанием конкретных сроков, ответственных подразделений и измеримых KPI.'
       },
       {
         layout: 'spotlight',
@@ -1108,6 +1124,22 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: `Welcome, distinguished colleagues! On this opening slide, we examine the fundamental concepts and strategic relevance of "${effectiveTopic}".`
       },
       {
+        layout: 'agenda_numbered',
+        title: 'Executive Agenda & Research Architecture',
+        sub: 'Strategic structural roadmap and step-by-step analytical milestones',
+        photo: `${enKeywords} executive agenda presentation roadmap planning`,
+        points: [
+          { heading: 'Conceptual Foundations & Relevance', description: 'Theoretical baseline, systemic drivers, and macroeconomic imperatives.' },
+          { heading: 'Problem Diagnostics & Comparative Analysis', description: 'Benchmarking conventional limitations against modern systemic frameworks.' },
+          { heading: 'Fundamental Pillars & Methodology', description: 'Core structural pillars and a rigorous multi-tier verification matrix.' },
+          { heading: 'Empirical Metrics & Industry Data', description: 'Validated quantitative benchmarks and real-world performance indicators.' },
+          { heading: 'Phased Execution Roadmap & Milestones', description: 'Step-by-step rollout schedule, governance controls, and target KPIs.' },
+          { heading: 'Strategic Outcomes & Recommendations', description: 'Comprehensive executive takeaways for sustained competitive leadership.' }
+        ],
+        highlight: 'A disciplined analytical agenda establishes clarity and strategic alignment across all project phases.',
+        speakerNotes: 'This slide provides an executive overview of our research agenda, mapping out our structured journey from core theory to practical execution.'
+      },
+      {
         layout: 'comparison',
         title: 'Problem Diagnostics: Legacy vs Modern Frameworks',
         sub: 'Contrasting legacy operational friction with optimized integrated systems',
@@ -1161,18 +1193,17 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'These empirical KPIs provide conclusive proof of the effectiveness and economic feasibility of the chosen strategy.'
       },
       {
-        layout: 'comparison',
-        title: 'Resource Allocation: Siloed Fragmentation vs Synergy',
-        sub: 'Comparative breakdown of time and capital efficiency under different models',
-        photo: `${enKeywords} resource optimization efficiency strategy`,
-        leftHeading: 'Fragmented Silos',
-        rightHeading: 'Integrated Synergy',
+        layout: 'circular_feature',
+        title: 'Core Strategic Focus & Systemic Architecture',
+        sub: 'Executive control core, integrated data pipelines, and high-impact priorities',
+        photo: `${enKeywords} architectural geometric circular perspective minimal focus`,
         points: [
-          { heading: 'Duplication & Communication Latency', description: 'Disconnected operating channels cause up to 35% time loss and generate costly informational barriers.' },
-          { heading: 'Unified Operating Ecosystem', description: 'End-to-end integration enables real-time data synchronization and multi-team collaboration at scale.' }
+          { heading: 'Centralized Strategic Governance Loop', description: 'Consolidating critical operational workflows inside a unified governance loop accelerates decision cycles by 2.5x and eliminates organizational friction.' },
+          { heading: 'Real-Time Analytical Telemetry Streams', description: 'End-to-end data pipeline integration enables stakeholders to preemptively mitigate systemic risks and allocate capital where impact is highest.' },
+          { heading: 'Disciplined Execution Accountability', description: 'Unambiguous responsibility delegation builds institutional robustness, ensuring consistent deliverables across shifting industry conditions.' }
         ],
-        highlight: 'Migrating to an integrated ecosystem increases aggregate productivity by more than 2.5 times.',
-        speakerNotes: 'Comparing operational models reveals how eliminating silos unlocks tremendous productivity gains.'
+        highlight: 'Aligning resources around the central strategic core maximizes operational leverage and return on investment.',
+        speakerNotes: 'Focusing on the strategic core allows us to concentrate resources where they generate the greatest multiplicative impact.'
       },
       {
         layout: 'data_chart',
@@ -1228,17 +1259,18 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'In this section, we examine global precedents and the mechanics of tailoring them effectively to our context.'
       },
       {
-        layout: 'three_cards',
-        title: 'Standardization, Regulatory Frameworks & Compliance',
-        sub: 'Quality assurance, compliance governance, and international standards',
-        photo: `${enKeywords} compliance standards regulations quality certificate`,
+        layout: 'milestones_table',
+        title: 'Execution Matrix & Quarterly Milestones',
+        sub: 'Phased operational roadmap, resource governance, and target KPI benchmarks',
+        photo: `${enKeywords} project milestones execution roadmap strategy planning`,
         points: [
-          { heading: 'International Standards (ISO)', description: 'Implementing standardized quality management protocols guarantees global recognition and operational consistency.' },
-          { heading: 'Regulatory Compliance', description: 'Strict adherence to applicable statutory frameworks protects against legal liabilities and ensures transparency.' },
-          { heading: 'Continuous Internal Audits', description: 'Regular inspection loops enable early identification and corrective intervention for minor discrepancies.' }
+          { phase: 'Phase 1 (Q1)', heading: 'Comprehensive Baseline Audit', description: 'Rigorous diagnostic evaluation of existing workflows, risk quantification, and governance charter alignment.', owner: 'Strategy & Audit Group', kpi: '100% Audit' },
+          { phase: 'Phase 2 (Q2)', heading: 'Pilot Deployment & Protocol Validation', description: 'Testing modern toolchains on representative environments with structured stakeholder enablement.', owner: 'Technical Engineering', kpi: '+35% Velocity' },
+          { phase: 'Phase 3 (Q3)', heading: 'Enterprise-Scale Rollout', description: 'Full operational deployment across all core units, embedding systemic automation and oversight.', owner: 'Operations Team', kpi: '95% Coverage' },
+          { phase: 'Phase 4 (Q4)', heading: 'Quality Assurance & Continuous Optimization', description: 'Verifying empirical KPI realization, institutionalizing learnings, and locking in efficiency moats.', owner: 'Quality Assurance', kpi: 'Durable Growth' }
         ],
-        highlight: 'Uncompromising adherence to quality standards builds lasting institutional trust and reliability.',
-        speakerNotes: 'Compliance with industry standards and continuous auditing establish flawless operational integrity.'
+        highlight: 'Explicitly defined milestones guarantee execution predictability and measurable return on investment.',
+        speakerNotes: 'This quarterly milestone matrix outlines our implementation trajectory with clear deadlines, designated ownership, and verifiable KPIs.'
       },
       {
         layout: 'spotlight',
@@ -1509,6 +1541,22 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: `Салом, ҳозирини гиромӣ! Дар ин слайд мо асосҳои консептуалӣ ва аҳамияти стратегии мавзӯи "${effectiveTopic}"-ро баррасӣ мекунем.`
       },
       {
+        layout: 'agenda_numbered',
+        title: 'Нақшаи Муаррифӣ ва Сохтори Таҳқиқот',
+        sub: 'Харитаи баррасии марҳилавии мавзӯъ ва самтҳои асосӣ',
+        photo: `${enKeywords} executive agenda presentation roadmap planning`,
+        points: [
+          { heading: 'Асосҳои назариявӣ ва мубрамияти мавзӯъ', description: 'Пойдевори консептуалӣ ва заминаҳои татбиқи амалӣ.' },
+          { heading: 'Ташхиси мушкилот ва таҳлили муқоисавӣ', description: 'Муқоисаи усулҳои анъанавӣ ва қарорҳои инноватсионӣ.' },
+          { heading: 'Рукнҳои бунёдӣ ва меъморӣ', description: 'Се самти асосии устуворӣ ва эътимоднокӣ.' },
+          { heading: 'Нишондиҳандаҳои эмпирикӣ ва оморӣ', description: 'Далелҳои миқдорӣ ва омори соҳавӣ.' },
+          { heading: 'Харитаи роҳ ва татбиқи амалӣ', description: 'Нақшаи марҳила ба марҳилаи фаъолият ва тақсимоти захираҳо.' },
+          { heading: 'Хулосаҳои стратегӣ ва дурнамо', description: 'Натиҷаҳои пешбинишуда ва тавсияҳои муфид.' }
+        ],
+        highlight: 'Сохтори возеҳи таҳқиқот фаҳмиши ҳамаҷонибаи ҳамаи ҷанбаҳои мавзӯъро таъмин месозад.',
+        speakerNotes: 'Дар ин слайд сохтор ва мантиқи умумии таҳқиқоти мо аз назария то таҷриба нишон дода шудааст.'
+      },
+      {
         layout: 'comparison',
         title: 'Ташхиси Мушкилот: Равиши Анъанавӣ ва Инноватсионӣ',
         sub: 'Муқоисаи маҳдудиятҳои куҳна бо роҳҳои ҳалли муосиру мукаммал',
@@ -1562,18 +1610,17 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'Нишондиҳандаҳои пешниҳодшуда далели равшани эътимоднокӣ ва самаранокии модел мебошанд.'
       },
       {
-        layout: 'comparison',
-        title: 'Оптимизатсияи Захираҳо: Парокандагӣ ва Ҳамгироӣ',
-        sub: 'Таҳлили сарфи вақт ва маблағ дар шароити гуногуни идоракунӣ',
-        photo: `${enKeywords} resource optimization efficiency strategy`,
-        leftHeading: 'Идоракунии Пароканда',
-        rightHeading: 'Ҳамгироии Ягона',
+        layout: 'circular_feature',
+        title: 'Фокуси Стратегӣ ва Маркази Асосии Низом',
+        sub: 'Маркази идоракунӣ, абзорҳои ҳамгирошуда ва нуқтаҳои афзалиятнок',
+        photo: `${enKeywords} architectural geometric circular perspective minimal focus`,
         points: [
-          { heading: 'Талафоти вақт ва захираҳо', description: 'Алоқаи сусти бахшҳо боиси то 35% талафи вақти корӣ мегардад ва монеаҳои иловагӣ эҷод мекунад.' },
-          { heading: 'Экосистемаи ягона', description: 'Ҳамгироии равандҳо мубодилаи фаврии маълумот ва фаъолияти мураттаби тамоми сохторҳоро таъмин менамояд.' }
+          { heading: 'Маркази ягонаи идоракунии стратегӣ', description: 'Муттаҳидсозии равандҳои асосӣ дар як марказ суръати қабули қарорҳоро 2.5 баробар тезонида, кандашавии амалиётиро бартараф мекунад.' },
+          { heading: 'Ҷараёни таҳлилии маълумоти ҳамгирошуда', description: 'Назорати пайваста дар вақти воқеӣ имкон медиҳад, ки хатарҳо сари вақт ошкор гардида, захираҳо дуруст тақсим шаванд.' },
+          { heading: 'Масъулияти баланди иҷро ва мутобиқшавӣ', description: 'Муайян намудани ваколатҳо ва масъулияти мушаххас устувории тамоми низомро дар шароити тағйирёбанда таъмин месозад.' }
         ],
-        highlight: 'Гузариш ба экосистемаи ягона маҳсулнокиро беш аз 2.5 маротиба афзун менамояд.',
-        speakerNotes: 'Муқоисаи низомҳо нишон медиҳад, ки ҳамгироӣ сарчашмаи асосии сарфа ва афзоиши суръат аст.'
+        highlight: 'Таваҷҷуҳ ба маркази стратегӣ самаранокии ҳар як захираро ба ҳадди аксар мерасонад.',
+        speakerNotes: 'Фокуси марказӣ он нуқтаи калидиро муайян мекунад, ки таъсир ба он натиҷаи умумиро баланд мебардорад.'
       },
       {
         layout: 'data_chart',
@@ -1629,17 +1676,18 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
         speakerNotes: 'Дар ин қисмат мо таҷрибаҳои беҳтарини байналмилалӣ ва мутобиқсозии онҳоро дида мебароем.'
       },
       {
-        layout: 'three_cards',
-        title: 'Стандартизатсия, Заминаи Меъёрӣ ва Сертификатсия',
-        sub: 'Назорати мутобиқат, қоидаҳои корӣ ва стандартҳои ҷаҳонии сифат',
-        photo: `${enKeywords} compliance standards regulations quality certificate`,
+        layout: 'milestones_table',
+        title: 'Матритсаи Татбиқ ва Нишондиҳандаҳои Семоҳа (Milestones)',
+        sub: 'Нақшаи амалиёти марҳилавӣ, тақсимоти захираҳо ва меъёрҳои асосии KPI',
+        photo: `${enKeywords} project milestones execution roadmap strategy planning`,
         points: [
-          { heading: 'Стандартҳои Байналмилалӣ (ISO)', description: 'Ҷорисозии талаботи муосири сифат эътирофи натиҷаҳоро дар сатҳи ҷаҳонӣ таъмин менамояд.' },
-          { heading: 'Мутобиқати Ҳуқуқӣ', description: 'Риояи қатъии қонунгузорӣ фаъолиятро шаффоф ва бехатар мегардонад.' },
-          { heading: 'Аудити Дохилии Мунтазам', description: 'Санҷиши пайваста имкон медиҳад, ки камбудиҳо сари вақт бартараф карда шаванд.' }
+          { phase: 'Марҳилаи 1 (Q1)', heading: 'Ташхиси ҳамаҷониба ва аудити ибтидоӣ', description: 'Санҷиши мукаммали зерсохтор ва равандҳои мавҷуда, баҳодиҳии хатарҳо ва тасдиқи нақшаи корӣ.', owner: 'Гурӯҳи Таҳлилӣ', kpi: '100% Аудит' },
+          { phase: 'Марҳилаи 2 (Q2)', heading: 'Татбиқи озмоишӣ (Пилот) ва омӯзиш', description: 'Санҷиши амалии усулҳо дар бахши озмоишӣ, баланд бардоштани тахассуси кормандон ва таҳлили натиҷаҳо.', owner: 'Шӯъбаи Техникӣ', kpi: '+35% Суръат' },
+          { phase: 'Марҳилаи 3 (Q3)', heading: 'Ҷорисозии пурра ва ҳамгироӣ', description: 'Ба кор андохтани стандартҳои нав дар тамоми бахшҳо ва таъмини ҳамоҳангии равандҳо.', owner: 'Раёсати Амалиётӣ', kpi: '95% Фарогирӣ' },
+          { phase: 'Марҳилаи 4 (Q4)', heading: 'Назорати сифати ниҳоӣ ва устуворӣ', description: 'Таҳлили натиҷаҳои бадастомада, санҷиши нишондиҳандаҳои KPI ва таҳкими рушди устувор.', owner: 'Хадамоти Сифат', kpi: 'Рушди Устувор' }
         ],
-        highlight: 'Риояи стандартҳои баланд сатҳи эътимоднокӣ ва нуфузи касбиро баланд мебардорад.',
-        speakerNotes: 'Стандартизатсия ва аудити доимӣ заминаи фаъолияти бехатар ва бехато мебошанд.'
+        highlight: 'Марҳилаҳои дақиқ муайяншуда иҷрои саривақтии корҳо ва натиҷаҳои мушаххасро кафолат медиҳанд.',
+        speakerNotes: 'Ҷадвали нишондиҳандаҳои семоҳа нақшаи корро бо мӯҳлатҳо, масъулон ва нишондиҳандаҳои KPI равшан нишон медиҳад.'
       },
       {
         layout: 'spotlight',
@@ -1910,6 +1958,22 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       speakerNotes: `Assalomu alaykum, hurmatli tinglovchilar! Taqdimotimizning ushbu ochilish qismida biz "${effectiveTopic}" mavzusining dolzarbligi, nazariy asoslari va strategik maqsadlarini atroflicha ko'rib chiqamiz.`
     },
     {
+      layout: 'agenda_numbered',
+      title: 'Taqdimot Rejasi va Tadqiqot Tuzilmasi',
+      sub: 'Mavzuni bosqichma-bosqich yoritish xaritasi va asosiy yo\'nalishlar',
+      photo: `${enKeywords} executive agenda presentation roadmap planning`,
+      points: [
+        { heading: 'Konseptual poydevor va dolzarblik', description: 'Nazariy asoslar, sohaviy chaqiriqlar va tizimli zarurat.' },
+        { heading: 'Muammolar diagnostikasi va qiyos', description: 'An\'anaviy cheklovlar va zamonaviy innovatsion modellar qiyosi.' },
+        { heading: 'Fundamental ustunlar va metodologiya', description: 'Tizimning 3 ta tayanch mezoni va ko\'p bosqichli tekshiruv matritsasi.' },
+        { heading: 'Empirik tahlil va sohaviy statistika', description: 'Faktik dalillar, o\'sish sur\'atlari va tasdiqlangan benchmarklar.' },
+        { heading: 'Yo\'l xaritasi va bosqichli joriy etish', description: 'Amaliy harakatlar ketma-ketligi, muddatlar va KPI mezonlari.' },
+        { heading: 'Strategik xulosalar va istiqbollar', description: 'Uzoq muddatli barqarorlik va sohaviy yetakchilik tavsiyalari.' }
+      ],
+      highlight: 'Puxta tuzilgan taqdimot rejasi tadqiqotning har bir yo\'nalishini izchil va chuqur tushunishni ta\'minlaydi.',
+      speakerNotes: 'Ushbu slaydda tadqiqotimizning umumiy arxitekturasi va mantiqiy bosqichlari belgilab berilgan.'
+    },
+    {
       layout: 'comparison',
       title: 'Muammolar Diagnostikasi: An\'anaviy va Innovatsion Yondashuvlar',
       sub: 'Eskirgan cheklovlar, samarasiz xarajatlar va innovatsion modellar qiyosi',
@@ -1963,18 +2027,17 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       speakerNotes: 'Ushbu slayd doirasida biz erishilgan aniq miqdoriy ko\'rsatkichlar va o\'lchanadigan natijalarni ko\'rib chiqamiz.'
     },
     {
-      layout: 'comparison',
-      title: 'Operatsion Qiyos: Resurs Sarfi va Natijadorlik Balansi',
-      sub: 'Vaqt sarfi, moliyaviy tejamkorlik va kutilmagan to\'siqlar tahlili',
-      photo: `${enKeywords} resource optimization efficiency strategy`,
-      leftHeading: 'Fragmentar Tarqoq Boshqaruv',
-      rightHeading: 'Integratsiyalashgan Ekotizim',
+      layout: 'circular_feature',
+      title: 'Tizimning Strategik Markazi va Asosiy Fokusi',
+      sub: 'Yagona boshqaruv yadrosi, integratsiyalashgan vositalar va ustuvor yo\'nalishlar',
+      photo: `${enKeywords} architectural geometric circular perspective minimal focus`,
       points: [
-        { heading: 'Vaqt va mablag\' yo\'qotishlari', description: 'Tarqoq tizimlarda ma\'lumot almashinuvi kechikadi, takroriy harakatlar ko\'payadi va umumiy unumdorlik 35% gacha pasayib ketadi.' },
-        { heading: 'Yagona sinergetik samara', description: 'Yagona ekotizimga birlashgan jarayonlar minimal resurs sarfi bilan eng yuqori natijaga erishish va shaffoflikni ta\'minlaydi.' }
+        { heading: 'Yagona strategik boshqaruv yadrosi', description: 'Barcha asosiy jarayonlarni markazlashgan ekotizimga birlashtirish qaror qabul qilish tezligini 2.5 barobarga oshiradi va operatsion uzilishlarga barham beradi.' },
+        { heading: 'Integratsiyalashgan tahliliy axborot oqimi', description: 'Uzluksiz monitoring va real vaqt rejimidagi ko\'rsatkichlar tahlili resurslarni eng yuqori samara beruvchi sohalarga yo\'naltirish imkonini beradi.' },
+        { heading: 'Moslashuvchan ijro va mas\'uliyat intizomi', description: 'Har bir bo\'g\'inning aniq belgilangan funksional vakolatlari va javobgarligi tashqi o\'zgarishlarga tezkor moslashish kafolatini yaratadi.' }
       ],
-      highlight: 'Integratsiyalashgan ekotizimga o\'tish orqali umumiy ish unumdorligi 2.5 barobarga oshadi.',
-      speakerNotes: 'Taqqoslama tahlil ko\'rsatmoqdaki, resurslarni integratsiyalashgan holda boshqarish samarasiz yo\'qotishlarga to\'liq chek qo\'yadi.'
+      highlight: 'Boshqaruv markazining mustahkamligi va tizimli integratsiya barcha bo\'g\'inlarning sinergetik ishlashini ta\'minlaydi.',
+      speakerNotes: 'Ushbu slaydda tizimning me\'moriy fokusi, asosiy boshqaruv yadrosi va uning o\'zaro bog\'liq tamoyillari ko\'rsatilgan.'
     },
     {
       layout: 'data_chart',
@@ -2030,17 +2093,18 @@ function getLocalizedGenericStages(topic, enKeywords, language) {
       speakerNotes: 'Global benchmarking orqali biz xalqaro darajada sinalgan eng samarali mexanizmlarni o\'zlashtiramiz.'
     },
     {
-      layout: 'three_cards',
-      title: 'Standartlashtirish, Normativ Baza va Sertifikatsiya',
-      sub: 'Sifat kafolati, xalqaro reglamentlar va qat\'iy standartlar majmuasi',
-      photo: `${enKeywords} compliance standards regulations quality certificate`,
+      layout: 'milestones_table',
+      title: 'Amalga Oshirish Matritsasi va Kvartal Ko\'rsatkichlari (Milestones)',
+      sub: 'Bosqichli operatsion reja, resurslar taqsimoti va asosiy KPI mezonlari',
+      photo: `${enKeywords} project milestones execution roadmap strategy planning`,
       points: [
-        { heading: 'Xalqaro Sifat Standartlari (ISO)', description: 'Xalqaro sifat talablariga to\'liq javob beruvchi reglamentlarni joriy etish va boshqaruv madaniyatini oshirish.' },
-        { heading: 'Normativ-Huquqiy Muvofiqlik', description: 'Barcha harakatlarning amaldagi qonunchilikka to\'liq mosligini ta\'minlash va yuridik xatarlarni bartaraf qilish.' },
-        { heading: 'Muntazam Ichki va Tashqi Audit', description: 'Jarayonlar ustidan mustaqil ekspert tekshiruvlarini o\'tkazib, kamchiliklarni erta bosqichda tuzatib borish.' }
+        { phase: '1-Bosqich (Q1)', heading: 'Kompleks diagnostika va dastlabki audit', description: 'Mavjud infratuzilma va jarayonlarni to\'liq xatlovdan o\'tkazish, xatarlarni baholash va ishchi rejani tasdiqlash.', owner: 'Tahliliy Guruh', kpi: '100% Audit' },
+        { phase: '2-Bosqich (Q2)', heading: 'Tajriba-sinov (Pilot) va xodimlarni o\'qitish', description: 'Metodologik vositalarni amaliyotga tatbiq etish, mas\'ul kadrlarni tayyorlash va oraliq ko\'rsatkichlarni tahlil qilish.', owner: 'Texnik Bo\'lim', kpi: '+35% Tezlik' },
+        { phase: '3-Bosqich (Q3)', heading: 'To\'liq miqyosda integratsiya va masshtab', description: 'Yangi standartlarni butun tarmoq bo\'ylab ishga tushirish hamda bo\'g\'inlararo uyg\'unlikni kafolatlash.', owner: 'Operatsion Rahbariyat', kpi: '95% Qamrov' },
+        { phase: '4-Bosqich (Q4)', heading: 'Yakuniy sifat nazorati va barqarorlik', description: 'Erishilgan natijalarni audit qilish, tasdiqlangan KPI mezonlarini tekshirish va uzoq muddatli rivojlanishni mustahkamlash.', owner: 'Sifat Xizmati', kpi: 'Barqaror O\'sish' }
       ],
-      highlight: 'Qat\'iy standartlarga amal qilish sohadagi nufuz, ishonchlilik va sifat darajasini kafolatlaydi.',
-      speakerNotes: 'Standartlashtirish va muntazam audit har bir jarayonning xatoliksiz va xavfsiz bajarilishiga asos bo\'ladi.'
+      highlight: 'Kvartallar bo\'yicha aniq belgilangan marralar belgilangan muddatda yuqori sifatli natijaga erishishni ta\'minlaydi.',
+      speakerNotes: 'Ushbu korporativ jadval orqali loyihani bosqichma-bosqich joriy etish muddatlari, mas\'ullar va KPI natijalari aks ettirilgan.'
     },
     {
       layout: 'spotlight',
@@ -2877,9 +2941,10 @@ ${docContext}
 3. ПОЛНЫЙ ЗАПРЕТ НА УПОМИНАНИЕ ИСКУССТВЕННОГО ИНТЕЛЛЕКТА (ИИ):
    - КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО писать, что презентация создана с помощью ИИ, упоминать слова «ИИ», «AI», «нейросеть», «бот», «промпт», «сгенерировано». Презентация должна выглядеть так, как будто её создал опытный эксперт-исследователь или топ-аналитик вручную.
 4. РАЗНООБРАЗИЕ МАКЕТОВ (layoutType):
-   - Распределяйте слайды по разнообразным структурам: "split_hero", "three_cards", "data_chart" (наглядный график/диаграмма PowerPoint с аналитикой), "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion".
+   - Распределяйте слайды по разнообразным структурам: "split_hero", "agenda_numbered" (двухколоночный нумерованный план/содержание 01-08), "three_cards", "circular_feature" (круговой швейцарский визуальный фокус и опорные пункты), "data_chart" (наглядный график/диаграмма PowerPoint с аналитикой), "milestones_table" (структурированная корпоративная таблица реализации и метрик KPI), "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion".
 5. ЗАПРОСЫ ДЛЯ ИЗОБРАЖЕНИЙ:
    - В поле "imagePrompts" ровно 2 англоязычных фотореалистичных запроса (например: ["${enKeywords} professional laboratory analysis", "${enKeywords} modern business conference"]).
+   ${theme === 'monochrome' ? '- Для темы monochrome рекомендуются архитектурные, черно-белые снимки высокой четкости ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- Для темы neon_abstract рекомендуются 3D абстрактные стеклянные формы и неоновый флюид ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
 6. ЗАМЕТКИ ДОКЛАДЧИКА (speakerNotes):
    - Для каждого слайда напишите живой, академический, готовый для защиты текст речи докладчика из 4–6 предложений на чистом русском языке.
 7. Общее количество слайдов в массиве "slides" ДОЛЖНО БЫТЬ РОВНО ${targetCount}!
@@ -2959,9 +3024,10 @@ STRICT MANDATORY REQUIREMENTS:
 3. ZERO MENTION OF ARTIFICIAL INTELLIGENCE (AI):
    - Do NOT mention "AI", "artificial intelligence", "generated by AI", "bot", or "prompt" anywhere in titles, descriptions, subtitles, or speaker notes. The deck must look 100% human-crafted by a seasoned industry expert.
 4. RICH DIVERSITY OF LAYOUTS (layoutType):
-   - Rotate strategically through: "split_hero", "three_cards", "data_chart" (native PowerPoint chart with analytical breakdown), "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion".
+   - Rotate strategically through: "split_hero", "agenda_numbered" (two-column numbered agenda/outline 01-08), "three_cards", "circular_feature" (Swiss circular masked focus visual with key pillar cards), "data_chart" (native PowerPoint chart with analytical breakdown), "milestones_table" (structured corporate roadmap table with KPI metrics), "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion".
 5. HIGH-QUALITY IMAGE SEARCH PROMPTS:
    - In "imagePrompts", provide exactly 2 precise photorealistic English search keywords (e.g., ["${enKeywords} professional research", "${enKeywords} technology architecture"]).
+   ${theme === 'monochrome' ? '- For monochrome theme, prioritize architectural, high-contrast black and white photography ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- For neon_abstract theme, prioritize 3D glass torus shapes and neon fluid art ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
 6. COMPREHENSIVE SPEAKER NOTES (speakerNotes):
    - Provide a natural, polished 4–6 sentence verbal script for the presenter on every slide in English.
 7. The "slides" array MUST contain EXACTLY ${targetCount} slides!
@@ -3041,9 +3107,10 @@ ${docContext}
 3. МАНЪИ ҚАТЪИИ ЗИКРИ ЗЕҲНИ СУНЪӢ (AI):
    - Дар ягон ҷойи муаррифӣ навиштани он, ки ин муаррифӣ бо зеҳни сунъӣ омода шудааст, ё истифодаи калимаҳои «зеҳни сунъӣ», «AI», «бот», «промпт» ҚАТЪИЯН МАНЪ АСТ! Муаррифӣ бояд тавре бошад, ки гӯё онро олими барҷаста ё мутахассиси варзида худаш навишта бошад.
 4. ГУНОГУНИИ ТАРҲҲОИ СЛАЙД (layoutType):
-   - Аз тарҳҳои "split_hero", "three_cards", "data_chart" (диаграмма/графики таҳлилии PowerPoint), "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion" самаранок истифода баред.
+   - Аз тарҳҳои "split_hero", "agenda_numbered" (нақшаи дусутунаи рақамдор 01-08), "three_cards", "circular_feature" (визуали доиравии швейтсарӣ ва рукнҳои асосӣ), "data_chart" (диаграмма/графики таҳлилии PowerPoint), "milestones_table" (ҷадвали корпоративии татбиқи нақша ва нишондиҳандаҳои KPI), "comparison", "kpi_metrics", "process_timeline", "matrix_grid", "spotlight", "cinematic", "conclusion" самаранок истифода баред.
 5. ҶУСТУҶӮИ АКСҲО (imagePrompts):
    - Барои ҳар слайд дар "imagePrompts" дақиқан 2 ибораи ҷустуҷӯи акс ба забони англисӣ диҳед (масалан: ["${enKeywords} professional laboratory analysis", "${enKeywords} modern conference"]).
+   ${theme === 'monochrome' ? '- Барои мавзӯи monochrome аксҳои меъмории сиёҳу сафед тавсия дода мешавад ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- Барои мавзӯи neon_abstract шаклҳои шишагии 3D ва флюиди неонӣ тавсия дода мешавад ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
 6. ҚАЙДҲОИ БАРОМАДКУНАНДА (speakerNotes):
    - Барои ҳар як слайд матни нутқи зинда, илмӣ ва касбии баромадкунандаро (4–6 ҷумла) бо забони тоҷикӣ омода кунед.
 7. Дар маҷмӯъ шумораи слайдҳо дар массиви "slides" ДАҚИҚАН ${targetCount} адад бошад!
@@ -3119,8 +3186,11 @@ MUHIM QAT'IY TALABLAR VA CHEKLOVLAR:
    - Slayd ichida, sarlavhada, bandlarda yoki spiker nutqida "bu taqdimot AI yordamida qilindi", "Sun'iy intellekt", "AI", "bot" kabi iboralarni MUTLAQO ISHLATMANG! Taqdimot inson mutaxassisi yoki professor tomonidan chuqur tayyorlangan ilmiy-amaliy taqdimotdek bo'lsin.
 3. HAR BIR SLAYD UNIKAL BO'LISHI UCHUN "layoutType" TURLARIDAN UNUMLI FOYDALANING:
    - "split_hero": chapda asosiy vizual, o'ngda chuqur tahliliy fikrlar
-   - "three_cards": 3 ta vertikal ustunli to'liq tahlil kartochkalari (har birida alohida sarlavha, raqam va keng tushuntirish)
+   - "agenda_numbered": 2 ustunli raqamlangan mundarija va reja kartochkalari (01 dan 08 gacha)
+   - "three_cards": 3 ta vertikal ustunli to'liq tahlil kartochkalari
+   - "circular_feature": konsentrik doiraviy badiiy vizual va yonida yirik raqamli asosiy ustunlar
    - "data_chart": PowerPoint tahrirlanadigan ustunli diagrammasi va empirik tahlili
+   - "milestones_table": strukturaviy korporativ reja, bosqichlar va KPI ko'rsatkichlari jadvali
    - "comparison": an'anaviy yondashuv va innovatsion yechimlarni taqqoslash ("leftHeading", "rightHeading", "points")
    - "kpi_metrics": katta statistik raqamlar va aniq o'lchovlar ("metrics": [{"val": "+85%", "label": "...", "desc": "..."}])
    - "process_timeline": bosqichma-bosqich yo'l xaritasi va harakatlar zanjiri
@@ -3130,6 +3200,7 @@ MUHIM QAT'IY TALABLAR VA CHEKLOVLAR:
    - "conclusion": yakuniy xulosalar va amaliy tavsiyalar
 4. RASMLAR UCHUN:
    - Har bir slayd uchun "imagePrompts" massivida aynan 2 ta INGLIZCHA aniq fotorealistik foto qidiruv so'zini bering (masalan: ["${enKeywords} laboratory research", "${enKeywords} modern professional workspace"]).
+   ${theme === 'monochrome' ? '- monochrome mavzusi uchun yuqori kontrastli qora-oq arxitektura va minimalist shakllar tavsiya etiladi ("minimalist black and white architectural photography, clean geometry").' : (theme === 'neon_abstract' ? '- neon_abstract mavzusi uchun 3D shisha shakllar va neon fluid san\'ati tavsiya etiladi ("3d abstract glass torus neon fluid dark background, vibrant refraction").' : '')}
 5. SPIKER NUTQI (speakerNotes):
    - Har bir slayd uchun spiker minbardan turib himoyada gapirib berishi mumkin bo'lgan 4-6 gapdan iborat jonli, qiziqarli, akademik nutq matnini yozing.
 6. Jami "slides" massivida AYNAN ${targetCount} ta slayd bo'lsin!

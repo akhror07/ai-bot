@@ -74,6 +74,10 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Jami: ${n} ta slayd • 16:9 Full HD • Professional Dizayn`,
       chartBadge: '📊 EMPIRIK TAHLIL & ASOSIY OMILLAR',
       chartTitle: '📈 NATIJALAR & DINAMIKA (POWERPOINT CHART)',
+      agendaBadge: '📋 MUNDARIJA & REJA',
+      focusBadge: '🎯 ASOSIY FOKUS',
+      tableHeaders: ['Bosqich / Davr', 'Asosiy Vazifa & Strategiya', 'Mas\'ul Bo\'lim & Resurs', 'Kutilayotgan KPI'],
+      tableSummary: '📊 Tizimli Reja: Har bir bosqich qat\'iy mezonlar asosida nazorat qilinadi.',
     },
     ru: {
       badge: 'ПРЕЗЕНТАЦИЯ',
@@ -99,6 +103,10 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Всего: ${n} слайдов • 16:9 Full HD • Премиум Дизайн`,
       chartBadge: '📊 ЭМПИРИЧЕСКИЙ АНАЛИЗ & ФАКТОРЫ',
       chartTitle: '📈 ПОКАЗАТЕЛИ & ДИНАМИКА (POWERPOINT CHART)',
+      agendaBadge: '📋 СОДЕРЖАНИЕ & ПЛАН',
+      focusBadge: '🎯 КЛЮЧЕВОЙ ФОКУС',
+      tableHeaders: ['Этап / Период', 'Ключевые Задачи & Стратегия', 'Ответственные & Ресурсы', 'Ожидаемый KPI'],
+      tableSummary: '📊 Системный План: Каждый этап контролируется на основе измеримых отраслевых критериев.',
     },
     en: {
       badge: 'PRESENTATION',
@@ -124,6 +132,10 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Total: ${n} slides • 16:9 Full HD • Executive Design`,
       chartBadge: '📊 EMPIRICAL ANALYSIS & KEY DRIVERS',
       chartTitle: '📈 PERFORMANCE & METRICS (POWERPOINT CHART)',
+      agendaBadge: '📋 AGENDA & OUTLINE',
+      focusBadge: '🎯 STRATEGIC FOCUS',
+      tableHeaders: ['Phase / Timeline', 'Core Strategic Deliverable', 'Ownership & Resources', 'Target KPI / Benchmark'],
+      tableSummary: '📊 Systemic Roadmap: Every operational milestone is audited against rigorous industry benchmarks.',
     },
     tg: {
       badge: 'МУАРРИФӢ',
@@ -149,6 +161,10 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Ҳамагӣ: ${n} слайд • 16:9 Full HD • Тарҳи Касбӣ`,
       chartBadge: '📊 ТАҲЛИЛИ ЭМПИРИКӢ & ОМИЛҲО',
       chartTitle: '📈 НАТИҶАҲО & ДИНАМИКА (POWERPOINT CHART)',
+      agendaBadge: '📋 МУНДАРИҶА & НАҚША',
+      focusBadge: '🎯 ФОКУСИ АСОСӢ',
+      tableHeaders: ['Марҳила / Мӯҳлат', 'Вазифаҳои Асосӣ & Стратегия', 'Масъулият & Захираҳо', 'Натиҷаи Ниҳоӣ (KPI)'],
+      tableSummary: '📊 Нақшаи Низомманд: Ҳар як марҳила дар асоси меъёрҳои мушаххас назорат карда мешавад.',
     },
   };
   return dict[lang] || dict.uz;
@@ -159,17 +175,56 @@ function getI18n(lang = 'uz') {
  */
 function applySlideBackground(slide, pres, theme) {
   slide.background = { color: theme.bg };
-  // Ambient auralar — zamonaviy Figma/Canva uslubidagi chuqur dizayn
-  slide.addShape(pres.ShapeType.ellipse, {
-    x: 10.5, y: -1.2, w: 4.5, h: 4.5,
-    fill: { color: theme.primary, transparency: 94 },
-    line: { color: theme.primary, transparency: 94 },
-  });
-  slide.addShape(pres.ShapeType.ellipse, {
-    x: -1.2, y: 5.2, w: 4.2, h: 4.2,
-    fill: { color: theme.accent || theme.primary, transparency: 95 },
-    line: { color: theme.accent || theme.primary, transparency: 95 },
-  });
+
+  if (theme.id === 'monochrome') {
+    // Shveytsariya brutalizmi va arxitektura chiziqlari (Swiss architectural grid lines)
+    slide.addShape(pres.ShapeType.line, {
+      x: 0.8, y: 0.25, w: 0, h: 7.0,
+      line: { color: theme.border, width: 0.6, transparency: 40 },
+    });
+    slide.addShape(pres.ShapeType.line, {
+      x: 12.53, y: 0.25, w: 0, h: 7.0,
+      line: { color: theme.border, width: 0.6, transparency: 40 },
+    });
+    // Kichik burchak xochi (crosshair mark)
+    slide.addShape(pres.ShapeType.line, {
+      x: 12.35, y: 0.45, w: 0.35, h: 0,
+      line: { color: theme.subtext, width: 0.8 },
+    });
+    slide.addShape(pres.ShapeType.line, {
+      x: 12.52, y: 0.28, w: 0, h: 0.35,
+      line: { color: theme.subtext, width: 0.8 },
+    });
+  } else if (theme.id === 'neon_abstract') {
+    // Neon 3D Shisha & Fluid Auralar (#F88196 pushti va #96BFCB moviy)
+    slide.addShape(pres.ShapeType.ellipse, {
+      x: 9.8, y: -1.0, w: 4.8, h: 4.8,
+      fill: { color: 'F88196', transparency: 91 },
+      line: { color: 'F88196', transparency: 91 },
+    });
+    slide.addShape(pres.ShapeType.ellipse, {
+      x: -1.2, y: 4.8, w: 4.5, h: 4.5,
+      fill: { color: '96BFCB', transparency: 91 },
+      line: { color: '96BFCB', transparency: 91 },
+    });
+    // 3D Glass Torus dekorativ halqasi
+    slide.addShape(pres.ShapeType.ellipse, {
+      x: 10.8, y: 4.8, w: 2.8, h: 2.8,
+      line: { color: 'F88196', width: 1.2, transparency: 85 },
+    });
+  } else {
+    // Boshqa barcha temalar uchun standart yumshoq auralar
+    slide.addShape(pres.ShapeType.ellipse, {
+      x: 10.5, y: -1.2, w: 4.5, h: 4.5,
+      fill: { color: theme.primary, transparency: 94 },
+      line: { color: theme.primary, transparency: 94 },
+    });
+    slide.addShape(pres.ShapeType.ellipse, {
+      x: -1.2, y: 5.2, w: 4.2, h: 4.2,
+      fill: { color: theme.accent || theme.primary, transparency: 95 },
+      line: { color: theme.accent || theme.primary, transparency: 95 },
+    });
+  }
 }
 
 /**
@@ -177,25 +232,28 @@ function applySlideBackground(slide, pres, theme) {
  */
 function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalSlides, i18n = null) {
   const slideWord = i18n?.slide || 'Slayd';
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
 
   // Sarlavha (fit: 'shrink' bilan matn uzun bo'lsa avtomatik moslashadi)
   slide.addText(title || `${slideWord} ${slideNumber}`, {
     x: 0.8, y: 0.42, w: 9.8, h: 0.68,
     fontFace: 'Arial', fontSize: 22, bold: true,
-    color: theme.primary, valign: 'middle', wrap: true, fit: 'shrink',
+    color: isMonochrome ? '#111111' : (isNeon ? '#FFFFFF' : theme.primary),
+    valign: 'middle', wrap: true, fit: 'shrink',
   });
 
   // Slayd raqami nishoni
   slide.addShape(pres.ShapeType.roundRect, {
     x: 10.9, y: 0.45, w: 1.63, h: 0.42,
-    fill: { color: theme.cardBg },
-    line: { color: theme.border, width: 1 },
-    rectRadius: 0.1,
+    fill: { color: isMonochrome ? '111111' : theme.cardBg },
+    line: { color: isNeon ? 'F88196' : theme.border, width: 1 },
+    rectRadius: isMonochrome ? 0.05 : 0.1,
   });
   slide.addText(`${slideNumber} / ${totalSlides}`, {
     x: 10.9, y: 0.45, w: 1.63, h: 0.42,
     fontFace: 'Arial', fontSize: 11, bold: true,
-    color: theme.subtext, align: 'center', valign: 'middle', fit: 'shrink',
+    color: isMonochrome ? '#FFFFFF' : theme.subtext, align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   // Kichik sarlavha (subtitle)
@@ -213,8 +271,8 @@ function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalS
   });
   slide.addShape(pres.ShapeType.rect, {
     x: 0.8, y: 1.46, w: 1.4, h: 0.04,
-    fill: { color: theme.primary },
-    line: { color: theme.primary },
+    fill: { color: isNeon ? 'F88196' : theme.primary },
+    line: { color: isNeon ? 'F88196' : theme.primary },
   });
 }
 
@@ -1069,6 +1127,253 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
   addSlideFooter(slide, pres, theme, data.title, num, total);
 }
 
+// ================================================================
+// 11-LAYOUT: NUMBERED AGENDA & OUTLINE (2 ustunli raqamlangan mundarija)
+// ================================================================
+function renderAgendaNumberedLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  applySlideBackground(slide, pres, theme);
+  addSlideHeader(slide, pres, theme, item.title || i18n.agendaBadge, item.subtitle, num, total, i18n);
+
+  const points = item.points || [];
+  const hasHighlight = !!item.highlight;
+  const contentY = 1.68;
+  const contentH = hasHighlight ? 3.65 : 4.60;
+
+  const leftX = 0.8;
+  const colW = 5.65;
+  const gapX = 0.43;
+  const rightX = leftX + colW + gapX;
+
+  // Taqdimot mundarijasidagi kartochkalar soni (4 tadan 8 tagacha)
+  const count = Math.max(Math.min(points.length, 8), 4);
+  const rows = Math.ceil(count / 2);
+  const gapY = 0.16;
+  const cardH = (contentH - (rows - 1) * gapY) / rows;
+
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
+
+  for (let idx = 0; idx < count; idx++) {
+    const isLeft = idx < rows;
+    const colIdx = isLeft ? 0 : 1;
+    const rowIdx = isLeft ? idx : (idx - rows);
+    const x = colIdx === 0 ? leftX : rightX;
+    const y = contentY + rowIdx * (cardH + gapY);
+    const p = points[idx] || points[idx % points.length] || {};
+
+    // Kartochka foni
+    slide.addShape(pres.ShapeType.roundRect, {
+      x, y, w: colW, h: cardH,
+      fill: { color: theme.cardBg },
+      line: { color: isNeon ? (idx === 0 ? 'F88196' : theme.border) : (idx === 0 ? theme.primary : theme.border), width: 1.2 },
+      rectRadius: isMonochrome ? 0.06 : 0.12,
+    });
+
+    // Raqam nishoni
+    const numBoxW = 0.52;
+    const numBoxH = Math.min(cardH - 0.2, 0.46);
+    slide.addShape(pres.ShapeType.roundRect, {
+      x: x + 0.18, y: y + (cardH - numBoxH) / 2, w: numBoxW, h: numBoxH,
+      fill: { color: isMonochrome ? '111111' : (isNeon ? 'F88196' : theme.primary) },
+      rectRadius: 0.08,
+    });
+    slide.addText(`0${idx + 1}`, {
+      x: x + 0.18, y: y + (cardH - numBoxH) / 2, w: numBoxW, h: numBoxH,
+      fontFace: 'Arial', fontSize: 11, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
+    });
+
+    // Sarlavha va qisqa tushuntirish
+    slide.addText([
+      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n`, options: { bold: true, fontSize: 12, color: isMonochrome ? '#111111' : theme.primary } },
+      { text: p.description || '', options: { bold: false, fontSize: 10, color: theme.text } }
+    ], {
+      x: x + 0.82, y: y + 0.05, w: colW - 0.98, h: cardH - 0.1,
+      valign: 'middle', wrap: true, fit: 'shrink',
+    });
+  }
+
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
+  addSlideFooter(slide, pres, theme, data.title, num, total);
+}
+
+// ================================================================
+// 12-LAYOUT: CIRCULAR FEATURE (Shveytsariya doiraviy vizual + asosiy ustunlar)
+// ================================================================
+function renderCircularFeatureLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  applySlideBackground(slide, pres, theme);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+
+  const points = item.points || [];
+  const hasHighlight = !!item.highlight;
+  const contentY = 1.68;
+  const contentH = hasHighlight ? 3.65 : 4.60;
+
+  const leftW = 4.8;
+  const rightX = 5.95;
+  const rightW = 6.58;
+
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
+
+  // Chap tomon: Konsentrik doiraviy badiiy kompozitsiya
+  const circleSize = Math.min(leftW, contentH);
+  const circleX = 0.8 + (leftW - circleSize) / 2;
+  const circleY = contentY + (contentH - circleSize) / 2;
+
+  // Tashqi konsentrik hoshiya
+  slide.addShape(pres.ShapeType.ellipse, {
+    x: circleX - 0.12, y: circleY - 0.12, w: circleSize + 0.24, h: circleSize + 0.24,
+    line: { color: isNeon ? 'F88196' : theme.border, width: 1.2, dashType: 'dash' },
+  });
+
+  // Asosiy ichki doiraviy kartochka
+  slide.addShape(pres.ShapeType.ellipse, {
+    x: circleX, y: circleY, w: circleSize, h: circleSize,
+    fill: { color: theme.cardBg },
+    line: { color: isMonochrome ? '111111' : (isNeon ? '96BFCB' : theme.primary), width: 2 },
+  });
+
+  if (img) {
+    slide.addImage({
+      data: img,
+      x: circleX + 0.15, y: circleY + 0.15,
+      w: circleSize - 0.3, h: circleSize - 0.3,
+      rounding: true,
+    });
+  } else {
+    slide.addText(i18n.focusBadge, {
+      x: circleX, y: circleY, w: circleSize, h: circleSize,
+      fontFace: 'Arial', fontSize: 16, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
+    });
+  }
+
+  // Doira ostidagi fokus nishoni
+  slide.addShape(pres.ShapeType.roundRect, {
+    x: circleX + circleSize / 2 - 1.2, y: circleY + circleSize - 0.42, w: 2.4, h: 0.38,
+    fill: { color: isMonochrome ? '111111' : theme.bg, transparency: isMonochrome ? 0 : 15 },
+    line: { color: isNeon ? 'F88196' : theme.primary, width: 1 },
+    rectRadius: 0.1,
+  });
+  slide.addText(i18n.focusBadge, {
+    x: circleX + circleSize / 2 - 1.2, y: circleY + circleSize - 0.42, w: 2.4, h: 0.38,
+    fontFace: 'Arial', fontSize: 9.5, bold: true,
+    color: isMonochrome ? '#FFFFFF' : theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
+  });
+
+  // O'ng tomon: 3 ta qat'iy ustun kartochkasi
+  const count = Math.min(points.length, 3) || 1;
+  const gap = 0.20;
+  const cardH = (contentH - (count - 1) * gap) / count;
+
+  points.slice(0, 3).forEach((p, idx) => {
+    const y = contentY + idx * (cardH + gap);
+
+    slide.addShape(pres.ShapeType.roundRect, {
+      x: rightX, y, w: rightW, h: cardH,
+      fill: { color: theme.cardBg },
+      line: { color: isMonochrome ? (idx === 0 ? '111111' : theme.border) : (isNeon && idx === 0 ? 'F88196' : theme.border), width: 1.2 },
+      rectRadius: isMonochrome ? 0.06 : 0.12,
+    });
+
+    // Yirik minimalist raqam kvadrati
+    slide.addShape(pres.ShapeType.roundRect, {
+      x: rightX + 0.22, y: y + 0.18, w: 0.46, h: 0.46,
+      fill: { color: isMonochrome ? '111111' : (isNeon ? 'F88196' : theme.primary) },
+      rectRadius: 0.08,
+    });
+    slide.addText(`0${idx + 1}`, {
+      x: rightX + 0.22, y: y + 0.18, w: 0.46, h: 0.46,
+      fontFace: 'Arial', fontSize: 12, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
+    });
+
+    slide.addText([
+      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n`, options: { bold: true, fontSize: 13, color: isMonochrome ? '#111111' : theme.primary } },
+      { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.text } }
+    ], {
+      x: rightX + 0.82, y: y + 0.08, w: rightW - 1.02, h: cardH - 0.16,
+      valign: 'middle', wrap: true, fit: 'shrink',
+    });
+  });
+
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
+  addSlideFooter(slide, pres, theme, data.title, num, total);
+}
+
+// ================================================================
+// 13-LAYOUT: MILESTONES TABLE (Strukturaviy korporativ reja va ko'rsatkichlar jadvali)
+// ================================================================
+function renderMilestonesTableLayout(slide, pres, theme, item, num, total, img, data, i18n) {
+  applySlideBackground(slide, pres, theme);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+
+  const points = item.points || [];
+  const hasHighlight = !!item.highlight;
+  const contentY = 1.68;
+  const tableH = hasHighlight ? 3.65 : 4.60;
+  const isMonochrome = theme.id === 'monochrome';
+  const isNeon = theme.id === 'neon_abstract';
+
+  // Jadval sarlavhasi
+  const headers = i18n.tableHeaders || ['Bosqich / Davr', 'Asosiy Vazifa & Strategiya', 'Mas\'ul Bo\'lim & Resurs', 'Kutilayotgan KPI'];
+
+  const defaultPhases = [
+    { period: '1-Bosqich (Q1)', resp: 'Boshqaruv & Audit', kpi: '100% Audit' },
+    { period: '2-Bosqich (Q2)', resp: 'Texnik Departament', kpi: '+35% Tezlik' },
+    { period: '3-Bosqich (Q3)', resp: 'Operatsion Bo\'lim', kpi: '95% Samaradorlik' },
+    { period: '4-Bosqich (Q4)', resp: 'Sifat Nazorati', kpi: 'Barqaror O\'sish' },
+  ];
+
+  const headerBg = isMonochrome ? '111111' : (isNeon ? '1C2C3B' : theme.primary);
+  const headerTextColor = '#FFFFFF';
+
+  const tableRows = [
+    [
+      { text: headers[0], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'center', fontSize: 11 } },
+      { text: headers[1], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
+      { text: headers[2], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'center', fontSize: 11 } },
+      { text: headers[3], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'center', fontSize: 11 } },
+    ]
+  ];
+
+  const rowCount = Math.min(Math.max(points.length, 3), 4);
+  for (let r = 0; r < rowCount; r++) {
+    const p = points[r] || points[r % points.length] || {};
+    const dPhase = defaultPhases[r] || defaultPhases[0];
+    const isEven = (r % 2 === 0);
+    const rowBg = isEven ? theme.cardBg : theme.bg;
+
+    const phaseTitle = p.phase || dPhase.period;
+    const taskDesc = `${p.heading || i18n.pointFallback(r + 1)}: ${p.description || ''}`;
+    const respDept = p.owner || dPhase.resp;
+    const targetKpi = p.kpi || dPhase.kpi;
+
+    tableRows.push([
+      { text: phaseTitle, options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'center', fontSize: 10 } },
+      { text: taskDesc, options: { fill: rowBg, color: theme.text, fontSize: 9.5 } },
+      { text: respDept, options: { fill: rowBg, color: theme.subtext, align: 'center', fontSize: 9.5 } },
+      { text: targetKpi, options: { fill: rowBg, color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary), bold: true, align: 'center', fontSize: 10 } },
+    ]);
+  }
+
+  try {
+    slide.addTable(tableRows, {
+      x: 0.8,
+      y: contentY,
+      w: 11.73,
+      h: tableH,
+      colW: [2.2, 5.33, 2.1, 2.1],
+      border: { type: 'solid', pt: 1, color: isNeon ? '595C8A' : theme.border },
+      valign: 'middle',
+      margin: [0.08, 0.12, 0.08, 0.12],
+    });
+  } catch (tErr) {
+    console.warn('[PPTX] Jadval chizishda xatolik:', tErr.message);
+  }
+
+  if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
+  addSlideFooter(slide, pres, theme, data.title, num, total);
+}
+
 /**
  * Professional PowerPoint (.pptx) taqdimot yaratadi:
  * - 8 ta butunlay xilma-xil andoza
@@ -1214,15 +1519,18 @@ export async function createPptx(data) {
   if (titleData.speakerNotes) titleSlide.addNotes(titleData.speakerNotes);
 
   // ================================================================
-  // 2. KONTENT SLAYDLARI — 10 xil unikal layout rotatsiyasi!
+  // 2. KONTENT SLAYDLARI — 12 xil unikal layout rotatsiyasi!
   // ================================================================
   const contentSlides = slidesList.slice(1);
   const totalSlides = slidesList.length;
 
   const layoutRotator = [
     'split_hero',
+    'agenda_numbered',
     'three_cards',
+    'circular_feature',
     'data_chart',
+    'milestones_table',
     'comparison',
     'kpi_metrics',
     'process_timeline',
@@ -1253,11 +1561,20 @@ export async function createPptx(data) {
         case 'split_hero':
           renderSplitHeroLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
+        case 'agenda_numbered':
+          renderAgendaNumberedLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
+          break;
         case 'three_cards':
           renderThreeCardsLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
+        case 'circular_feature':
+          renderCircularFeatureLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
+          break;
         case 'data_chart':
           renderChartLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
+          break;
+        case 'milestones_table':
+          renderMilestonesTableLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
           break;
         case 'comparison':
           renderComparisonLayout(slide, pres, theme, slideItem, slideNumber, totalSlides, img1, data, i18n);
