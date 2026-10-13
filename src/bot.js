@@ -182,12 +182,39 @@ function getThemeKeyboard(lang = 'uz') {
 export const CHANNEL_USERNAME = (config.channelUsername || 'ahroriAI').replace('@', '');
 export const CHANNEL_URL = `https://t.me/${CHANNEL_USERNAME}`;
 
-// Admin tekshiruvi (Telegram ID orqali)
+// Admin tekshiruvi (Telegram ID va Username orqali)
+const ADMIN_IDS = new Set([
+  '8388288136',
+  '6600344525',
+  '7569927187',
+  '7862857511',
+  '5768084654',
+  String(config.adminId || '').trim(),
+].filter(Boolean));
+
+const ADMIN_USERNAMES = new Set([
+  'akhrorov18',
+  'akhrorov0',
+  'akhrrv18',
+  'akhrorovai',
+  'mamurjonov00',
+]);
+
 export function isAdmin(ctxOrId) {
-  const id = typeof ctxOrId === 'object'
-    ? String(ctxOrId?.from?.id || ctxOrId?.chat?.id || '')
-    : String(ctxOrId || '');
-  return id === String(config.adminId) || id === '8388288136';
+  if (!ctxOrId) return false;
+  let id = '';
+  let username = '';
+
+  if (typeof ctxOrId === 'object') {
+    id = String(ctxOrId?.from?.id || ctxOrId?.chat?.id || '').trim();
+    username = String(ctxOrId?.from?.username || '').replace('@', '').toLowerCase().trim();
+  } else {
+    id = String(ctxOrId).trim();
+  }
+
+  if (id && ADMIN_IDS.has(id)) return true;
+  if (username && ADMIN_USERNAMES.has(username)) return true;
+  return false;
 }
 
 // Foydalanuvchining kanalga a'zoligini tekshirish
@@ -278,10 +305,7 @@ export async function setupBotCommands() {
     console.log('✅ Telegram bot buyruqlari (setMyCommands) muvaffaqiyatli sozlandi!');
 
     // 2. Faqat bot admini uchun maxsus buyruqlar menyusi (/users, /admin, /give, /promo)
-    const adminIds = [String(config.adminId), '8388288136'].filter(Boolean);
-    const uniqueAdminIds = [...new Set(adminIds)];
-
-    for (const aId of uniqueAdminIds) {
+    for (const aId of ADMIN_IDS) {
       try {
         await bot.api.setMyCommands([
           { command: 'start', description: '🔄 Botni qayta ishga tushirish' },
@@ -1685,10 +1709,177 @@ AI matnni o'zi o'qib, tartibli slaydga aylantiradi.`,
   );
 });
 
+// HTML maxsus belgilarini xavfsiz qilish
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// Admin uchun foydalanuvchilar ro'yxati va usernamelarini ko'rsatish funksiyasi
+async function showAdminUsersList(ctx) {
+  if (!isAdmin(ctx)) {
+    const id = ctx.chat?.id || ctx.from?.id || '';
+    const uname = ctx.from?.username ? `@${ctx.from.username}` : '';
+    return ctx.reply(`❌ Bu buyruq faqat bot admini uchun!\n🆔 Sizning ID: \`${id}\` ${uname}`, { parse_mode: 'Markdown' });
+  }
+
+  const allUsers = getAllUsers();
+  const totalCount = allUsers.length;
+
+  if (totalCount === 0) {
+    return ctx.reply("ℹ️ Hozircha botda ro'yxatdan o'tgan foydalanuvchilar mavjud emas.");
+  }
+
+  const usersWithUsername = allUsers.filter(u => u.username && u.username.trim()).length;
+  const usersWithoutUsername = totalCount - usersWithUsername;
+  const totalCoins = allUsers.reduce((acc, u) => acc + (u.coins || 0), 0);
+  const totalUsedCoins = allUsers.reduce((acc, u) => acc + (u.usedCoins || 0), 0);
+
+  // Telegram 4096 belgilik cheklovidan oshib ketmasligi uchun foydalanuvchilarni 25 tadan qismlarga (chunks) bo'lib yuboramiz
+  const CHUNK_SIZE = 25;
+  const totalPages = Math.ceil(totalCount / CHUNK_SIZE);
+
+  for (let page = 0; page < totalPages; page++) {
+    const chunk = allUsers.slice(page * CHUNK_SIZE, (page + 1) * CHUNK_SIZE);
+    let msg = '';
+
+    if (page === 0) {
+      msg += `👑 <b>Bot Foydalanuvchilari Ro'yxati:</b>\n\n`;
+      msg += `📊 <b>Jami foydalanuvchilar soni:</b> <code>${totalCount} ta</code>\n`;
+      msg += `🌐 <b>Username mavjud:</b> <code>${usersWithUsername} ta</code>\n`;
+      msg += `👤 <b>Username yo'q:</b> <code>${usersWithoutUsername} ta</code>\n`;
+      msg += `🪙 <b>Foydalanuvchilar balansi:</b> <code>${totalCoins} ta koin</code> (Ishlatilgan: ${totalUsedCoins} ta)\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+    } else {
+      msg += `📄 <b>Foydalanuvchilar ro'yxati (${page + 1}/${totalPages}-qism):</b>\n━━━━━━━━━━━━━━━━━━━━━━\n`;
+    }
+
+    chunk.forEach((u, i) => {
+      const index = page * CHUNK_SIZE + i + 1;
+      const uname = u.username && u.username.trim()
+        ? `@${escapeHtml(u.username)}`
+        : `<i>(Username yo'q)</i>`;
+      const fname = escapeHtml(u.firstName || 'Foydalanuvchi');
+      const isUserAdmin = isAdmin(u.userId);
+      const adminTag = isUserAdmin ? ' 👑 <b>[Admin]</b>' : '';
+      const isVip = u.vipUntil && new Date(u.vipUntil) > new Date();
+      const vipTag = isVip ? ' 💎 <b>[VIP]</b>' : '';
+
+      msg += `${index}. ${uname} (${fname})${adminTag}${vipTag}\n`;
+      msg += `   🆔 <code>${escapeHtml(u.userId)}</code> • 🪙 <b>${u.coins || 0} ta</b> koin`;
+      if (u.referralsCount > 0) {
+        msg += ` • 👥 ${u.referralsCount} ta taklif`;
+      }
+      msg += `\n`;
+    });
+
+    if (page === totalPages - 1) {
+      msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `💡 <i>Foydalanuvchiga koin berish uchun:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>`;
+    }
+
+    await ctx.reply(msg, {
+      parse_mode: 'HTML',
+      disable_web_page_preview: true,
+    });
+  }
+}
+
+// /users buyrug'i (Faqat admin uchun: foydalanuvchilar soni va usernamelari)
+bot.command(['users', 'foydalanuvchilar'], async (ctx) => {
+  await showAdminUsersList(ctx);
+});
+
+// Admin panelidagi foydalanuvchilar tugmasi (Callback)
+bot.callbackQuery('admin_users_list', async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.answerCallbackQuery({ text: "❌ Faqat admin uchun!", show_alert: true });
+  }
+  await ctx.answerCallbackQuery();
+  await showAdminUsersList(ctx);
+});
+
+// Admin Boshqaruv Paneli
+async function handleAdminPanel(ctx) {
+  if (!isAdmin(ctx)) {
+    const id = ctx.chat?.id || ctx.from?.id || '';
+    const uname = ctx.from?.username ? `@${ctx.from.username}` : '';
+    return ctx.reply(`❌ Bu buyruq faqat bot admini uchun!\n🆔 Sizning ID: \`${id}\` ${uname}`, { parse_mode: 'Markdown' });
+  }
+
+  const stats = getStats();
+  const recent = getAllPresentations(8);
+
+  let text = `👑 *Admin Boshqaruv Paneli:*\n\n`;
+  text += `👥 *Jami foydalanuvchilar:* ${stats.totalUsers} ta\n`;
+  text += `📊 *Jami taqdimotlar:* ${stats.totalPresentations} ta\n`;
+  text += `🪙 *Ishlatilgan coinlar:* ${stats.totalCoinsUsed} ta\n\n`;
+  text += `📝 *So'nggi taqdimotlar:*\n`;
+
+  if (!recent.length) {
+    text += `_Hozircha taqdimotlar yo'q._\n`;
+  } else {
+    recent.forEach((p, idx) => {
+      text += `${idx + 1}. *${p.firstName}* ${p.username ? `(@${p.username})` : `[ID:${p.userId}]`}: "${p.topic}" (${p.slideCount} ta slayd)\n`;
+    });
+  }
+
+  text += `\n👥 *Foydalanuvchilar va usernamelar:* \`/users\``;
+  text += `\n💡 *Foydalanuvchiga coin berish:* \n\`/give <ID> <SON>\` (masalan: \`/give 8388288136 5\`)`;
+  text += `\n🎟 *Promo-kodlar boshqaruvi:* \`/promo\` (yangi yaratish va ko'rish)`;
+
+  const keyboard = new InlineKeyboard()
+    .text('👥 Foydalanuvchilar (/users)', 'admin_users_list')
+    .text('🎟 Promo-kodlar (/promo)', 'action_promo_admin');
+
+  await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: keyboard });
+}
+
+// /admin buyrug'i (Admin boshqaruv paneli)
+bot.command(['admin', 'panel'], async (ctx) => {
+  await handleAdminPanel(ctx);
+});
+
+// /give buyrug'i (Foydalanuvchiga coin taqdim qilish)
+bot.command('give', async (ctx) => {
+  if (!isAdmin(ctx)) {
+    const id = ctx.chat?.id || ctx.from?.id || '';
+    const uname = ctx.from?.username ? `@${ctx.from.username}` : '';
+    return ctx.reply(`❌ Bu buyruq faqat bot admini uchun!\n🆔 Sizning ID: \`${id}\` ${uname}`, { parse_mode: 'Markdown' });
+  }
+
+  const args = (ctx.match || '').trim().split(/\s+/);
+  if (args.length < 2) {
+    return ctx.reply("Qo'llash: `/give <userId> <amount>`\nMasalan: `/give 8388288136 5`", { parse_mode: 'Markdown' });
+  }
+
+  const targetId = args[0];
+  const amount = parseInt(args[1], 10);
+
+  if (isNaN(amount) || amount <= 0) {
+    return ctx.reply("❌ Coin miqdori musbat butun son bo'lishi kerak.");
+  }
+
+  giveCoins(targetId, amount);
+  const targetUser = getUser(targetId);
+
+  try {
+    await bot.api.sendMessage(
+      targetId,
+      `🎉 *Tabriklaymiz!*\n\nAdmin sizning hisobingizga **+${amount} ta bepul taqdimot (coin)** taqdim etdi! 🪙\n\nJoriy balansingiz: *${targetUser?.coins || amount} ta* taqdimot.`,
+      { parse_mode: 'Markdown' }
+    );
+  } catch (_) {}
+
+  await ctx.reply(`✅ *Foydalanuvchi* (\`${targetId}\`)ga **+${amount} ta coin** muvaffaqiyatli berildi! 🪙\nUning joriy balansi: *${targetUser?.coins || amount} ta*`, { parse_mode: 'Markdown' });
+});
+
 // Foydalanuvchi matn yozganda
-bot.on('message:text', async (ctx) => {
+bot.on('message:text', async (ctx, next) => {
   const text = ctx.message.text.trim();
-  if (text.startsWith('/')) return;
+  if (text.startsWith('/')) return next();
 
   const isSubscribed = await isUserSubscribedToChannel(ctx.chat.id);
   if (!isSubscribed) {
@@ -1699,11 +1890,56 @@ bot.on('message:text', async (ctx) => {
     });
   }
 
-  // Agar foydalanuvchi oddiy matn sifatida "start", "restart", "boshlash", "menyu" deb yozsa
   const lowerText = text.toLowerCase();
+
+  // Agar foydalanuvchi oddiy matn sifatida "start", "restart", "boshlash", "menyu" deb yozsa
   if (['start', 'restart', 'boshlash', 'qayta ishga tushirish', 'bosh menyu', 'menu', 'menyu'].includes(lowerText)) {
     sessions.delete(ctx.chat.id);
     return sendWelcomeMenu(ctx, null, true);
+  }
+
+  // Agar foydalanuvchi slashsiz "users" yoki "foydalanuvchilar" deb yozsa
+  if (['users', 'foydalanuvchilar'].includes(lowerText)) {
+    return showAdminUsersList(ctx);
+  }
+
+  // Agar foydalanuvchi slashsiz "admin" yoki "panel" deb yozsa
+  if (['admin', 'panel'].includes(lowerText)) {
+    return handleAdminPanel(ctx);
+  }
+
+  // Agar foydalanuvchi slashsiz "promo" deb yozsa
+  if (['promo', 'promokod', 'promocode'].includes(lowerText)) {
+    if (isAdmin(ctx)) {
+      return showAdminPromoPanel(ctx);
+    } else {
+      sessions.set(ctx.chat.id, { step: 'AWAIT_PROMO_CODE' });
+      return ctx.reply(`🎟 *Promo-kodni yozib yuboring:*\n\n(Namuna: \`SOVGA\` — 1 ta bepul koin beradi 🎁)`, { parse_mode: 'Markdown' });
+    }
+  }
+
+  // Agar foydalanuvchi slashsiz "vip" deb yozsa
+  if (['vip'].includes(lowerText)) {
+    return showVipInfo(ctx);
+  }
+
+  // Agar foydalanuvchi slashsiz "balance", "balans" deb yozsa
+  if (['balance', 'balans', 'koin', 'hisob'].includes(lowerText)) {
+    return showUserBalance(ctx);
+  }
+
+  // Agar foydalanuvchi slashsiz "help", "yordam" deb yozsa
+  if (['help', 'yordam'].includes(lowerText)) {
+    return ctx.reply(
+      `📖 *Botdan foydalanish bo'yicha qo'llanma:*\n\n1. **Mavzu yozish:** Shunchaki taqdimot mavzusini yozing.\n2. **Ovozli xabar:** Mikrofonni bosib mavzuni gapiring.\n3. **Hujjat yuborish:** Word (.docx), PDF yoki matnli fayl yuboring.\n4. **Konspekt fotosi:** Daftardagi yozuv rasmini yuboring.\n5. **YouTube:** Video havolasini yuboring.`,
+      { parse_mode: 'Markdown' }
+    );
+  }
+
+  // Agar foydalanuvchi slashsiz "cancel", "bekor" deb yozsa
+  if (['cancel', 'bekor'].includes(lowerText)) {
+    sessions.delete(ctx.chat.id);
+    return ctx.reply("❌ Jarayon bekor qilindi. Yangi taqdimot uchun mavzu yozishingiz mumkin.");
   }
 
   const session = sessions.get(ctx.chat.id);
@@ -1821,160 +2057,4 @@ bot.on('message:text', async (ctx) => {
       reply_markup: getCategoryKeyboard(),
     }
   );
-});
-
-// HTML maxsus belgilarini xavfsiz qilish
-function escapeHtml(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-// Admin uchun foydalanuvchilar ro'yxati va usernamelarini ko'rsatish funksiyasi
-async function showAdminUsersList(ctx) {
-  if (!isAdmin(ctx)) {
-    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
-  }
-
-  const allUsers = getAllUsers();
-  const totalCount = allUsers.length;
-
-  if (totalCount === 0) {
-    return ctx.reply("ℹ️ Hozircha botda ro'yxatdan o'tgan foydalanuvchilar mavjud emas.");
-  }
-
-  const usersWithUsername = allUsers.filter(u => u.username && u.username.trim()).length;
-  const usersWithoutUsername = totalCount - usersWithUsername;
-  const totalCoins = allUsers.reduce((acc, u) => acc + (u.coins || 0), 0);
-  const totalUsedCoins = allUsers.reduce((acc, u) => acc + (u.usedCoins || 0), 0);
-
-  // Telegram 4096 belgilik cheklovidan oshib ketmasligi uchun foydalanuvchilarni 25 tadan qismlarga (chunks) bo'lib yuboramiz
-  const CHUNK_SIZE = 25;
-  const totalPages = Math.ceil(totalCount / CHUNK_SIZE);
-
-  for (let page = 0; page < totalPages; page++) {
-    const chunk = allUsers.slice(page * CHUNK_SIZE, (page + 1) * CHUNK_SIZE);
-    let msg = '';
-
-    if (page === 0) {
-      msg += `👑 <b>Bot Foydalanuvchilari Ro'yxati:</b>\n\n`;
-      msg += `📊 <b>Jami foydalanuvchilar soni:</b> <code>${totalCount} ta</code>\n`;
-      msg += `🌐 <b>Username mavjud:</b> <code>${usersWithUsername} ta</code>\n`;
-      msg += `👤 <b>Username yo'q:</b> <code>${usersWithoutUsername} ta</code>\n`;
-      msg += `🪙 <b>Foydalanuvchilar balansi:</b> <code>${totalCoins} ta koin</code> (Ishlatilgan: ${totalUsedCoins} ta)\n`;
-      msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-    } else {
-      msg += `📄 <b>Foydalanuvchilar ro'yxati (${page + 1}/${totalPages}-qism):</b>\n━━━━━━━━━━━━━━━━━━━━━━\n`;
-    }
-
-    chunk.forEach((u, i) => {
-      const index = page * CHUNK_SIZE + i + 1;
-      const uname = u.username && u.username.trim()
-        ? `@${escapeHtml(u.username)}`
-        : `<i>(Username yo'q)</i>`;
-      const fname = escapeHtml(u.firstName || 'Foydalanuvchi');
-      const isUserAdmin = isAdmin(u.userId);
-      const adminTag = isUserAdmin ? ' 👑 <b>[Admin]</b>' : '';
-      const isVip = u.vipUntil && new Date(u.vipUntil) > new Date();
-      const vipTag = isVip ? ' 💎 <b>[VIP]</b>' : '';
-
-      msg += `${index}. ${uname} (${fname})${adminTag}${vipTag}\n`;
-      msg += `   🆔 <code>${escapeHtml(u.userId)}</code> • 🪙 <b>${u.coins || 0} ta</b> koin`;
-      if (u.referralsCount > 0) {
-        msg += ` • 👥 ${u.referralsCount} ta taklif`;
-      }
-      msg += `\n`;
-    });
-
-    if (page === totalPages - 1) {
-      msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-      msg += `💡 <i>Foydalanuvchiga koin berish uchun:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>`;
-    }
-
-    await ctx.reply(msg, {
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-    });
-  }
-}
-
-// /users buyrug'i (Faqat admin uchun: foydalanuvchilar soni va usernamelari)
-bot.command(['users', 'foydalanuvchilar'], async (ctx) => {
-  await showAdminUsersList(ctx);
-});
-
-// Admin panelidagi foydalanuvchilar tugmasi (Callback)
-bot.callbackQuery('admin_users_list', async (ctx) => {
-  if (!isAdmin(ctx)) {
-    return ctx.answerCallbackQuery({ text: "❌ Faqat admin uchun!", show_alert: true });
-  }
-  await ctx.answerCallbackQuery();
-  await showAdminUsersList(ctx);
-});
-
-// /admin buyrug'i (Admin boshqaruv paneli)
-bot.command('admin', async (ctx) => {
-  if (!isAdmin(ctx)) {
-    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
-  }
-
-  const stats = getStats();
-  const recent = getAllPresentations(8);
-
-  let text = `👑 *Admin Boshqaruv Paneli:*\n\n`;
-  text += `👥 *Jami foydalanuvchilar:* ${stats.totalUsers} ta\n`;
-  text += `📊 *Jami taqdimotlar:* ${stats.totalPresentations} ta\n`;
-  text += `🪙 *Ishlatilgan coinlar:* ${stats.totalCoinsUsed} ta\n\n`;
-  text += `📝 *So'nggi taqdimotlar:*\n`;
-
-  if (!recent.length) {
-    text += `_Hozircha taqdimotlar yo'q._\n`;
-  } else {
-    recent.forEach((p, idx) => {
-      text += `${idx + 1}. *${p.firstName}* ${p.username ? `(@${p.username})` : `[ID:${p.userId}]`}: "${p.topic}" (${p.slideCount} ta slayd)\n`;
-    });
-  }
-
-  text += `\n👥 *Foydalanuvchilar va usernamelar:* \`/users\``;
-  text += `\n💡 *Foydalanuvchiga coin berish:* \n\`/give <ID> <SON>\` (masalan: \`/give 8388288136 5\`)`;
-  text += `\n🎟 *Promo-kodlar boshqaruvi:* \`/promo\` (yangi yaratish va ko'rish)`;
-
-  const keyboard = new InlineKeyboard()
-    .text('👥 Foydalanuvchilar (/users)', 'admin_users_list')
-    .text('🎟 Promo-kodlar (/promo)', 'action_promo_admin');
-
-  await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: keyboard });
-});
-
-// /give buyrug'i (Foydalanuvchiga coin taqdim qilish)
-bot.command('give', async (ctx) => {
-  if (!isAdmin(ctx)) {
-    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
-  }
-
-  const args = (ctx.match || '').trim().split(/\s+/);
-  if (args.length < 2) {
-    return ctx.reply("Qo'llash: `/give <userId> <amount>`\nMasalan: `/give 8388288136 5`", { parse_mode: 'Markdown' });
-  }
-
-  const targetId = args[0];
-  const amount = parseInt(args[1], 10);
-
-  if (isNaN(amount) || amount <= 0) {
-    return ctx.reply("❌ Coin miqdori musbat butun son bo'lishi kerak.");
-  }
-
-  giveCoins(targetId, amount);
-  const targetUser = getUser(targetId);
-
-  try {
-    await bot.api.sendMessage(
-      targetId,
-      `🎉 *Tabriklaymiz!*\n\nAdmin sizning hisobingizga **+${amount} ta bepul taqdimot (coin)** taqdim etdi! 🪙\n\nJoriy balansingiz: *${targetUser?.coins || amount} ta* taqdimot.`,
-      { parse_mode: 'Markdown' }
-    );
-  } catch (_) {}
-
-  await ctx.reply(`✅ *Foydalanuvchi* (\`${targetId}\`)ga **+${amount} ta coin** muvaffaqiyatli berildi! 🪙\nUning joriy balansi: *${targetUser?.coins || amount} ta*`, { parse_mode: 'Markdown' });
 });
