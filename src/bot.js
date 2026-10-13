@@ -1727,6 +1727,7 @@ async function showAdminUsersList(ctx) {
 
   const allUsers = getAllUsers();
   const totalCount = allUsers.length;
+  const stats = getStats ? getStats() : { totalPresentations: 0 };
 
   if (totalCount === 0) {
     return ctx.reply("ℹ️ Hozircha botda ro'yxatdan o'tgan foydalanuvchilar mavjud emas.");
@@ -1737,8 +1738,8 @@ async function showAdminUsersList(ctx) {
   const totalCoins = allUsers.reduce((acc, u) => acc + (u.coins || 0), 0);
   const totalUsedCoins = allUsers.reduce((acc, u) => acc + (u.usedCoins || 0), 0);
 
-  // Telegram 4096 belgilik cheklovidan oshib ketmasligi uchun foydalanuvchilarni 25 tadan qismlarga (chunks) bo'lib yuboramiz
-  const CHUNK_SIZE = 25;
+  // Telegram 4096 belgilik cheklovidan oshib ketmasligi uchun foydalanuvchilarni 15 tadan qismlarga bo'lib yuboramiz
+  const CHUNK_SIZE = 15;
   const totalPages = Math.ceil(totalCount / CHUNK_SIZE);
 
   for (let page = 0; page < totalPages; page++) {
@@ -1746,11 +1747,13 @@ async function showAdminUsersList(ctx) {
     let msg = '';
 
     if (page === 0) {
-      msg += `👑 <b>Bot Foydalanuvchilari Ro'yxati:</b>\n\n`;
-      msg += `📊 <b>Jami foydalanuvchilar soni:</b> <code>${totalCount} ta</code>\n`;
+      msg += `👑 <b>BOT FOYDALANUVCHILARI VA STATISTIKA:</b>\n\n`;
+      msg += `📊 <b>Jami foydalanuvchilar:</b> <code>${totalCount} ta</code>\n`;
       msg += `🌐 <b>Username mavjud:</b> <code>${usersWithUsername} ta</code>\n`;
       msg += `👤 <b>Username yo'q:</b> <code>${usersWithoutUsername} ta</code>\n`;
-      msg += `🪙 <b>Foydalanuvchilar balansi:</b> <code>${totalCoins} ta koin</code> (Ishlatilgan: ${totalUsedCoins} ta)\n`;
+      msg += `🪙 <b>Foydalanuvchilardagi koinlar:</b> <code>${totalCoins} ta</code>\n`;
+      msg += `📉 <b>Ishlatilgan koinlar:</b> <code>${totalUsedCoins} ta</code>\n`;
+      msg += `📑 <b>Jami yaratilgan taqdimotlar:</b> <code>${stats.totalPresentations || 0} ta</code>\n`;
       msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     } else {
       msg += `📄 <b>Foydalanuvchilar ro'yxati (${page + 1}/${totalPages}-qism):</b>\n━━━━━━━━━━━━━━━━━━━━━━\n`;
@@ -1767,28 +1770,42 @@ async function showAdminUsersList(ctx) {
       const isVip = u.vipUntil && new Date(u.vipUntil) > new Date();
       const vipTag = isVip ? ' 💎 <b>[VIP]</b>' : '';
 
-      msg += `${index}. ${uname} (${fname})${adminTag}${vipTag}\n`;
-      msg += `   🆔 <code>${escapeHtml(u.userId)}</code> • 🪙 <b>${u.coins || 0} ta</b> koin`;
+      const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ') : '-';
+      const lastSeen = u.lastActive ? new Date(u.lastActive).toLocaleDateString('uz-UZ') : '-';
+
+      msg += `<b>${index}.</b> 👤 <b>Nikname:</b> ${fname}\n`;
+      msg += `   🌐 <b>Username:</b> ${uname}${adminTag}${vipTag}\n`;
+      msg += `   🆔 <b>ID:</b> <code>${escapeHtml(u.userId)}</code>\n`;
+      msg += `   🪙 <b>Balans:</b> ${u.coins || 0} koin | 📉 <b>Ishlatgan:</b> ${u.usedCoins || 0} ta`;
       if (u.referralsCount > 0) {
-        msg += ` • 👥 ${u.referralsCount} ta taklif`;
+        msg += ` | 👥 <b>Taklif:</b> ${u.referralsCount} ta`;
       }
-      msg += `\n`;
+      msg += `\n   📅 <b>Ro'yxatdan:</b> ${regDate} | 🕒 <b>Faollik:</b> ${lastSeen}\n\n`;
     });
 
     if (page === totalPages - 1) {
       msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-      msg += `💡 <i>Foydalanuvchiga koin berish uchun:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>`;
+      msg += `💡 <i>Koin berish:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>`;
     }
 
-    await ctx.reply(msg, {
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
-    });
+    try {
+      await ctx.reply(msg, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      });
+    } catch (err) {
+      console.warn('[showAdminUsersList HTML fallback]:', err.message);
+      const plainText = msg
+        .replace(/<b>(.*?)<\/b>/g, '$1')
+        .replace(/<i>(.*?)<\/i>/g, '$1')
+        .replace(/<code>(.*?)<\/code>/g, '$1');
+      await ctx.reply(plainText, { disable_web_page_preview: true });
+    }
   }
 }
 
-// /users buyrug'i (Faqat admin uchun: foydalanuvchilar soni va usernamelari)
-bot.command(['users', 'foydalanuvchilar'], async (ctx) => {
+// /users buyrug'i (Faqat admin uchun: foydalanuvchilar soni, usernamesi, niknamesi va statistikasi)
+bot.command(['users', 'user', 'foydalanuvchilar', 'userlar', 'statistika', 'stats'], async (ctx) => {
   await showAdminUsersList(ctx);
 });
 
