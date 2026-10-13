@@ -188,7 +188,6 @@ const ADMIN_IDS = new Set([
   '6600344525',
   '7569927187',
   '7862857511',
-  '5768084654',
   String(config.adminId || '').trim(),
 ].filter(Boolean));
 
@@ -197,7 +196,6 @@ const ADMIN_USERNAMES = new Set([
   'akhrorov0',
   'akhrrv18',
   'akhrorovai',
-  'mamurjonov00',
 ]);
 
 export function isAdmin(ctxOrId) {
