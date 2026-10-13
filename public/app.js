@@ -6,6 +6,17 @@ if (tg) {
   if (tg.setHeaderColor) tg.setHeaderColor('#0b131f');
 }
 
+// Har qanday /api/ so'roviga xavfsizlik uchun avtomatik Telegram imzosi (initData) qo'shish
+const originalFetch = window.fetch;
+window.fetch = function (url, options = {}) {
+  const opts = { ...options };
+  opts.headers = { ...(opts.headers || {}) };
+  if (window.Telegram?.WebApp?.initData) {
+    opts.headers['x-telegram-init-data'] = window.Telegram.WebApp.initData;
+  }
+  return originalFetch(url, opts);
+};
+
 // Global holat
 const currentUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : null;
 const currentUsername = tg?.initDataUnsafe?.user?.username || '';

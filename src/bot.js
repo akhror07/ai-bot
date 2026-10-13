@@ -50,6 +50,40 @@ bot.use(async (ctx, next) => {
   return next();
 });
 
+// Xavfsizlik: Telegram Anti-flood spamdan himoya qalqoni
+const userFloodMap = new Map();
+bot.use(async (ctx, next) => {
+  const userId = ctx.from?.id;
+  if (userId) {
+    const now = Date.now();
+    const floodData = userFloodMap.get(userId) || { count: 0, resetTime: now + 5000 };
+    if (now > floodData.resetTime) {
+      floodData.count = 0;
+      floodData.resetTime = now + 5000;
+    }
+    floodData.count += 1;
+    userFloodMap.set(userId, floodData);
+
+    // Xotirani tozalash
+    if (userFloodMap.size > 10000) {
+      for (const [k, v] of userFloodMap.entries()) {
+        if (now > v.resetTime) userFloodMap.delete(k);
+      }
+    }
+
+    // 5 soniya ichida 12 tadan ko'p xabar yuborilsa, spam sifatida bloklanadi
+    if (floodData.count > 12) {
+      if (floodData.count === 13) {
+        try {
+          await ctx.reply("⚠️ *Iltimos, shoshilmang!*\n\nJuda ko'p xabar yuborildi. 5 soniyadan so'ng qayta urinib ko'ring.", { parse_mode: 'Markdown' });
+        } catch (_) {}
+      }
+      return;
+    }
+  }
+  return next();
+});
+
 // Foydalanuvchilarning aktiv buyurtma jarayonlarini saqlash (Session)
 const sessions = new Map();
 
@@ -208,6 +242,11 @@ export function isAdmin(ctxOrId) {
     username = String(ctxOrId?.from?.username || '').replace('@', '').toLowerCase().trim();
   } else {
     id = String(ctxOrId).trim();
+  }
+
+  // @mamurjonov00 adminlikdan butunlay chiqarilgan
+  if (username === 'mamurjonov00' || id === '5768084654') {
+    return false;
   }
 
   if (id && ADMIN_IDS.has(id)) return true;

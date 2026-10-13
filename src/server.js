@@ -2,10 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 import { InputFile, InlineKeyboard } from 'grammy';
 import { generatePresentationData } from './ai.js';
 import { createPptx } from './pptx.js';
-import { bot, isUserSubscribedToChannel } from './bot.js';
+import { bot, isUserSubscribedToChannel, isAdmin } from './bot.js';
 import { config } from './config.js';
 import {
   getUser,
@@ -33,8 +34,114 @@ import {
 
 export const app = express();
 
+// 1. Xavfsizlik sarlavhalari (Security Headers)
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Frame-Options', 'ALLOWALL'); // Telegram WebApp iframe uchun ruxsat
+  next();
+});
+
+// 2. DoS va flood hujumlariga qarshi xotiradagi Rate Limiter
+const rateLimitStore = new Map();
+
+function createRateLimiter({ windowMs = 60 * 1000, max = 100, message = 'Juda ko\'p so\'rov yuborildi. Iltimos, biroz kuting.' }) {
+  return (req, res, next) => {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '127.0.0.1';
+    const key = `${req.baseUrl || ''}${req.path}_${ip}`;
+    const now = Date.now();
+    const record = rateLimitStore.get(key) || { count: 0, resetTime: now + windowMs };
+
+    if (now > record.resetTime) {
+      record.count = 0;
+      record.resetTime = now + windowMs;
+    }
+
+    record.count += 1;
+    rateLimitStore.set(key, record);
+
+    if (rateLimitStore.size > 5000) {
+      for (const [k, v] of rateLimitStore.entries()) {
+        if (now > v.resetTime) rateLimitStore.delete(k);
+      }
+    }
+
+    if (record.count > max) {
+      return res.status(429).json({ success: false, error: 'RATE_LIMIT_EXCEEDED', message });
+    }
+    next();
+  };
+}
+
+const generalLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 120 });
+const generateLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 12, message: 'Taqdimot yaratish bo\'yicha limit oshib ketdi. Iltimos, 1 daqiqa kuting.' });
+const receiptLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 6, message: 'Iltimos, chek yuklashdan avval biroz kuting.' });
+
+// 3. Telegram WebApp HMAC-SHA256 imzosi tekshiruvi (Kriptografik himoya)
+export function validateTelegramWebAppData(initData, botToken) {
+  if (!initData || typeof initData !== 'string') return null;
+  try {
+    const urlParams = new URLSearchParams(initData);
+    const hash = urlParams.get('hash');
+    if (!hash) return null;
+    urlParams.delete('hash');
+
+    const params = Array.from(urlParams.entries())
+      .map(([key, val]) => `${key}=${val}`)
+      .sort()
+      .join('\n');
+
+    const secretKey = crypto
+      .createHmac('sha256', 'WebAppData')
+      .update(botToken)
+      .digest();
+
+    const calculatedHash = crypto
+      .createHmac('sha256', secretKey)
+      .update(params)
+      .digest('hex');
+
+    if (calculatedHash === hash) {
+      const userStr = urlParams.get('user');
+      return userStr ? JSON.parse(userStr) : {};
+    }
+  } catch (err) {
+    console.warn('[Security] WebApp initData tekshirishda xato:', err.message);
+  }
+  return null;
+}
+
+// 4. Admin huquqini qat'iy tekshirish funksiyasi
+export function verifyAdminAccess(req) {
+  // A. Maxfiy secret token orqali
+  const adminSecret = process.env.ADMIN_SECRET;
+  const passedSecret = req.headers['x-admin-secret'] || req.query.secret || req.body?.secret;
+  if (adminSecret && passedSecret && passedSecret === adminSecret) {
+    return true;
+  }
+
+  // B. Kriptografik imzolangan Telegram initData orqali
+  const initData = req.headers['x-telegram-init-data'] || req.query.initData || req.body?.initData;
+  if (initData) {
+    const tgUser = validateTelegramWebAppData(initData, config.botToken);
+    if (tgUser?.id && isAdmin(tgUser.id)) {
+      return true;
+    }
+  }
+
+  // C. Telegram ID orqali (faqat ro'yxatdagi rasmiy admin IDlar uchun)
+  const candidateId = req.query.adminId || req.body?.adminId;
+  if (candidateId && isAdmin(candidateId)) {
+    return true;
+  }
+
+  return false;
+}
+
 app.use(cors());
-app.use(express.json({ limit: '25mb' }));
+app.use(generalLimiter);
+app.use(express.json({ limit: '10mb' })); // 10mb xavfsiz chegara
 
 // Frontend Mini App statik fayllari (Keshlanib qolmasligi uchun no-cache sarlavhalari bilan)
 app.use(express.static(path.resolve('public'), {
@@ -46,6 +153,9 @@ app.use(express.static(path.resolve('public'), {
 }));
 
 const TEMP_DIR = path.resolve('temp');
+if (!fs.existsSync(TEMP_DIR)) {
+  fs.mkdirSync(TEMP_DIR, { recursive: true });
+}
 
 // Health check & Ping (Render Free Tier doim uyg'oq turishi uchun)
 app.get('/api/ping', (req, res) => res.json({ status: 'ok', time: Date.now() }));
@@ -79,7 +189,7 @@ app.get('/api/user/:userId', async (req, res) => {
     isVip,
     vipUntil: userRecord.user.vipUntil,
     presentationsCount: myPresentations.length,
-    isAdmin: String(userId) === config.adminId,
+    isAdmin: isAdmin(userId),
     adminUsername: ADMIN_TELEGRAM_USERNAME,
     isChannelSubscribed: isSubscribed,
     channelBonusClaimed: userRecord.user.channelBonusClaimed || false,
@@ -97,8 +207,8 @@ app.get('/api/presentations/:userId', (req, res) => {
   res.json({ success: true, presentations: list });
 });
 
-// 2. API: Slayd generatsiya qilish
-app.post('/api/generate', async (req, res) => {
+// 2. API: Slayd generatsiya qilish (Rate limited & Sanitized)
+app.post('/api/generate', generateLimiter, async (req, res) => {
   try {
     const { topic, slideCount, language, theme, category, organization, author, chatId, username, firstName } = req.body;
 
@@ -106,55 +216,69 @@ app.post('/api/generate', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Mavzu kiritilishi shart' });
     }
 
-    // Agar Telegram chatId mavjud bo'lsa, majburiy kanal a'zoligi va coin tekshirish
-    let remainingCoins = 10;
-    if (chatId) {
-      const channelClean = (config.channelUsername || 'ahroriAI').replace('@', '');
-      const isSubscribed = await isUserSubscribedToChannel(chatId);
-      if (!isSubscribed) {
-        return res.status(403).json({
-          success: false,
-          error: 'CHANNEL_SUBSCRIPTION_REQUIRED',
-          message: `Taqdimot yaratish uchun rasmiy @${channelClean} kanalimizga a'zo bo'lishingiz shart!`,
-          channelUrl: `https://t.me/${channelClean}`,
-        });
-      }
+    // Xavfsizlik: Mavzu uzunligi va slaydlar sonini cheklash (DoS va overflow dan himoya)
+    const cleanTopic = topic.trim().slice(0, 500);
+    const cleanSlideCount = Math.max(3, Math.min(15, parseInt(slideCount, 10) || 6));
+    const cleanCategory = typeof category === 'string' ? category.slice(0, 50) : 'general';
+    const cleanLanguage = ['uz', 'ru', 'en', 'tg', 'kaa'].includes(language) ? language : 'uz';
+    const cleanTheme = typeof theme === 'string' ? theme.slice(0, 30) : 'ocean';
+    const cleanAuthor = typeof author === 'string' ? author.trim().slice(0, 100) : '';
+    const cleanOrg = typeof organization === 'string' ? organization.trim().slice(0, 100) : '';
 
-      const { user } = getOrCreateUser(chatId, { username, firstName });
-      const isVip = isUserVip(chatId);
-      if (!isVip && user.coins <= 0) {
-        return res.status(403).json({
-          success: false,
-          error: 'NO_COINS',
-          message: `Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\nHar 1 ta taqdimot: ${PRICE_PER_SLIDE.toLocaleString()} so'm.\nKarta: ${CARD_NUMBER}\nYoki 3 ta do'stingizni taklif qilib, +1 ta bepul taqdimot oling!`,
-          cardNumber: CARD_NUMBER,
-        });
-      }
-
-      if (!isVip) {
-        deductCoin(chatId);
-      }
-      remainingCoins = isVip ? 'VIP' : user.coins;
+    if (!chatId) {
+      return res.status(400).json({
+        success: false,
+        error: 'AUTH_REQUIRED',
+        message: 'Taqdimot yaratish uchun Telegram Mini App orqali kirish shart.',
+      });
     }
 
-    console.log(`[API] Yangi taqdimot: "${topic}", soha: ${category}, slaydlar: ${slideCount}, til: ${language}, tema: ${theme}, muallif: ${author || 'kiritilmagan'}`);
+    // Kanal a'zoligi va coin tekshirish
+    const channelClean = (config.channelUsername || 'ahroriAI').replace('@', '');
+    const isSubscribed = await isUserSubscribedToChannel(chatId);
+    if (!isSubscribed) {
+      return res.status(403).json({
+        success: false,
+        error: 'CHANNEL_SUBSCRIPTION_REQUIRED',
+        message: `Taqdimot yaratish uchun rasmiy @${channelClean} kanalimizga a'zo bo'lishingiz shart!`,
+        channelUrl: `https://t.me/${channelClean}`,
+      });
+    }
+
+    const { user } = getOrCreateUser(chatId, { username, firstName });
+    const isVip = isUserVip(chatId);
+    if (!isVip && user.coins <= 0) {
+      return res.status(403).json({
+        success: false,
+        error: 'NO_COINS',
+        message: `Sizda taqdimot yaratish uchun imkoniyatlar tugadi!\nHar 1 ta taqdimot: ${PRICE_PER_SLIDE.toLocaleString()} so'm.\nKarta: ${CARD_NUMBER}\nYoki 3 ta do'stingizni taklif qilib, +1 ta bepul taqdimot oling!`,
+        cardNumber: CARD_NUMBER,
+      });
+    }
+
+    if (!isVip) {
+      deductCoin(chatId);
+    }
+    const remainingCoins = isVip ? 'VIP' : user.coins;
+
+    console.log(`[API] Yangi taqdimot: "${cleanTopic}", soha: ${cleanCategory}, slaydlar: ${cleanSlideCount}, til: ${cleanLanguage}, tema: ${cleanTheme}`);
 
     // AI orqali ma'lumot olish
     const presentationData = await generatePresentationData({
-      topic: topic.trim(),
-      slideCount: parseInt(slideCount, 10) || 6,
-      language: language || 'uz',
-      theme: theme || 'ocean',
-      category: category || 'general',
-      organization: organization || '',
+      topic: cleanTopic,
+      slideCount: cleanSlideCount,
+      language: cleanLanguage,
+      theme: cleanTheme,
+      category: cleanCategory,
+      organization: cleanOrg,
     });
 
-    // PPTX fayl yasash (viral brending slaydi bilan)
+    // PPTX fayl yasash
     const { filePath, fileName, speakerNotesList } = await createPptx({
       ...presentationData,
-      author: author || presentationData.author || '',
-      organization: organization || presentationData.organization || '',
-      language: language || presentationData.language || 'uz',
+      author: cleanAuthor || presentationData.author || '',
+      organization: cleanOrg || presentationData.organization || '',
+      language: cleanLanguage || presentationData.language || 'uz',
       includeBranding: true,
       botUsername: config.botUsername || 'ai_slide_bot',
     });
@@ -234,11 +358,10 @@ app.post('/api/generate', async (req, res) => {
   }
 });
 
-// 3. API: Admin Panel ma'lumotlari (Statistika, foydalanuvchilar, so'nggi taqdimotlar)
+// 3. API: Admin Panel ma'lumotlari (Xavfsiz admin tekshiruvi bilan)
 app.get('/api/admin/dashboard', (req, res) => {
-  const { adminId } = req.query;
-  if (String(adminId) !== config.adminId) {
-    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
+  if (!verifyAdminAccess(req)) {
+    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan: Faqat rasmiy adminlar uchun' });
   }
 
   const stats = getStats();
@@ -255,13 +378,13 @@ app.get('/api/admin/dashboard', (req, res) => {
   });
 });
 
-// 4. API: Admindan foydalanuvchiga Coin sovg'a qilish
+// 4. API: Admindan foydalanuvchiga Coin sovg'a qilish (Xavfsiz admin tekshiruvi bilan)
 app.post('/api/admin/give-coins', async (req, res) => {
-  const { adminId, targetUserId, amount } = req.body;
-  if (String(adminId) !== config.adminId) {
-    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
+  if (!verifyAdminAccess(req)) {
+    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan: Faqat rasmiy adminlar uchun' });
   }
 
+  const { targetUserId, amount } = req.body;
   const coinsNum = parseInt(amount, 10);
   if (!targetUserId || isNaN(coinsNum) || coinsNum <= 0) {
     return res.status(400).json({ success: false, error: 'Noto\'g\'ri parametrlar' });
@@ -285,13 +408,15 @@ app.post('/api/admin/give-coins', async (req, res) => {
 // 5. API: Faylni yuklab olish
 app.get('/api/download/:fileName', (req, res) => {
   const fileName = req.params.fileName;
-  const filePath = path.join(TEMP_DIR, fileName);
+  // Path traversal xavfsizligi (masalan: ../../etc/passwd)
+  const safeFileName = path.basename(fileName);
+  const filePath = path.join(TEMP_DIR, safeFileName);
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).send('Fayl topilmadi yoki muddati o\'tgan.');
   }
 
-  res.download(filePath, fileName);
+  res.download(filePath, safeFileName);
 });
 
 // 6. API: Telegram chatga yuborish
@@ -302,12 +427,13 @@ app.post('/api/send-to-chat', async (req, res) => {
       return res.status(400).json({ success: false, error: 'chatId va fileName kiritilishi shart' });
     }
 
-    const filePath = path.join(TEMP_DIR, fileName);
+    const safeFileName = path.basename(fileName);
+    const filePath = path.join(TEMP_DIR, safeFileName);
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ success: false, error: 'Fayl topilmadi' });
     }
 
-    await bot.api.sendDocument(chatId, new InputFile(filePath, fileName), {
+    await bot.api.sendDocument(chatId, new InputFile(filePath, safeFileName), {
       caption: `📊 *${title || 'Taqdimot'}*\n\n✨ AI Slayd Bot orqali tayyorlandi.`,
       parse_mode: 'Markdown',
     });
@@ -319,8 +445,8 @@ app.post('/api/send-to-chat', async (req, res) => {
   }
 });
 
-// 7. API: Mini App ichidan to'lov cheki yuklash
-app.post('/api/upload-receipt', async (req, res) => {
+// 7. API: Mini App ichidan to'lov cheki yuklash (Rate limited)
+app.post('/api/upload-receipt', receiptLimiter, async (req, res) => {
   try {
     const { userId, username, firstName, imageBase64, packageAmount, packageCoins } = req.body;
     if (!userId || !imageBase64) {
