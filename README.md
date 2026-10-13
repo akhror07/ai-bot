@@ -46,8 +46,8 @@ npm install
 ### 2. `.env` faylini sozlash
 Loyihaning asosiy papkasida `.env` fayli mavjudligiga ishonch hosil qiling:
 ```env
-BOT_TOKEN=8925416268:AAFhSrfU4zCMYQbT_VKxcJTkdUy-acb06qE
-GEMINI_API_KEY=AQ.Ab8RN6IizhgjzEFjdHxI9BJ4H7mfH_EUwlNyrZzTOtDLjeDA9A
+BOT_TOKEN=your_telegram_bot_token_here
+GEMINI_API_KEY=your_gemini_api_key_here
 PORT=3000
 MINI_APP_URL=
 ```
