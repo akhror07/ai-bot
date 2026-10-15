@@ -1,0 +1,28 @@
+[
+  {
+    "id": "pres_1791134051431_438",
+    "userId": "5768084654",
+    "username": "mamurjonov00",
+    "firstName": "Mamurjanov",
+    "topic": "Til va Terminologiya: Tibbiyotda Aniq Muloqot",
+    "category": "medical",
+    "slideCount": 10,
+    "theme": "ocean",
+    "fileName": "til_va_terminologiya__tibbiyot_1791134051413.pptx",
+    "downloadUrl": "/api/download/til_va_terminologiya__tibbiyot_1791134051413.pptx",
+    "createdAt": "2026-10-04T17:14:11.431Z"
+  },
+  {
+    "id": "pres_1791133964160_294",
+    "userId": "8388288136",
+    "username": "Akhrorov18",
+    "firstName": "Akhrorov",
+    "topic": "Sun'iy Intellekt Kelajagi",
+    "category": "tech",
+    "slideCount": 18,
+    "theme": "sunset",
+    "fileName": "sun_iy_intellekt_kelajagi_1791133964137.pptx",
+    "downloadUrl": "/api/download/sun_iy_intellekt_kelajagi_1791133964137.pptx",
+    "createdAt": "2026-10-04T17:12:44.161Z"
+  }
+]

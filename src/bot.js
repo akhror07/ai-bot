@@ -33,6 +33,7 @@ import {
   getAllAdmins,
   addAdmin,
   removeAdmin,
+  findUser,
 } from './db.js';
 import { extractTextFromDocument } from './docs.js';
 import { processVoiceMessage } from './voice.js';
@@ -55,6 +56,21 @@ bot.use(async (ctx, next) => {
   const uname = String(ctx.from?.username || '').replace('@', '').toLowerCase().trim();
   if (BANNED_USER_IDS.has(uid) || BANNED_USERNAMES.has(uname) || uid === '5768084654' || uname === 'mamurjonov00') {
     return; // Butunlay to'xtatish
+  }
+  return next();
+});
+
+// Barcha murojaat qilgan foydalanuvchilarni avtomatik ro'yxatga olish / ma'lumotlarini yangilash
+bot.use(async (ctx, next) => {
+  if (ctx.from && ctx.from.id) {
+    const uid = String(ctx.from.id);
+    if (!BANNED_USER_IDS.has(uid) && uid !== '5768084654') {
+      getOrCreateUser(uid, {
+        username: ctx.from.username,
+        firstName: ctx.from.first_name,
+        lastName: ctx.from.last_name,
+      });
+    }
   }
   return next();
 });
@@ -1849,6 +1865,8 @@ async function showAdminUsersList(ctx) {
 
     if (page === totalPages - 1) {
       msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `✉️ <i>Alohida xabar yuborish:</i> <code>/send &lt;ID/@user&gt; &lt;xabar&gt;</code>\n`;
+      msg += `📢 <i>Hammaga xabar yuborish:</i> <code>/broadcast &lt;xabar&gt;</code>\n`;
       msg += `💡 <i>Koin berish:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>\n`;
       msg += `🚫 <i>Foydalanuvchini botdan chiqarish:</i> <code>/ban &lt;ID&gt;</code>`;
     }
@@ -1868,6 +1886,96 @@ async function showAdminUsersList(ctx) {
     }
   }
 }
+
+// /send yoki /msg buyrug'i (Admin alohida bitta foydalanuvchiga xabar yuborishi uchun)
+bot.command(['send', 'msg', 'yozish'], async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
+  }
+  const match = (ctx.match || '').trim();
+  const parts = match.split(/\s+/);
+  const target = parts[0];
+  const messageText = parts.slice(1).join(' ').trim();
+
+  if (!target || !messageText) {
+    return ctx.reply(
+      "ℹ️ <b>Foydalanuvchiga alohida xabar yuborish tartibi:</b>\n<code>/send &lt;ID yoki @username&gt; &lt;xabar matni&gt;</code>\n\n<b>Misollar:</b>\n<code>/send 8855934664 Salom, hisobingizga koin qo'shildi!</code>\n<code>/send @akhrorov18 Assalomu alaykum!</code>",
+      { parse_mode: 'HTML' }
+    );
+  }
+
+  const foundUser = findUser(target);
+  const targetChatId = foundUser ? foundUser.userId : target.replace(/^@/, '');
+
+  if (!targetChatId || BANNED_USER_IDS.has(String(targetChatId))) {
+    return ctx.reply("❌ Bu foydalanuvchi bloklangan yoki topilmadi!");
+  }
+
+  const targetName = foundUser
+    ? `${foundUser.firstName || 'Foydalanuvchi'} ${foundUser.username ? '(@' + foundUser.username + ')' : '[ID: ' + foundUser.userId + ']'}`
+    : `ID: ${targetChatId}`;
+
+  try {
+    await bot.api.sendMessage(targetChatId, messageText, { parse_mode: 'Markdown' });
+    await ctx.reply(`✅ Xabar yetkazildi!\n👤 <b>Qabul qiluvchi:</b> ${escapeHtml(targetName)}\n💬 <b>Xabar:</b>\n${escapeHtml(messageText)}`, { parse_mode: 'HTML' });
+  } catch (_) {
+    try {
+      await bot.api.sendMessage(targetChatId, messageText);
+      await ctx.reply(`✅ Xabar yetkazildi!\n👤 <b>Qabul qiluvchi:</b> ${escapeHtml(targetName)}\n💬 <b>Xabar:</b>\n${escapeHtml(messageText)}`, { parse_mode: 'HTML' });
+    } catch (err) {
+      await ctx.reply(`❌ Xabar yetkazilmadi (${escapeHtml(targetName)}):\n<code>${escapeHtml(err.message)}</code>\n<i>(Foydalanuvchi botni bloklagan bo'lishi mumkin)</i>`, { parse_mode: 'HTML' });
+    }
+  }
+});
+
+// /broadcast buyrug'i (Admin barcha bot foydalanuvchilariga xabar yuborishi uchun)
+bot.command(['broadcast', 'xabar', 'elon'], async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
+  }
+  const messageText = (ctx.match || '').trim();
+  if (!messageText) {
+    return ctx.reply(
+      "ℹ️ <b>Barcha foydalanuvchilarga xabar yuborish:</b>\n<code>/broadcast &lt;xabar matni&gt;</code>\n\nMisol:\n<code>/broadcast Diqqat yangilik! Yangi slayd shablonlari qo'shildi! 🚀</code>",
+      { parse_mode: 'HTML' }
+    );
+  }
+
+  const usersList = getAllUsers().filter(u => !BANNED_USER_IDS.has(String(u.userId)) && !BANNED_USERNAMES.has(String(u.username || '').toLowerCase().trim()));
+  if (usersList.length === 0) {
+    return ctx.reply("ℹ️ Botda faol foydalanuvchilar topilmadi.");
+  }
+
+  const statusMsg = await ctx.reply(`⏳ Xabar tarqatilmoqda (Jami: ${usersList.length} ta foydalanuvchi)...`);
+  let sent = 0;
+  let failed = 0;
+
+  for (const u of usersList) {
+    try {
+      await bot.api.sendMessage(u.userId, messageText, { parse_mode: 'Markdown' });
+      sent++;
+    } catch (_) {
+      try {
+        await bot.api.sendMessage(u.userId, messageText);
+        sent++;
+      } catch (e) {
+        failed++;
+      }
+    }
+    await new Promise(r => setTimeout(r, 40));
+  }
+
+  try {
+    await ctx.api.editMessageText(
+      ctx.chat.id,
+      statusMsg.message_id,
+      `✅ <b>Ommaviy xabarnoma yakunlandi!</b>\n\n📊 <b>Jami:</b> ${usersList.length} ta\n🚀 <b>Yetkazildi:</b> ${sent} ta\n❌ <b>Yetib bormadi:</b> ${failed} ta`,
+      { parse_mode: 'HTML' }
+    );
+  } catch (_) {
+    await ctx.reply(`✅ <b>Ommaviy xabarnoma yakunlandi!</b>\n\n📊 <b>Jami:</b> ${usersList.length} ta\n🚀 <b>Yetkazildi:</b> ${sent} ta\n❌ <b>Yetib bormadi:</b> ${failed} ta`, { parse_mode: 'HTML' });
+  }
+});
 
 // /ban buyrug'i (Admin foydalanuvchini botdan o'chirishi va bloklashi uchun)
 bot.command(['ban', 'deleteuser', 'removeuser'], async (ctx) => {

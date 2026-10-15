@@ -33,6 +33,7 @@ import {
   getAllAdmins,
   addAdmin,
   removeAdmin,
+  findUser,
 } from './db.js';
 
 export const app = express();
@@ -369,7 +370,7 @@ app.get('/api/admin/dashboard', (req, res) => {
 
   const stats = getStats();
   const recentPresentations = getAllPresentations(60);
-  const usersList = getAllUsers().slice(0, 100);
+  const usersList = getAllUsers();
   const feedbacksList = getAllFeedbacks(50);
 
   res.json({
@@ -445,26 +446,76 @@ app.post('/api/admin/remove-admin', (req, res) => {
   res.json(result);
 });
 
-// 4.4. API: Barcha bot foydalanuvchilariga xabar yuborish (Broadcast)
+// 4.4. API: Foydalanuvchilarga xabar yuborish (Hammaga birdaniga yoki Alohida foydalanuvchiga)
 app.post('/api/admin/broadcast', async (req, res) => {
   if (!verifyAdminAccess(req)) {
     return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
   }
 
-  const { message, buttonText, buttonUrl } = req.body;
+  const { message, buttonText, buttonUrl, targetType = 'all', targetUserId } = req.body;
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ success: false, error: 'Xabar matnini kiriting!' });
-  }
-
-  const usersList = getAllUsers();
-  if (!usersList || usersList.length === 0) {
-    return res.json({ success: true, sentCount: 0, failedCount: 0, total: 0, message: 'Foydalanuvchilar mavjud emas' });
   }
 
   const trimmedMsg = message.trim();
   const keyboard = (buttonText && buttonUrl && buttonUrl.startsWith('http'))
     ? new InlineKeyboard().url(buttonText.trim(), buttonUrl.trim())
     : undefined;
+
+  // 1. ALOHIDA BITTA FOYDALANUVCHIGA YUBORISH
+  if (targetType === 'single' || (targetUserId && String(targetUserId).trim())) {
+    const rawTarget = String(targetUserId || '').trim();
+    if (!rawTarget) {
+      return res.status(400).json({ success: false, error: 'Foydalanuvchi Telegram ID yoki usernamesini kiriting!' });
+    }
+
+    const foundUser = findUser(rawTarget);
+    const targetChatId = foundUser ? foundUser.userId : rawTarget.replace(/^@/, '');
+
+    if (!targetChatId || BANNED_USER_IDS.has(String(targetChatId))) {
+      return res.status(400).json({ success: false, error: 'Bu foydalanuvchi bloklangan yoki topilmadi!' });
+    }
+
+    const displayName = foundUser
+      ? `${foundUser.firstName || 'Foydalanuvchi'} ${foundUser.username ? '(@' + foundUser.username + ')' : '[ID: ' + foundUser.userId + ']'}`
+      : `ID: ${targetChatId}`;
+
+    try {
+      await bot.api.sendMessage(targetChatId, trimmedMsg, {
+        parse_mode: 'Markdown',
+        reply_markup: keyboard,
+        disable_web_page_preview: false,
+      });
+      return res.json({
+        success: true,
+        isSingle: true,
+        message: `Xabar muvaffaqiyatli yetkazildi! 👤 Qabul qiluvchi: ${displayName}`,
+      });
+    } catch (_) {
+      try {
+        await bot.api.sendMessage(targetChatId, trimmedMsg, {
+          reply_markup: keyboard,
+          disable_web_page_preview: false,
+        });
+        return res.json({
+          success: true,
+          isSingle: true,
+          message: `Xabar muvaffaqiyatli yetkazildi! 👤 Qabul qiluvchi: ${displayName}`,
+        });
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          error: `Xabar yetkazilmadi (${displayName}): ${err.message}. (Foydalanuvchi botni bloklagan bo'lishi mumkin)`,
+        });
+      }
+    }
+  }
+
+  // 2. BARCHA FOYDALANUVCHILARGA BIRGADA YUBORISH (HAMMAGA)
+  const usersList = getAllUsers();
+  if (!usersList || usersList.length === 0) {
+    return res.json({ success: true, sentCount: 0, failedCount: 0, total: 0, message: 'Foydalanuvchilar mavjud emas' });
+  }
 
   let sentCount = 0;
   let failedCount = 0;

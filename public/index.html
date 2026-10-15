@@ -748,11 +748,32 @@
         </div>
 
         <!-- ======================================================== -->
-        <!-- 📢 BARCHA FOYDALANUVCHILARGA XABAR YUBORISH (BROADCAST) -->
+        <!-- 📨 FOYDALANUVCHILARGA XABAR YUBORISH (HAMMAGA / ALOHIDA) -->
         <!-- ======================================================== -->
-        <div class="admin-give-box" style="margin-top: 16px;">
-          <h3 class="box-title">📢 Barcha Foydalanuvchilarga Xabar Yuborish</h3>
-          <p style="font-size: 12px; color: #94a3b8; margin: -4px 0 12px 0;">Botdan foydalangan barcha a'zolarga ommaviy xabarnoma jo'natish (Markdown qo'llab-quvvatlanadi)</p>
+        <div class="admin-give-box" id="adminMessagingSection" style="margin-top: 16px;">
+          <h3 class="box-title">📨 Foydalanuvchilarga Xabar Yuborish</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin: -4px 0 12px 0;">Hammaga birdaniga yoki alohida bitta foydalanuvchiga shaxsiy xabar yuborish (Markdown qo'llab-quvvatlanadi)</p>
+          
+          <!-- Yuborish rejimini tanlash (Tabs/Pills) -->
+          <div style="display: flex; gap: 8px; margin-bottom: 12px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 10px;">
+            <button type="button" id="broadcastModeAllBtn" class="primary-btn" style="flex: 1; padding: 8px 12px; font-size: 12px; border-radius: 8px;">
+              📢 Barchaga (Hammaga)
+            </button>
+            <button type="button" id="broadcastModeSingleBtn" class="secondary-btn" style="flex: 1; padding: 8px 12px; font-size: 12px; border-radius: 8px;">
+              👤 Alohida foydalanuvchiga
+            </button>
+          </div>
+
+          <!-- Alohida foydalanuvchini tanlash maydoni (faqat alohida rejimida ko'rinadi) -->
+          <div id="broadcastSingleTargetBox" class="hidden" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; background: rgba(59,130,246,0.08); padding: 10px; border-radius: 10px; border: 1px solid rgba(59,130,246,0.2);">
+            <label style="font-size: 11px; color: #93c5fd; font-weight: 600;">👤 Qabul qiluvchi foydalanuvchini tanlang yoki ID/Username kiriting:</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="broadcastTargetInput" placeholder="Telegram ID yoki @username" class="custom-input" style="flex: 1;" />
+              <select id="broadcastUserSelect" class="custom-input" style="flex: 1; cursor: pointer;">
+                <option value="">-- Foydalanuvchini tanlash --</option>
+              </select>
+            </div>
+          </div>
           
           <textarea id="broadcastMessageInput" class="custom-input" rows="4" style="width: 100%; resize: vertical; margin-bottom: 10px; font-family: inherit; font-size: 13px; line-height: 1.5;" placeholder="Xabar matnini yozing... Masalan: *Diqqat yangilik!* Yangi shablonlar qo'shildi! 🚀"></textarea>
           
@@ -766,6 +787,23 @@
             <button type="button" id="submitBroadcastBtn" class="primary-btn" style="padding: 10px 18px; background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
               🚀 Barchaga Jo'natish
             </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- 👥 BARCHA FOYDALANUVCHILAR RO'YXATI                      -->
+        <!-- ======================================================== -->
+        <div class="admin-give-box" style="margin-top: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <h3 class="box-title" style="margin: 0;">👥 Bot Foydalanuvchilari</h3>
+            <span id="adminUsersCountBadge" style="font-size: 11px; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 8px; border-radius: 12px; font-weight: 600;">0 ta</span>
+          </div>
+          <p style="font-size: 12px; color: #94a3b8; margin: 0 0 10px 0;">Barcha foydalanuvchilar ma'lumotlari, koinlari va alohida xabar yuborish imkoniyati</p>
+          
+          <input type="text" id="adminSearchUsersInput" placeholder="🔍 Qidirish (Ism, username yoki ID)..." class="custom-input" style="width: 100%; margin-bottom: 10px;" />
+
+          <div id="adminFullUsersListContainer" class="admin-logs-list" style="max-height: 280px; overflow-y: auto;">
+            <p style="color: #64748b; font-size: 13px;">Yuklanmoqda...</p>
           </div>
         </div>
 

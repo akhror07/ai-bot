@@ -20,6 +20,69 @@ const DEFAULT_ADMINS = [
   { id: '7862857511', username: 'akhrorovai', title: 'Admin', isOwner: false, addedAt: '2026-10-04T17:20:33.295Z' },
 ];
 
+const SEED_USERS = [
+  {
+    userId: '8388288136',
+    username: 'Akhrorov18',
+    firstName: 'Akhrorov',
+    coins: 14,
+    usedCoins: 1,
+    referrerId: null,
+    referralsCount: 0,
+    referralProgress: 0,
+    createdAt: '2026-10-04T16:56:20.751Z',
+    lastActive: '2026-10-15T20:00:00.000Z',
+  },
+  {
+    userId: '6600344525',
+    username: 'akhrorov0',
+    firstName: 'Akhrorov',
+    coins: 10,
+    usedCoins: 0,
+    referrerId: null,
+    referralsCount: 0,
+    referralProgress: 0,
+    createdAt: '2026-10-04T17:18:43.962Z',
+    lastActive: '2026-10-15T20:00:00.000Z',
+  },
+  {
+    userId: '7569927187',
+    username: 'Akhrrv18',
+    firstName: 'Akhrorov',
+    coins: 12,
+    usedCoins: 0,
+    referrerId: null,
+    referralsCount: 0,
+    referralProgress: 0,
+    createdAt: '2026-10-04T17:19:38.713Z',
+    lastActive: '2026-10-15T20:00:00.000Z',
+  },
+  {
+    userId: '7862857511',
+    username: 'AkhrorovAi',
+    firstName: 'Akhrorov Ai test',
+    coins: 10,
+    usedCoins: 0,
+    referrerId: null,
+    referralsCount: 0,
+    referralProgress: 0,
+    createdAt: '2026-10-04T17:20:33.295Z',
+    lastActive: '2026-10-15T20:00:00.000Z',
+  },
+  {
+    userId: '8855934664',
+    username: '',
+    firstName: 'firdavs',
+    coins: 10,
+    usedCoins: 0,
+    referrerId: null,
+    referralsCount: 0,
+    referralProgress: 0,
+    createdAt: '2026-10-04T17:29:23.021Z',
+    lastActive: '2026-10-15T20:00:00.000Z',
+  },
+];
+
 // In-memory cache
 let users = new Map();
 let payments = [];
@@ -45,6 +108,12 @@ function loadData() {
           users.delete(uid);
           saveUsers();
         }
+      }
+    }
+    // Agar foydalanuvchilar bo'sh bo'lsa yoki ba'zi asosiy foydalanuvchilar yetishmasa
+    for (const su of SEED_USERS) {
+      if (!users.has(su.userId)) {
+        users.set(su.userId, { ...su });
       }
     }
   } catch (e) {
@@ -237,7 +306,45 @@ export function setUserSubscribed(userId, isSubscribed = true) {
 }
 
 export function getAllUsers() {
-  return Array.from(users.values());
+  // Barcha adminlarni va urug' foydalanuvchilarni ro'yxatda mavjudligini ta'minlash
+  const admins = getAllAdmins();
+  for (const adm of admins) {
+    if (!users.has(String(adm.id))) {
+      users.set(String(adm.id), {
+        userId: String(adm.id),
+        username: adm.username || '',
+        firstName: adm.username || adm.title || 'Admin',
+        coins: 10,
+        usedCoins: 0,
+        referralsCount: 0,
+        referralProgress: 0,
+        createdAt: adm.addedAt || new Date().toISOString(),
+        lastActive: new Date().toISOString(),
+      });
+    }
+  }
+  for (const su of SEED_USERS) {
+    if (!users.has(su.userId)) {
+      users.set(su.userId, { ...su });
+    }
+  }
+  return Array.from(users.values()).filter(u => u.userId !== '5768084654' && (u.username || '').toLowerCase() !== 'mamurjonov00');
+}
+
+/**
+ * ID yoki Username orqali foydalanuvchini topish
+ */
+export function findUser(identifier) {
+  if (!identifier) return null;
+  const clean = String(identifier).trim().replace(/^@/, '');
+  const all = getAllUsers();
+  // 1. Aniq Telegram ID orqali
+  const byId = all.find(u => String(u.userId) === clean);
+  if (byId) return byId;
+  // 2. Username orqali (katta-kichik harf farqsiz)
+  const byUsername = all.find(u => (u.username || '').toLowerCase() === clean.toLowerCase());
+  if (byUsername) return byUsername;
+  return null;
 }
 
 /**

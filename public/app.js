@@ -844,6 +844,10 @@ if (btnSubmitReceipt) {
   });
 }
 
+// Foydalanuvchilar va Xabar yuborish holati
+let cachedAdminUsers = [];
+let currentBroadcastMode = 'all'; // 'all' yoki 'single'
+
 // 14. Admin Dashboard
 async function loadAdminDashboard() {
   if (!currentUserId) return;
@@ -859,21 +863,20 @@ async function loadAdminDashboard() {
     const listContainer = document.getElementById('adminPresLogsList');
     if (!data.presentations || !data.presentations.length) {
       listContainer.innerHTML = '<p style="color:#64748b; font-size:13px;">Hozircha taqdimotlar mavjud emas.</p>';
-      return;
+    } else {
+      listContainer.innerHTML = '';
+      data.presentations.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'log-item';
+        const timeStr = new Date(p.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        item.innerHTML = `
+          <div class="log-user">${p.firstName} ${p.username ? `(@${p.username})` : `[ID:${p.userId}]`}</div>
+          <div class="log-topic">📌 <b>${p.topic}</b></div>
+          <div class="log-meta">🎯 ${p.category} • 📄 ${p.slideCount} slayd • ⏰ ${timeStr}</div>
+        `;
+        listContainer.appendChild(item);
+      });
     }
-
-    listContainer.innerHTML = '';
-    data.presentations.forEach(p => {
-      const item = document.createElement('div');
-      item.className = 'log-item';
-      const timeStr = new Date(p.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-      item.innerHTML = `
-        <div class="log-user">${p.firstName} ${p.username ? `(@${p.username})` : `[ID:${p.userId}]`}</div>
-        <div class="log-topic">📌 <b>${p.topic}</b></div>
-        <div class="log-meta">🎯 ${p.category} • 📄 ${p.slideCount} slayd • ⏰ ${timeStr}</div>
-      `;
-      listContainer.appendChild(item);
-    });
 
     // Kelib tushgan taklif va talablar ro'yxati
     const fbContainer = document.getElementById('adminFeedbackLogsList');
@@ -897,11 +900,130 @@ async function loadAdminDashboard() {
         });
       }
     }
+
+    // Foydalanuvchilar ro'yxatini yuklash va ko'rsatish
+    cachedAdminUsers = Array.isArray(data.users) ? data.users : [];
+    const countBadge = document.getElementById('adminUsersCountBadge');
+    if (countBadge) countBadge.textContent = `${cachedAdminUsers.length} ta`;
+
+    const selectElem = document.getElementById('broadcastUserSelect');
+    if (selectElem) {
+      selectElem.innerHTML = '<option value="">-- Foydalanuvchini tanlash --</option>';
+      cachedAdminUsers.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.userId;
+        const uLabel = u.username ? `@${u.username}` : `ID: ${u.userId}`;
+        opt.textContent = `${u.firstName || 'Foydalanuvchi'} (${uLabel})`;
+        selectElem.appendChild(opt);
+      });
+    }
+
+    renderAdminUsersList(cachedAdminUsers);
+
     // Adminlar ro'yxatini yuklash
     loadAdminList();
   } catch (err) {
     console.error('Admin load error:', err);
   }
+}
+
+// Barcha foydalanuvchilar ro'yxatini chiqarish
+function renderAdminUsersList(list) {
+  const container = document.getElementById('adminFullUsersListContainer');
+  if (!container) return;
+
+  if (!list || list.length === 0) {
+    container.innerHTML = '<p style="color:#64748b; font-size:13px; padding:10px;">Foydalanuvchilar topilmadi.</p>';
+    return;
+  }
+
+  container.innerHTML = '';
+  list.forEach((u, idx) => {
+    const item = document.createElement('div');
+    item.className = 'log-item';
+    item.style.display = 'flex';
+    item.style.flexDirection = 'column';
+    item.style.gap = '6px';
+    item.style.padding = '10px';
+    item.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+
+    const uName = u.username ? `@${u.username}` : '<i style="color:#64748b;">(Username yo\'q)</i>';
+    const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ') : '-';
+
+    item.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <b style="color:#f8fafc; font-size:13px;">${idx + 1}. 👤 ${u.firstName || 'Foydalanuvchi'}</b>
+          <div style="font-size:12px; color:#38bdf8; margin-top:2px;">${uName}</div>
+          <div style="font-size:11px; color:#94a3b8; margin-top:2px;">🆔 <code>${u.userId}</code> • 📅 ${regDate}</div>
+        </div>
+        <div style="text-align:right;">
+          <span style="font-size:12px; font-weight:600; color:#facc15;">🪙 ${u.coins || 0} koin</span>
+          <div style="font-size:10px; color:#94a3b8;">Ishlatgan: ${u.usedCoins || 0} ta</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:6px; margin-top:4px;">
+        <button type="button" class="btn-user-send-msg" data-uid="${u.userId}" data-uname="${u.username || ''}" style="flex:1; background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:6px 8px; font-size:11px; cursor:pointer; font-weight:600;">
+          ✉️ Xabar yuborish
+        </button>
+        <button type="button" class="btn-user-give-coin" data-uid="${u.userId}" style="flex:1; background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); border-radius:6px; padding:6px 8px; font-size:11px; cursor:pointer; font-weight:600;">
+          🎁 Coin berish
+        </button>
+      </div>
+    `;
+
+    container.appendChild(item);
+  });
+
+  // "Xabar yuborish" tugmasi hodisalari
+  container.querySelectorAll('.btn-user-send-msg').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const uid = e.currentTarget.getAttribute('data-uid');
+      switchToSingleMessage(uid);
+    });
+  });
+
+  // "Coin berish" tugmasi hodisalari
+  container.querySelectorAll('.btn-user-give-coin').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const uid = e.currentTarget.getAttribute('data-uid');
+      const targetInput = document.getElementById('targetUserIdInput');
+      if (targetInput) {
+        targetInput.value = uid;
+        targetInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetInput.focus();
+      }
+    });
+  });
+}
+
+// Alohida foydalanuvchiga xabar yozish rejimiga o'tkazish
+function switchToSingleMessage(uid) {
+  currentBroadcastMode = 'single';
+  const singleBox = document.getElementById('broadcastSingleTargetBox');
+  const allBtn = document.getElementById('broadcastModeAllBtn');
+  const singleBtn = document.getElementById('broadcastModeSingleBtn');
+  const submitBtn = document.getElementById('submitBroadcastBtn');
+  const targetInput = document.getElementById('broadcastTargetInput');
+  const selectElem = document.getElementById('broadcastUserSelect');
+
+  if (singleBox) singleBox.classList.remove('hidden');
+  if (allBtn) {
+    allBtn.classList.remove('primary-btn');
+    allBtn.classList.add('secondary-btn');
+  }
+  if (singleBtn) {
+    singleBtn.classList.remove('secondary-btn');
+    singleBtn.classList.add('primary-btn');
+  }
+  if (submitBtn) submitBtn.textContent = '✉️ Foydalanuvchiga Jo\'natish';
+  if (targetInput && uid) targetInput.value = uid;
+  if (selectElem && uid) selectElem.value = uid;
+
+  const msgSection = document.getElementById('adminMessagingSection');
+  if (msgSection) msgSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const msgInput = document.getElementById('broadcastMessageInput');
+  if (msgInput) msgInput.focus();
 }
 
 // Adminlar ro'yxatini yuklash va ko'rsatish
@@ -1034,8 +1156,58 @@ if (submitAddAdminBtn) {
   });
 }
 
-// Barcha foydalanuvchilarga xabar yuborish (Broadcast)
+// Foydalanuvchilarga xabar yuborish boshqaruvi (Hammaga / Alohida)
+const broadcastModeAllBtn = document.getElementById('broadcastModeAllBtn');
+const broadcastModeSingleBtn = document.getElementById('broadcastModeSingleBtn');
+const broadcastSingleTargetBox = document.getElementById('broadcastSingleTargetBox');
+const broadcastTargetInput = document.getElementById('broadcastTargetInput');
+const broadcastUserSelect = document.getElementById('broadcastUserSelect');
 const submitBroadcastBtn = document.getElementById('submitBroadcastBtn');
+
+if (broadcastModeAllBtn && broadcastModeSingleBtn) {
+  broadcastModeAllBtn.addEventListener('click', () => {
+    currentBroadcastMode = 'all';
+    if (broadcastSingleTargetBox) broadcastSingleTargetBox.classList.add('hidden');
+    broadcastModeAllBtn.classList.remove('secondary-btn');
+    broadcastModeAllBtn.classList.add('primary-btn');
+    broadcastModeSingleBtn.classList.remove('primary-btn');
+    broadcastModeSingleBtn.classList.add('secondary-btn');
+    if (submitBroadcastBtn) submitBroadcastBtn.textContent = '🚀 Barchaga Jo\'natish';
+  });
+
+  broadcastModeSingleBtn.addEventListener('click', () => {
+    switchToSingleMessage('');
+  });
+}
+
+if (broadcastUserSelect && broadcastTargetInput) {
+  broadcastUserSelect.addEventListener('change', () => {
+    if (broadcastUserSelect.value) {
+      broadcastTargetInput.value = broadcastUserSelect.value;
+    }
+  });
+}
+
+// Qidiruv maydoni (Foydalanuvchilarni qidirish)
+const adminSearchUsersInput = document.getElementById('adminSearchUsersInput');
+if (adminSearchUsersInput) {
+  adminSearchUsersInput.addEventListener('input', (e) => {
+    const q = (e.target.value || '').toLowerCase().trim();
+    if (!q) {
+      renderAdminUsersList(cachedAdminUsers);
+      return;
+    }
+    const filtered = cachedAdminUsers.filter(u => {
+      const name = (u.firstName || '').toLowerCase();
+      const uname = (u.username || '').toLowerCase();
+      const id = String(u.userId || '');
+      return name.includes(q) || uname.includes(q) || id.includes(q);
+    });
+    renderAdminUsersList(filtered);
+  });
+}
+
+// Xabarni jo'natish tugmasi
 if (submitBroadcastBtn) {
   submitBroadcastBtn.addEventListener('click', async () => {
     const msgInput = document.getElementById('broadcastMessageInput');
@@ -1046,6 +1218,7 @@ if (submitBroadcastBtn) {
     const message = msgInput ? msgInput.value.trim() : '';
     const buttonText = btnTextInput ? btnTextInput.value.trim() : '';
     const buttonUrl = btnUrlInput ? btnUrlInput.value.trim() : '';
+    const targetUserId = broadcastTargetInput ? broadcastTargetInput.value.trim() : '';
 
     if (!message) {
       if (tg?.showAlert) tg.showAlert('Iltimos, xabar matnini kiriting!');
@@ -1053,12 +1226,20 @@ if (submitBroadcastBtn) {
       return;
     }
 
-    const confirmSend = confirm('Haqiqatan ham ushbu xabarni BARCHA bot foydalanuvchilariga yubormoqchimisiz?');
-    if (!confirmSend) return;
+    if (currentBroadcastMode === 'single') {
+      if (!targetUserId) {
+        if (tg?.showAlert) tg.showAlert('Iltimos, foydalanuvchi Telegram ID yoki usernamesini kiriting!');
+        else alert('Iltimos, foydalanuvchi Telegram ID yoki usernamesini kiriting!');
+        return;
+      }
+    } else {
+      const confirmSend = confirm('Haqiqatan ham ushbu xabarni BARCHA bot foydalanuvchilariga yubormoqchimisiz?');
+      if (!confirmSend) return;
+    }
 
     submitBroadcastBtn.disabled = true;
     submitBroadcastBtn.textContent = '⏳ Yuborilmoqda...';
-    if (statusText) statusText.textContent = 'Foydalanuvchilarga jo\'natilmoqda...';
+    if (statusText) statusText.textContent = 'Xabar jo\'natilmoqda...';
 
     try {
       const res = await fetch('/api/admin/broadcast', {
@@ -1069,11 +1250,13 @@ if (submitBroadcastBtn) {
           message,
           buttonText,
           buttonUrl,
+          targetType: currentBroadcastMode,
+          targetUserId: currentBroadcastMode === 'single' ? targetUserId : undefined,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        if (statusText) statusText.textContent = `✅ ${data.sentCount} ta yuborildi!`;
+        if (statusText) statusText.textContent = currentBroadcastMode === 'single' ? '✅ Xabar yetkazildi!' : `✅ ${data.sentCount} ta yuborildi!`;
         if (tg?.showAlert) tg.showAlert(data.message);
         else alert(data.message);
         if (msgInput) msgInput.value = '';
@@ -1089,7 +1272,7 @@ if (submitBroadcastBtn) {
       alert('Xatolik yuz berdi: ' + e.message);
     }
     submitBroadcastBtn.disabled = false;
-    submitBroadcastBtn.textContent = '🚀 Barchaga Jo\'natish';
+    submitBroadcastBtn.textContent = currentBroadcastMode === 'single' ? '✉️ Foydalanuvchiga Jo\'natish' : '🚀 Barchaga Jo\'natish';
   });
 }
 
