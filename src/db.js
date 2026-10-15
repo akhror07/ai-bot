@@ -11,12 +11,21 @@ const PAYMENTS_FILE = path.join(DATA_DIR, 'payments.json');
 const PRESENTATIONS_FILE = path.join(DATA_DIR, 'presentations.json');
 const FEEDBACKS_FILE = path.join(DATA_DIR, 'feedbacks.json');
 const PROMOS_FILE = path.join(DATA_DIR, 'promos.json');
+const ADMINS_FILE = path.join(DATA_DIR, 'admins.json');
+
+const DEFAULT_ADMINS = [
+  { id: '8388288136', username: 'akhrorov18', title: 'Bosh Admin (Owner)', isOwner: true, addedAt: '2026-10-04T16:56:20.751Z' },
+  { id: '6600344525', username: 'akhrorov0', title: 'Admin', isOwner: false, addedAt: '2026-10-04T17:18:43.962Z' },
+  { id: '7569927187', username: 'akhrrv18', title: 'Admin', isOwner: false, addedAt: '2026-10-04T17:19:38.713Z' },
+  { id: '7862857511', username: 'akhrorovai', title: 'Admin', isOwner: false, addedAt: '2026-10-04T17:20:33.295Z' },
+];
 
 // In-memory cache
 let users = new Map();
 let payments = [];
 let presentations = [];
 let feedbacks = [];
+let customAdmins = [...DEFAULT_ADMINS];
 let promoCodes = [
   { code: 'SOVGA', coins: 1, maxUses: 100000, usedBy: [] },
 ];
@@ -80,6 +89,28 @@ function loadData() {
     }
   } catch (e) {
     console.error('[DB] Promos yuklashda xatolik:', e.message);
+  }
+
+  try {
+    if (fs.existsSync(ADMINS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(ADMINS_FILE, 'utf-8'));
+      if (Array.isArray(data) && data.length > 0) {
+        // mamurjonov00 butunlay chiqarilganligini tekshirish
+        customAdmins = data.filter(a => a.username !== 'mamurjonov00' && a.id !== '5768084654');
+      }
+    } else {
+      saveAdmins();
+    }
+  } catch (e) {
+    console.error('[DB] Admins yuklashda xatolik:', e.message);
+  }
+}
+
+function saveAdmins() {
+  try {
+    fs.writeFileSync(ADMINS_FILE, JSON.stringify(customAdmins, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[DB] Admins saqlashda xatolik:', e.message);
   }
 }
 
@@ -496,5 +527,56 @@ export function deleteUser(userId) {
     return removed;
   }
   return null;
+}
+
+export function getAllAdmins() {
+  return customAdmins;
+}
+
+export function addAdmin({ id, username, title = 'Admin' }) {
+  const cleanId = String(id || '').trim();
+  const cleanUsername = String(username || '').replace('@', '').toLowerCase().trim();
+
+  if (!cleanId && !cleanUsername) {
+    return { success: false, message: 'ID yoki Username kiritilishi shart!' };
+  }
+
+  // @mamurjonov00 va 5768084654 ni admin qilish qat'iyan taqiqlangan
+  if (cleanId === '5768084654' || cleanUsername === 'mamurjonov00') {
+    return { success: false, message: 'Ushbu foydalanuvchini admin qilish taqiqlangan!' };
+  }
+
+  const exists = customAdmins.some(a => (cleanId && a.id === cleanId) || (cleanUsername && a.username === cleanUsername));
+  if (exists) {
+    return { success: false, message: 'Bu foydalanuvchi allaqachon admin!' };
+  }
+
+  const newAdmin = {
+    id: cleanId,
+    username: cleanUsername,
+    title: title || 'Admin',
+    isOwner: false,
+    addedAt: new Date().toISOString(),
+  };
+  customAdmins.push(newAdmin);
+  saveAdmins();
+  return { success: true, admin: newAdmin, admins: customAdmins };
+}
+
+export function removeAdmin(targetIdOrUsername) {
+  const target = String(targetIdOrUsername || '').replace('@', '').toLowerCase().trim();
+  const admin = customAdmins.find(a => a.id === target || a.username === target);
+
+  if (!admin) {
+    return { success: false, message: 'Bunday admin topilmadi!' };
+  }
+
+  if (admin.isOwner || admin.id === '8388288136' || admin.username === 'akhrorov18') {
+    return { success: false, message: 'Bosh adminni (Owner) o\'chirib bo\'lmaydi!' };
+  }
+
+  customAdmins = customAdmins.filter(a => a !== admin);
+  saveAdmins();
+  return { success: true, removed: admin, admins: customAdmins };
 }
 

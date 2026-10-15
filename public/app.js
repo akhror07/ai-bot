@@ -897,9 +897,200 @@ async function loadAdminDashboard() {
         });
       }
     }
+    // Adminlar ro'yxatini yuklash
+    loadAdminList();
   } catch (err) {
     console.error('Admin load error:', err);
   }
+}
+
+// Adminlar ro'yxatini yuklash va ko'rsatish
+async function loadAdminList() {
+  const container = document.getElementById('adminUsersListContainer');
+  if (!container) return;
+  try {
+    const res = await fetch(`/api/admin/admins?adminId=${currentUserId}`);
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.admins)) {
+      container.innerHTML = '<p style="color:#ef4444; font-size:12px;">Adminlarni yuklab bo\'lmadi.</p>';
+      return;
+    }
+    if (data.admins.length === 0) {
+      container.innerHTML = '<p style="color:#64748b; font-size:13px;">Hozircha adminlar yo\'q.</p>';
+      return;
+    }
+    container.innerHTML = '';
+    data.admins.forEach(adm => {
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      item.style.display = 'flex';
+      item.style.alignItems = 'center';
+      item.style.justifyContent = 'space-between';
+      item.style.padding = '8px 10px';
+      item.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+
+      const titleBadge = adm.isOwner 
+        ? '<span style="background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); font-size:10px; padding:2px 6px; border-radius:6px; font-weight:600;">👑 Bosh Admin</span>'
+        : `<span style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-size:10px; padding:2px 6px; border-radius:6px;">👤 ${adm.title || 'Admin'}</span>`;
+
+      const removeBtn = adm.isOwner
+        ? '<span style="font-size:11px; color:#64748b;">🔒 Asosiy</span>'
+        : `<button type="button" class="btn-remove-admin" data-target="${adm.id || adm.username}" style="background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:4px 8px; font-size:11px; cursor:pointer;">🗑️ O'chirish</button>`;
+
+      item.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <b style="color:#f8fafc; font-size:13px;">${adm.username ? '@' + adm.username : 'ID: ' + adm.id}</b>
+            ${titleBadge}
+          </div>
+          <span style="font-size:11px; color:#94a3b8;">${adm.id ? `ID: ${adm.id}` : ''}</span>
+        </div>
+        <div>
+          ${removeBtn}
+        </div>
+      `;
+      container.appendChild(item);
+    });
+
+    // Adminni o'chirish hodisalari
+    container.querySelectorAll('.btn-remove-admin').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const target = e.currentTarget.getAttribute('data-target');
+        if (!target) return;
+        const confirmDelete = confirm(`Haqiqatan ham ushbu adminni (${target}) o'chirmoqchimisiz?`);
+        if (!confirmDelete) return;
+
+        btn.disabled = true;
+        btn.textContent = '⏳ ...';
+        try {
+          const delRes = await fetch('/api/admin/remove-admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adminId: currentUserId, target }),
+          });
+          const delData = await delRes.json();
+          if (delData.success) {
+            if (tg?.showAlert) tg.showAlert(`✅ Admin (${target}) muvaffaqiyatli o'chirildi!`);
+            else alert(`✅ Admin (${target}) muvaffaqiyatli o'chirildi!`);
+            loadAdminList();
+          } else {
+            if (tg?.showAlert) tg.showAlert('Xatolik: ' + delData.message);
+            else alert('Xatolik: ' + delData.message);
+          }
+        } catch (err) {
+          alert('Xatolik: ' + err.message);
+        }
+      });
+    });
+  } catch (err) {
+    console.error('loadAdminList error:', err);
+  }
+}
+
+// Yangi admin qo'shish tugmasi
+const submitAddAdminBtn = document.getElementById('submitAddAdminBtn');
+if (submitAddAdminBtn) {
+  submitAddAdminBtn.addEventListener('click', async () => {
+    const idInput = document.getElementById('newAdminIdInput');
+    const usernameInput = document.getElementById('newAdminUsernameInput');
+    const titleInput = document.getElementById('newAdminTitleInput');
+
+    const id = idInput ? idInput.value.trim() : '';
+    const username = usernameInput ? usernameInput.value.trim() : '';
+    const title = titleInput ? titleInput.value.trim() : 'Admin';
+
+    if (!id && !username) {
+      if (tg?.showAlert) tg.showAlert('Telegram ID yoki Username kiritilishi shart!');
+      else alert('Telegram ID yoki Username kiritilishi shart!');
+      return;
+    }
+
+    submitAddAdminBtn.disabled = true;
+    submitAddAdminBtn.textContent = '⏳ ...';
+
+    try {
+      const res = await fetch('/api/admin/add-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminId: currentUserId, id, username, title }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (tg?.showAlert) tg.showAlert('✅ Yangi admin muvaffaqiyatli qo\'shildi!');
+        else alert('✅ Yangi admin muvaffaqiyatli qo\'shildi!');
+        if (idInput) idInput.value = '';
+        if (usernameInput) usernameInput.value = '';
+        if (titleInput) titleInput.value = '';
+        loadAdminList();
+      } else {
+        if (tg?.showAlert) tg.showAlert('Xatolik: ' + (data.message || data.error));
+        else alert('Xatolik: ' + (data.message || data.error));
+      }
+    } catch (e) {
+      alert('Xatolik yuz berdi: ' + e.message);
+    }
+    submitAddAdminBtn.disabled = false;
+    submitAddAdminBtn.textContent = '+ Qo\'shish';
+  });
+}
+
+// Barcha foydalanuvchilarga xabar yuborish (Broadcast)
+const submitBroadcastBtn = document.getElementById('submitBroadcastBtn');
+if (submitBroadcastBtn) {
+  submitBroadcastBtn.addEventListener('click', async () => {
+    const msgInput = document.getElementById('broadcastMessageInput');
+    const btnTextInput = document.getElementById('broadcastBtnTextInput');
+    const btnUrlInput = document.getElementById('broadcastBtnUrlInput');
+    const statusText = document.getElementById('broadcastStatusText');
+
+    const message = msgInput ? msgInput.value.trim() : '';
+    const buttonText = btnTextInput ? btnTextInput.value.trim() : '';
+    const buttonUrl = btnUrlInput ? btnUrlInput.value.trim() : '';
+
+    if (!message) {
+      if (tg?.showAlert) tg.showAlert('Iltimos, xabar matnini kiriting!');
+      else alert('Iltimos, xabar matnini kiriting!');
+      return;
+    }
+
+    const confirmSend = confirm('Haqiqatan ham ushbu xabarni BARCHA bot foydalanuvchilariga yubormoqchimisiz?');
+    if (!confirmSend) return;
+
+    submitBroadcastBtn.disabled = true;
+    submitBroadcastBtn.textContent = '⏳ Yuborilmoqda...';
+    if (statusText) statusText.textContent = 'Foydalanuvchilarga jo\'natilmoqda...';
+
+    try {
+      const res = await fetch('/api/admin/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adminId: currentUserId,
+          message,
+          buttonText,
+          buttonUrl,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (statusText) statusText.textContent = `✅ ${data.sentCount} ta yuborildi!`;
+        if (tg?.showAlert) tg.showAlert(data.message);
+        else alert(data.message);
+        if (msgInput) msgInput.value = '';
+        if (btnTextInput) btnTextInput.value = '';
+        if (btnUrlInput) btnUrlInput.value = '';
+      } else {
+        if (statusText) statusText.textContent = '❌ Xatolik yuz berdi';
+        if (tg?.showAlert) tg.showAlert('Xatolik: ' + (data.message || data.error));
+        else alert('Xatolik: ' + (data.message || data.error));
+      }
+    } catch (e) {
+      if (statusText) statusText.textContent = '❌ ' + e.message;
+      alert('Xatolik yuz berdi: ' + e.message);
+    }
+    submitBroadcastBtn.disabled = false;
+    submitBroadcastBtn.textContent = '🚀 Barchaga Jo\'natish';
+  });
 }
 
 // Admin foydalanuvchiga coin berish

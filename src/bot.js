@@ -30,6 +30,9 @@ import {
   PRICE_PER_SLIDE,
   ADMIN_TELEGRAM_USERNAME,
   deleteUser,
+  getAllAdmins,
+  addAdmin,
+  removeAdmin,
 } from './db.js';
 import { extractTextFromDocument } from './docs.js';
 import { processVoiceMessage } from './voice.js';
@@ -263,6 +266,15 @@ export function isAdmin(ctxOrId) {
   if (BANNED_USER_IDS.has(id) || BANNED_USERNAMES.has(username) || username === 'mamurjonov00' || id === '5768084654') {
     return false;
   }
+
+  // Dinamik adminlar bazasidan tekshirish
+  try {
+    const admins = getAllAdmins();
+    if (Array.isArray(admins)) {
+      const match = admins.some(a => (id && a.id === id) || (username && a.username === username));
+      if (match) return true;
+    }
+  } catch (_) {}
 
   if (id && ADMIN_IDS.has(id)) return true;
   if (username && ADMIN_USERNAMES.has(username)) return true;

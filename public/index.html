@@ -746,6 +746,54 @@
             <p style="color: #64748b; font-size: 13px;">Hozircha xabarlar yo'q.</p>
           </div>
         </div>
+
+        <!-- ======================================================== -->
+        <!-- 📢 BARCHA FOYDALANUVCHILARGA XABAR YUBORISH (BROADCAST) -->
+        <!-- ======================================================== -->
+        <div class="admin-give-box" style="margin-top: 16px;">
+          <h3 class="box-title">📢 Barcha Foydalanuvchilarga Xabar Yuborish</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin: -4px 0 12px 0;">Botdan foydalangan barcha a'zolarga ommaviy xabarnoma jo'natish (Markdown qo'llab-quvvatlanadi)</p>
+          
+          <textarea id="broadcastMessageInput" class="custom-input" rows="4" style="width: 100%; resize: vertical; margin-bottom: 10px; font-family: inherit; font-size: 13px; line-height: 1.5;" placeholder="Xabar matnini yozing... Masalan: *Diqqat yangilik!* Yangi shablonlar qo'shildi! 🚀"></textarea>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+            <input type="text" id="broadcastBtnTextInput" placeholder="Tugma matni (ixtiyoriy, masalan: Kanalimiz)" class="custom-input" />
+            <input type="url" id="broadcastBtnUrlInput" placeholder="Tugma havolasi (https://...)" class="custom-input" />
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <span id="broadcastStatusText" style="font-size: 12px; color: #38bdf8;"></span>
+            <button type="button" id="submitBroadcastBtn" class="primary-btn" style="padding: 10px 18px; background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
+              🚀 Barchaga Jo'natish
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- 👑 ADMINLARNI BOSHQARISH (QO'SHISH / O'CHIRISH)           -->
+        <!-- ======================================================== -->
+        <div class="admin-give-box" style="margin-top: 16px;">
+          <h3 class="box-title">👑 Adminlarni Boshqarish</h3>
+          <p style="font-size: 12px; color: #94a3b8; margin: -4px 0 12px 0;">Yangi admin qo'shish yoki mavjud adminlarni o'chirish</p>
+          
+          <!-- Yangi admin qo'shish formasi -->
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <input type="text" id="newAdminIdInput" placeholder="Telegram ID (masalan: 12345678)" class="custom-input" />
+              <input type="text" id="newAdminUsernameInput" placeholder="Username (masalan: @username)" class="custom-input" />
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="newAdminTitleInput" placeholder="Lavozimi (masalan: Moderator / Yordamchi)" class="custom-input" style="flex: 1;" />
+              <button type="button" id="submitAddAdminBtn" class="primary-btn" style="padding: 10px 16px; white-space: nowrap;">+ Qo'shish</button>
+            </div>
+          </div>
+
+          <!-- Mavjud adminlar ro'yxati -->
+          <h4 style="font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px;">Mavjud Adminlar:</h4>
+          <div id="adminUsersListContainer" class="admin-logs-list" style="max-height: 220px;">
+            <p style="color: #64748b; font-size: 13px;">Yuklanmoqda...</p>
+          </div>
+        </div>
       </section>
 
       <!-- To'lov ilovasiga o'tishdan oldin ruxsat so'rash (Confirmation Modal) -->

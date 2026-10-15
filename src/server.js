@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import { InputFile, InlineKeyboard } from 'grammy';
 import { generatePresentationData } from './ai.js';
 import { createPptx } from './pptx.js';
-import { bot, isUserSubscribedToChannel, isAdmin } from './bot.js';
+import { bot, isUserSubscribedToChannel, isAdmin, BANNED_USER_IDS } from './bot.js';
 import { config } from './config.js';
 import {
   getUser,
@@ -30,6 +30,9 @@ import {
   isUserVip,
   redeemPromoCode,
   getAllPromoCodes,
+  getAllAdmins,
+  addAdmin,
+  removeAdmin,
 } from './db.js';
 
 export const app = express();
@@ -403,6 +406,106 @@ app.post('/api/admin/give-coins', async (req, res) => {
   } catch (_) {}
 
   res.json({ success: true, message: `Foydalanuvchiga ${coinsNum} ta coin berildi!`, user: targetUser });
+});
+
+// 4.1. API: Barcha adminlar ro'yxatini olish
+app.get('/api/admin/admins', (req, res) => {
+  if (!verifyAdminAccess(req)) {
+    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
+  }
+  res.json({ success: true, admins: getAllAdmins() });
+});
+
+// 4.2. API: Yangi admin qo'shish
+app.post('/api/admin/add-admin', (req, res) => {
+  if (!verifyAdminAccess(req)) {
+    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
+  }
+  const { id, username, title } = req.body;
+  const result = addAdmin({ id, username, title });
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  res.json(result);
+});
+
+// 4.3. API: Adminni o'chirish
+app.post('/api/admin/remove-admin', (req, res) => {
+  if (!verifyAdminAccess(req)) {
+    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
+  }
+  const { target } = req.body;
+  if (!target) {
+    return res.status(400).json({ success: false, message: 'O\'chiriladigan admin ID yoki username kiritilmadi' });
+  }
+  const result = removeAdmin(target);
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  res.json(result);
+});
+
+// 4.4. API: Barcha bot foydalanuvchilariga xabar yuborish (Broadcast)
+app.post('/api/admin/broadcast', async (req, res) => {
+  if (!verifyAdminAccess(req)) {
+    return res.status(403).json({ success: false, error: 'Ruxsat berilmagan' });
+  }
+
+  const { message, buttonText, buttonUrl } = req.body;
+  if (!message || typeof message !== 'string' || !message.trim()) {
+    return res.status(400).json({ success: false, error: 'Xabar matnini kiriting!' });
+  }
+
+  const usersList = getAllUsers();
+  if (!usersList || usersList.length === 0) {
+    return res.json({ success: true, sentCount: 0, failedCount: 0, total: 0, message: 'Foydalanuvchilar mavjud emas' });
+  }
+
+  const trimmedMsg = message.trim();
+  const keyboard = (buttonText && buttonUrl && buttonUrl.startsWith('http'))
+    ? new InlineKeyboard().url(buttonText.trim(), buttonUrl.trim())
+    : undefined;
+
+  let sentCount = 0;
+  let failedCount = 0;
+
+  console.log(`[Admin Broadcast] ${usersList.length} ta foydalanuvchiga xabar yuborish boshlandi...`);
+
+  // Xabarlarni xavfsiz tezlikda tarqatish (Telegram limitlariga mos ravishda)
+  for (const u of usersList) {
+    if (!u.userId || BANNED_USER_IDS.has(String(u.userId))) continue;
+    try {
+      await bot.api.sendMessage(u.userId, trimmedMsg, {
+        parse_mode: 'Markdown',
+        reply_markup: keyboard,
+        disable_web_page_preview: false,
+      });
+      sentCount++;
+    } catch (_) {
+      try {
+        // Markdown xato bersa, oddiy matn sifatida qayta jo'natish
+        await bot.api.sendMessage(u.userId, trimmedMsg, {
+          reply_markup: keyboard,
+          disable_web_page_preview: false,
+        });
+        sentCount++;
+      } catch (err) {
+        failedCount++;
+      }
+    }
+    // Telegram rate limit (35ms delay = ~28 ta/sekund)
+    await new Promise(r => setTimeout(r, 40));
+  }
+
+  console.log(`[Admin Broadcast] Tugadi: ${sentCount} ta yuborildi, ${failedCount} ta xato.`);
+
+  res.json({
+    success: true,
+    total: usersList.length,
+    sentCount,
+    failedCount,
+    message: `Xabarnoma ${sentCount} ta foydalanuvchiga muvaffaqiyatli yetkazildi! (Yetib bormadi: ${failedCount} ta)`,
+  });
 });
 
 // 5. API: Faylni yuklab olish
