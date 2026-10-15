@@ -26,6 +26,17 @@ function loadData() {
     if (fs.existsSync(USERS_FILE)) {
       const data = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
       users = new Map(Object.entries(data));
+      // @mamurjonov00 butunlay o'chiriladi
+      if (users.has('5768084654')) {
+        users.delete('5768084654');
+        saveUsers();
+      }
+      for (const [uid, u] of users.entries()) {
+        if (u.username === 'mamurjonov00') {
+          users.delete(uid);
+          saveUsers();
+        }
+      }
     }
   } catch (e) {
     console.error('[DB] Users yuklashda xatolik:', e.message);
@@ -472,6 +483,17 @@ export function deletePromoCode(code) {
     const deleted = promoCodes.splice(index, 1)[0];
     savePromoCodes();
     return deleted;
+  }
+  return null;
+}
+
+export function deleteUser(userId) {
+  const idStr = String(userId);
+  if (users.has(idStr)) {
+    const removed = users.get(idStr);
+    users.delete(idStr);
+    saveUsers();
+    return removed;
   }
   return null;
 }

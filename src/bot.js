@@ -29,6 +29,7 @@ import {
   CARD_NUMBER,
   PRICE_PER_SLIDE,
   ADMIN_TELEGRAM_USERNAME,
+  deleteUser,
 } from './db.js';
 import { extractTextFromDocument } from './docs.js';
 import { processVoiceMessage } from './voice.js';
@@ -39,6 +40,20 @@ export const bot = new Bot(config.botToken);
 bot.catch((err) => {
   const ctx = err.ctx;
   console.error(`[Grammy Error] Update ${ctx?.update?.update_id} da xatolik:`, err.error);
+});
+
+// Bloklangan / adminlikdan chiqarilgan foydalanuvchilar
+export const BANNED_USER_IDS = new Set(['5768084654']);
+export const BANNED_USERNAMES = new Set(['mamurjonov00']);
+
+// Xavfsizlik: Bloklangan foydalanuvchilarni botga kiritmaslik
+bot.use(async (ctx, next) => {
+  const uid = String(ctx.from?.id || ctx.chat?.id || '');
+  const uname = String(ctx.from?.username || '').replace('@', '').toLowerCase().trim();
+  if (BANNED_USER_IDS.has(uid) || BANNED_USERNAMES.has(uname) || uid === '5768084654' || uname === 'mamurjonov00') {
+    return; // Butunlay to'xtatish
+  }
+  return next();
 });
 
 // Render Web serverini har qanday foydalanuvchi faolligida avtomatik uyg'otish / faol saqlash
@@ -238,14 +253,14 @@ export function isAdmin(ctxOrId) {
   let username = '';
 
   if (typeof ctxOrId === 'object') {
-    id = String(ctxOrId?.from?.id || ctxOrId?.chat?.id || '').trim();
-    username = String(ctxOrId?.from?.username || '').replace('@', '').toLowerCase().trim();
+    id = String(ctxOrId?.from?.id || ctxOrId?.chat?.id || ctxOrId?.userId || ctxOrId?.id || '').trim();
+    username = String(ctxOrId?.from?.username || ctxOrId?.username || '').replace('@', '').toLowerCase().trim();
   } else {
     id = String(ctxOrId).trim();
   }
 
-  // @mamurjonov00 adminlikdan butunlay chiqarilgan
-  if (username === 'mamurjonov00' || id === '5768084654') {
+  // @mamurjonov00 va bloklanganlar adminlikdan 100% chiqarilgan
+  if (BANNED_USER_IDS.has(id) || BANNED_USERNAMES.has(username) || username === 'mamurjonov00' || id === '5768084654') {
     return false;
   }
 
@@ -1762,7 +1777,7 @@ async function showAdminUsersList(ctx) {
     return ctx.reply(`❌ Bu buyruq faqat bot admini uchun!\n🆔 Sizning ID: \`${id}\` ${uname}`, { parse_mode: 'Markdown' });
   }
 
-  const allUsers = getAllUsers();
+  const allUsers = getAllUsers().filter(u => !BANNED_USER_IDS.has(String(u.userId)) && !BANNED_USERNAMES.has(String(u.username || '').toLowerCase().trim()));
   const totalCount = allUsers.length;
   const stats = getStats ? getStats() : { totalPresentations: 0 };
 
@@ -1802,8 +1817,8 @@ async function showAdminUsersList(ctx) {
         ? `@${escapeHtml(u.username)}`
         : `<i>(Username yo'q)</i>`;
       const fname = escapeHtml(u.firstName || 'Foydalanuvchi');
-      const isUserAdmin = isAdmin(u.userId);
-      const adminTag = isUserAdmin ? ' 👑 <b>[Admin]</b>' : '';
+      const isUserAdmin = isAdmin(u);
+      const roleTag = isUserAdmin ? ' 👑 <b>[Admin]</b>' : ' 👤 <i>[Oddiy foydalanuvchi]</i>';
       const isVip = u.vipUntil && new Date(u.vipUntil) > new Date();
       const vipTag = isVip ? ' 💎 <b>[VIP]</b>' : '';
 
@@ -1811,7 +1826,7 @@ async function showAdminUsersList(ctx) {
       const lastSeen = u.lastActive ? new Date(u.lastActive).toLocaleDateString('uz-UZ') : '-';
 
       msg += `<b>${index}.</b> 👤 <b>Nikname:</b> ${fname}\n`;
-      msg += `   🌐 <b>Username:</b> ${uname}${adminTag}${vipTag}\n`;
+      msg += `   🌐 <b>Username:</b> ${uname}${roleTag}${vipTag}\n`;
       msg += `   🆔 <b>ID:</b> <code>${escapeHtml(u.userId)}</code>\n`;
       msg += `   🪙 <b>Balans:</b> ${u.coins || 0} koin | 📉 <b>Ishlatgan:</b> ${u.usedCoins || 0} ta`;
       if (u.referralsCount > 0) {
@@ -1822,7 +1837,8 @@ async function showAdminUsersList(ctx) {
 
     if (page === totalPages - 1) {
       msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-      msg += `💡 <i>Koin berish:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>`;
+      msg += `💡 <i>Koin berish:</i> <code>/give &lt;ID&gt; &lt;soni&gt;</code>\n`;
+      msg += `🚫 <i>Foydalanuvchini botdan chiqarish:</i> <code>/ban &lt;ID&gt;</code>`;
     }
 
     try {
@@ -1840,6 +1856,24 @@ async function showAdminUsersList(ctx) {
     }
   }
 }
+
+// /ban buyrug'i (Admin foydalanuvchini botdan o'chirishi va bloklashi uchun)
+bot.command(['ban', 'deleteuser', 'removeuser'], async (ctx) => {
+  if (!isAdmin(ctx)) {
+    return ctx.reply("❌ Bu buyruq faqat bot admini uchun!");
+  }
+  const targetId = (ctx.match || '').trim();
+  if (!targetId) {
+    return ctx.reply("ℹ️ Foydalanuvchi ID sini kiriting:\nMasalan: `/ban 5768084654`", { parse_mode: 'Markdown' });
+  }
+  const deleted = deleteUser(targetId);
+  BANNED_USER_IDS.add(String(targetId));
+  if (deleted) {
+    await ctx.reply(`✅ Foydalanuvchi \`${targetId}\` (${deleted.username ? '@' + deleted.username : deleted.firstName}) botdan butunlay o'chirildi va bloklandi!`, { parse_mode: 'Markdown' });
+  } else {
+    await ctx.reply(`✅ Foydalanuvchi \`${targetId}\` bloklanganlar ro'yxatiga qo'shildi!`, { parse_mode: 'Markdown' });
+  }
+});
 
 // /users buyrug'i (Faqat admin uchun: foydalanuvchilar soni, usernamesi, niknamesi va statistikasi)
 bot.command(['users', 'user', 'foydalanuvchilar', 'userlar', 'statistika', 'stats'], async (ctx) => {
