@@ -857,17 +857,17 @@ export function generateSemanticOutline({ topic, slideCount = 8, language = 'uz'
       slideNumber: i + 3,
       type: 'content',
       layoutType: prog.layoutType,
-      title: `${topic}: ${sfx}`,
+      title: sfx,
       subtitle: prog.sub
     });
   }
 
   // Final Slide: Conclusion
   const conclusionTitles = {
-    uz: { title: `${topic}: Xulosalar va Strategik Tavsiyalar`, sub: subs.conclusion },
-    ru: { title: `${topic}: Выводы и стратегические рекомендации`, sub: subs.conclusion },
-    en: { title: `${topic}: Strategic Conclusions & Next Steps`, sub: subs.conclusion },
-    tg: { title: `${topic}: Хулосаҳо ва тавсияҳои стратегӣ`, sub: subs.conclusion }
+    uz: { title: 'Xulosalar va Strategik Tavsiyalar', sub: subs.conclusion },
+    ru: { title: 'Выводы и стратегические рекомендации', sub: subs.conclusion },
+    en: { title: 'Strategic Conclusions & Next Steps', sub: subs.conclusion },
+    tg: { title: 'Хулосаҳо ва тавсияҳои стратегӣ', sub: subs.conclusion }
   };
   const conc = conclusionTitles[lang] || conclusionTitles.uz;
   slides.push({

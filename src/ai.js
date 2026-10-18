@@ -4363,6 +4363,26 @@ function sanitizePresentationData(data, language = 'uz') {
         if (isNonUzbek) slide.source = cleanUzbekWordsFromText(slide.source, language);
       }
 
+      // Slayd sarlavhasi (title) boshidagi takroriy mavzu nomini tozalash (xatlar ustma-ust chiqmasligi uchun)
+      if (idx > 0) {
+        if (data.title && data.title.length > 3) {
+          const escTitle = data.title.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          slide.title = slide.title.replace(new RegExp(`^${escTitle}\\s*[:\\-–—|]\\s*`, 'i'), '').trim();
+        }
+        if (originalRootTitle && originalRootTitle.length > 3) {
+          const escOrig = originalRootTitle.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          slide.title = slide.title.replace(new RegExp(`^${escOrig}\\s*[:\\-–—|]\\s*`, 'i'), '').trim();
+        }
+        slide.title = slide.title.replace(/^[:\-–—|]\s*/, '').trim();
+      }
+
+      // Slayd sarlavhasi uzunligini 65 ta belgidan oshmasligini ta'minlash
+      if (slide.title.length > 65) {
+        const cut = slide.title.substring(0, 62);
+        const sp = cut.lastIndexOf(' ');
+        slide.title = (sp > 35 ? cut.substring(0, sp) : cut).trim() + '...';
+      }
+
       // Slayd sarlavhasi (title) takrorlanishini 100% bartaraf etish
       const normSlideTitle = (slide.title || '').toLowerCase().trim();
       if (idx > 0 && seenSlideTitles.has(normSlideTitle)) {
@@ -4370,6 +4390,13 @@ function sanitizePresentationData(data, language = 'uz') {
         slide.title += partSuffix;
       }
       seenSlideTitles.add((slide.title || '').toLowerCase().trim());
+
+      // Kichik sarlavha (subtitle) uzunligini cheklash
+      if (slide.subtitle && slide.subtitle.length > 85) {
+        const cut = slide.subtitle.substring(0, 82);
+        const sp = cut.lastIndexOf(' ');
+        slide.subtitle = (sp > 45 ? cut.substring(0, sp) : cut).trim() + '...';
+      }
 
       // Chet tillarda o'zbekcha qolib ketgan so'zlarni va mavzu nomini almashtirish
       if (isNonUzbek) {
@@ -4420,6 +4447,17 @@ function sanitizePresentationData(data, language = 'uz') {
           ? `Муносибати низомманд дар самти "${slide.title}" кафили сифати баланд ва рушди устувори соҳа мебошад.`
           : `"${slide.title}" bo'yicha tizimli yondashuv va qat'iy standartlar belgilangan marralarga erishishning asosiy garovidir.`;
       }
+      // Highlight uzunligini xavfsiz cheklash (130 belgi)
+      if (slide.highlight && slide.highlight.length > 130) {
+        const cut = slide.highlight.substring(0, 127);
+        const punc = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+        if (punc > 75) {
+          slide.highlight = cut.substring(0, punc + 1).trim();
+        } else {
+          const sp = cut.lastIndexOf(' ');
+          slide.highlight = (sp > 75 ? cut.substring(0, sp) : cut).trim() + '...';
+        }
+      }
 
       // Spiker nutqi bo'sh yoki o'ta qisqa bo'lsa boyitish
       if (!slide.speakerNotes || slide.speakerNotes.length < 40) {
@@ -4436,6 +4474,13 @@ function sanitizePresentationData(data, language = 'uz') {
         slide.points.forEach((pt, pIdx) => {
           pt.heading = cleanText(pt.heading, '');
           pt.description = cleanText(pt.description, '');
+
+          // Heading uzunligini xavfsiz chegaralash (38 belgi)
+          if (pt.heading && pt.heading.length > 38) {
+            const cut = pt.heading.substring(0, 35);
+            const sp = cut.lastIndexOf(' ');
+            pt.heading = (sp > 18 ? cut.substring(0, sp) : cut).trim() + '...';
+          }
 
           if (isNonUzbek) {
             if (originalRootTitle && originalRootTitle !== data.title) {
@@ -4466,40 +4511,40 @@ function sanitizePresentationData(data, language = 'uz') {
             }
           }
 
-          // Qisqa bo'lib qolgan gaplarni har bir nuqta va slayd uchun unikal kontekst bilan boyitish
-          if (pt.description.length < 90) {
+          // Qisqa bo'lib qolgan gaplarni har bir nuqta va slayd uchun unikal kontekst bilan boyitish (faqat o'ta qisqa < 30 bo'lsa)
+          if (pt.description.length < 30) {
             const enrichPools = {
               uz: [
-                ` Ushbu chora-tadbirlar "${slide.title}" doirasida jarayonlar ishonchliligini oshirib, sifat barqarorligini kafolatlaydi.`,
-                ` Amaliyotga integratsiya qilish orqali umumiy samaradorlik ko'rsatkichlari 35-50% ga ortadi.`,
-                ` Belgilangan standartlar resurslardan tejamkor foydalanish va tizimli xatarlarni minimallashtirishga xizmat qiladi.`,
-                ` Natijada barcha bo'g'inlar o'rtasida mustahkam sinergiya va yuqori ijro intizomi shakllanadi.`,
-                ` Uzoq muddatli istiqbolda bu yondashuv barqaror o'sish va sohaviy yetakchilik poydevorini mustahkamlaydi.`,
-                ` Mazkur mexanizm kutilmagan operatsion to'siqlarni erta bartaraf etish imkonini beradi.`
+                ` Ushbu chora-tadbirlar sifat barqarorligini kafolatlaydi.`,
+                ` Amaliyotga integratsiya qilish orqali umumiy samaradorlik ortadi.`,
+                ` Belgilangan standartlar resurslardan tejamkor foydalanishga xizmat qiladi.`,
+                ` Natijada mustahkam sinergiya va yuqori ijro intizomi shakllanadi.`,
+                ` Uzoq muddatli istiqbolda bu yondashuv barqaror poydevor yaratadi.`,
+                ` Mazkur mexanizm kutilmagan to'siqlarni erta bartaraf etadi.`
               ],
               ru: [
-                ` В рамках направления "${slide.title}" соблюдение данных критериев обеспечивает качественный рост и исключает сбои.`,
-                ` Поэтапная практическая интеграция позволяет повысить результативность процессов на 35–50%.`,
-                ` Данный подход оптимизирует распределение ключевых ресурсов и минимизирует системные риски.`,
-                ` Систематический контроль формирует прочную основу для достижения долгосрочных показателей.`,
-                ` Комплексное внедрение закрепляет конкурентные преимущества и гарантирует стабильность.`,
-                ` Применение регламентов предотвращает операционные ошибки на ранних этапах выполнения.`
+                ` Соблюдение данных критериев обеспечивает качественный рост.`,
+                ` Практическая интеграция позволяет повысить результативность процессов.`,
+                ` Данный подход оптимизирует распределение ключевых ресурсов.`,
+                ` Систематический контроль формирует прочную основу показателей.`,
+                ` Комплексное внедрение гарантирует надежность и стабильность.`,
+                ` Применение регламентов предотвращает операционные ошибки.`
               ],
               en: [
-                ` Deploying these rigorous parameters across "${slide.title}" optimizes resource utilization and ensures throughput.`,
-                ` Phased operational execution boosts aggregate workflow performance by 35–50%.`,
-                ` This framework eliminates structural bottlenecks and reliably mitigates operational friction.`,
-                ` Consistent metric monitoring establishes a durable engine for long-term scalability.`,
-                ` Systematic integration secures measurable competitive moats and durable excellence.`,
-                ` Proactive governance eliminates execution errors before they impact deliverable quality.`
+                ` Deploying these rigorous parameters optimizes resource throughput.`,
+                ` Phased operational execution boosts aggregate workflow performance.`,
+                ` This framework eliminates bottlenecks and reliably mitigates friction.`,
+                ` Consistent metric monitoring establishes long-term scalability.`,
+                ` Systematic integration secures measurable competitive excellence.`,
+                ` Proactive governance eliminates execution errors early.`
               ],
               tg: [
-                ` Татбиқи ин тадбирҳо дар доираи "${slide.title}" самаранокии баланд ва назорати сифатро кафолат медиҳад.`,
-                ` Ҷорисозии амалӣ маҳсулнокии равандҳоро ба андозаи 35–50% афзун мегардонад.`,
-                ` Ин равиш истифодаи сарфакоронаи захираҳо ва коҳиши хавфҳоро таъмин месозад.`,
-                ` Назорати пайваста пойдевори мустаҳкамро барои рушди дарозмуддат мегузорад.`,
-                ` Ҳамгироии ҳамаҷониба мавқеи пешсафиро дар соҳа таҳким мебахшад.`,
-                ` Риояи меъёрҳо камбудиҳои эҳтимолиро дар марҳилаҳои аввал пешгирӣ мекунад.`
+                ` Татбиқи ин тадбирҳо самаранокии баланд ва сифатро кафолат медиҳад.`,
+                ` Ҷорисозии амалӣ маҳсулнокии равандҳоро афзун мегардонад.`,
+                ` Ин равиш истифодаи сарфакоронаи захираҳоро таъмин месозад.`,
+                ` Назорати пайваста пойдевори рушди дарозмуддатро мегузорад.`,
+                ` Ҳамгироии ҳамаҷониба мавқеи пешсафиро таҳким мебахшад.`,
+                ` Риояи меъёрҳо камбудиҳои эҳтимолиро пешгирӣ мекунад.`
               ]
             };
             const langPool = enrichPools[language] || enrichPools.uz;
@@ -4529,31 +4574,43 @@ function sanitizePresentationData(data, language = 'uz') {
               filtered.push(s);
             }
             pt.description = filtered.join(' ').trim();
-            if (pt.description.length < 40) {
+            if (pt.description.length < 30) {
               const miniPool = {
                 uz: [
-                  ` "${slide.title}" bo'yicha chuqur tahliliy yondashuv uzoq muddatli amaliy natijadorlikni ta'minlaydi.`,
-                  ` Amaliy tadbiq jarayonida belgilangan standartlarga qat'iy rioya qilish yuqori sifat beradi.`,
-                  ` Tizimli tahlil natijalari jarayonlarni optimallashtirish va resurslarni tejashga xizmat qiladi.`
+                  ` Chuqur tahliliy yondashuv uzoq muddatli natijadorlikni ta'minlaydi.`,
+                  ` Amaliy tadbiq jarayonida standartlarga rioya qilish yuqori sifat beradi.`,
+                  ` Tizimli tahlil natijalari resurslarni tejashga xizmat qiladi.`
                 ],
                 ru: [
-                  ` Глубокая аналитическая проработка по разделу "${slide.title}" формирует надежную практическую базу.`,
-                  ` Соблюдение регламентов при реализации гарантирует стабильное качество и исключает риски.`,
-                  ` Системный анализ создает измеримый фундамент для оптимизации всех ключевых ресурсов.`
+                  ` Глубокая аналитическая проработка формирует надежную практическую базу.`,
+                  ` Соблюдение регламентов при реализации гарантирует качество.`,
+                  ` Системный анализ создает фундамент для оптимизации ресурсов.`
                 ],
                 en: [
-                  ` Rigorous domain execution across "${slide.title}" establishes a verifiable foundation for growth.`,
-                  ` Phased milestone delivery ensures consistent output quality and eliminates operational risks.`,
-                  ` Systematic analysis provides an empirical basis for optimizing critical resource allocation.`
+                  ` Rigorous domain execution establishes a verifiable foundation.`,
+                  ` Phased milestone delivery ensures consistent output quality.`,
+                  ` Systematic analysis provides an empirical basis for resource allocation.`
                 ],
                 tg: [
-                  ` Таҳлили амиқ дар бахши "${slide.title}" заминаи боэътимоди амалиро таъмин месозад.`,
-                  ` Риояи дақиқи қоидаҳо сифати устуворро кафолат дода, хавфҳоро коҳиш медиҳад.`,
-                  ` Равиши низомманд барои истифодаи сарфакоронаи захираҳо мусоидат менамояд.`
+                  ` Таҳлили амиқ дар ин бахш заминаи боэътимоди амалиро таъмин месозад.`,
+                  ` Риояи дақиқи қоидаҳо сифати устуворро кафолат медиҳад.`,
+                  ` Равиши низомманд барои истифодаи сарфакоронаи захираҳо мусоидат мекунад.`
                 ]
               };
               const mList = miniPool[language] || miniPool.uz;
               pt.description += mList[(sIdx * 3 + pIdx) % mList.length];
+            }
+
+            // Qat'iy maksimal chegara: matn hech qachon kartochka chegarasidan chiqmasligi uchun (125 belgi)
+            if (pt.description.length > 125) {
+              const cut = pt.description.substring(0, 122);
+              const punc = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+              if (punc > 65) {
+                pt.description = cut.substring(0, punc + 1).trim();
+              } else {
+                const sp = cut.lastIndexOf(' ');
+                pt.description = (sp > 65 ? cut.substring(0, sp) : cut).trim() + '...';
+              }
             }
           }
         });
@@ -4643,7 +4700,10 @@ export async function generatePresentationOutline({ topic, slideCount = 6, langu
 - spotlight (Хавфҳои асосӣ ва хулосаи муҳим)
 Слайди охирин: layoutType: "conclusion" (Хулосаҳои стратегӣ ва тавсияҳои амалӣ)
 
-ҚОИДАИ МУҲИМ: Ҳамаи сарлавҳаҳо ва сарлавҳаҳои фаръӣ бо истилоҳоти хоси ХУДИ МАВЗӮЪ ва ТАНҲО БА ЗАБОНИ ТОҶИКӢ навишта шаванд. Ҳеҷ гуна калима ё ҷумлаи ӯзбекӣ набошад!
+ҚОИДАИ МУҲИММИ ДИЗАЙН ВА ТАРҲРЕЗӢ:
+1. Ҳамаи сарлавҳаҳо ва сарлавҳаҳои фаръӣ ТАНҲО БА ЗАБОНИ ТОҶИКӢ навишта шаванд.
+2. Сарлавҳаи ҳар як слайд (title) КӮТОҲ (3-6 калима, то 45 аломат) бошад. Номи умумии мавзӯъро ба сарлавҳаи слайдҳо ҳамроҳ кардан ҚАТЪИЯН МАНЪ АСТ!
+3. Сарлавҳаи фаръӣ (subtitle) то 80 аломат бошад.
 Raw JSON баргардонед:
 {
   "title": "${topic}",
@@ -4677,7 +4737,10 @@ Raw JSON баргардонед:
 - spotlight (Анализ рисков и ключевой фокус)
 Последний слайд: layoutType: "conclusion" (Стратегические выводы и практические рекомендации)
 
-ВАЖНОЕ ПРАВИЛО: Все заголовки и подзаголовки должны быть написаны исключительно на русском языке с отраслевыми терминами темы.
+ВАЖНЫЕ ПРАВИЛА ВЕРСТКИ И ДИЗАЙНА:
+1. Все тексты должны быть исключительно на русском языке.
+2. Заголовки каждого слайда (title) должны быть КРАТКИМИ (3-6 слов, строго до 45 символов). КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО приписывать в начало заголовка слайда название всей темы!
+3. Подзаголовки (subtitle) должны быть лаконичными (до 80 символов).
 Верните raw JSON:
 {
   "title": "${topic}",
@@ -4711,7 +4774,10 @@ From Slide 3 onwards using following layoutTypes with DEEP, RIGOROUS, TOPIC-SPEC
 - spotlight (Critical risks and key focal takeaway)
 Final slide: layoutType: "conclusion" (Strategic conclusions and actionable recommendations)
 
-IMPORTANT RULE: All content must be 100% in professional English with topic-specific academic vocabulary.
+CRITICAL LAYOUT & DESIGN RULES:
+1. All content must be 100% in professional English.
+2. Slide titles must be CONCISE (3-6 words, strictly under 45 characters). NEVER prepend the overall topic title to individual slide titles!
+3. Subtitles must be concise (under 80 characters).
 Return raw JSON:
 {
   "title": "${topic}",
@@ -4744,7 +4810,10 @@ Slaydlar ketma-ketligi:
 - spotlight (Asosiy xatarlar va muhim xulosa)
 Oxirgi slayd: layoutType: "conclusion" (Strategik xulosalar va amaliy tavsiyalar)
 
-MUHIM QOIDA: Har bir sarlavha va sarlavha osti MAVZUNING O'ZIGA xos atamalari bilan yozilsin. Umumiy so'zlar bo'lmasin.
+MUHIM DIZAYN VA VERSTKA QOIDALARI:
+1. Har bir sarlavha va sarlavha osti mavzuning o'ziga xos aniq atamalari bilan yozilsin.
+2. Slayd sarlavhalari (title) LO'NDA (3-6 so'z, 45 belgidan oshmagan) bo'lsin. Mavzu nomini har bir slayd sarlavhasi boshiga takrorlash QAT'IYAN TAQIQLANADI!
+3. Sarlavha ostilari (subtitle) 80 belgidan oshmasin.
 Raw JSON qaytar:
 {
   "title": "${topic}",
@@ -4845,22 +4914,22 @@ ${JSON.stringify(outlineBatch.map(s => ({
 ВАЗИФА: Барои слайдҳои боло танҳо матнҳои АМИҚИ ИЛМӢ, ДАЛЕЛИИ ОМОРӢ ва марбут ба мавзӯи "${topic}"-ро бо ЗАБОНИ ТОҶИКӢ нависед.
 Ҳар як слайд дорои далелҳои воқеӣ, рақамҳо (фоизҳо, нишондиҳандаҳо, солҳо, ташкилотҳо, формулаҳо) бошад.
 ИСТИФОДАИ КАЛИМАҲОИ УМУМӢ ВА ҲАР ГУНА КАЛИМАИ ӮЗБЕКӢ ҚАТЪИЯН МАНЪ АСТ!
-Ҳар як бахши point description бояд ҳадди ақал 3-4 ҷумлаи мукаммали илмӣ ва таҳлилӣ бошад.
+Ҳар як бахши point description бояд ДАҚИҚ ВА ЛАКОНИК (1-2 ҷумла, ҳадди аксар 100-120 аломат) буда, танҳо далелҳо ва рақамҳои мушаххасро дар бар гирад. Навиштани матнҳои дарози китобӣ ё эссе қатъиян манъ аст!
 
 Массиви JSON, ки бояд баргардонида шавад:
 [
   {
     "slideNumber": ...,
     "layoutType": "...",
-    "title": "...",
-    "subtitle": "...",
+    "title": "Сарлавҳаи кӯтоҳ (3-5 калима, бидуни такрори номи мавзӯъ)",
+    "subtitle": "Сарлавҳаи фаръии кӯтоҳ (то 75 аломат)",
     "points": [
-      { "heading": "...", "description": "3-4 ҷумлаи мукаммали илмӣ ва таҳлилии тоҷикӣ..." }
+      { "heading": "Сарлавҳаи кӯтоҳ (3-5 калима)", "description": "1-2 ҷумлаи дақиқ бо далел ва рақам (то 110 аломат)..." }
     ],
     "metrics": [ ...агар kpi_metrics бошад 4 рақами воқеӣ: [{"val": "...", "label": "...", "desc": "..."}]... ],
     "leftHeading": "...агар comparison бошад...",
     "rightHeading": "...агар comparison бошад...",
-    "highlight": "Хулосаи муҳимми таҳлилӣ ба забони тоҷикӣ...",
+    "highlight": "Хулосаи муҳимми таҳлилӣ ба забони тоҷикӣ (то 120 аломат)...",
     "speakerNotes": "Матни мукаммали нутқ барои баромад ба забони тоҷикӣ..."
   }
 ]`;
@@ -4880,22 +4949,22 @@ ${JSON.stringify(outlineBatch.map(s => ({
 ЗАДАЧА: Для указанных слайдов напишите ГЛУБОКИЙ НАУЧНЫЙ, ФАКТИЧЕСКИЙ, СТАТИСТИЧЕСКИЙ контент, строго относящийся к теме "${topic}".
 Каждый слайд должен содержать реальные факты, цифры (проценты, годы, организации, конкретные формулы и метрики).
 ОБЩИЕ ШАБЛОННЫЕ ФРАЗЫ КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНЫ!
-Каждый point description должен содержать не менее 3-4 полноценных предложений глубокого отраслевого анализа.
+Каждый point description должен быть ЛАКОНИЧНЫМ И ТОЧНЫМ (строго 1-2 предложения, ДО 100-120 СИМВОЛОВ), содержащим конкретные факты, цифры, метрики. МНОГОСЛОВНЫЕ АБЗАЦЫ И ВОДА КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНЫ, так как они ломают верстку карточек слайдов!
 
 JSON массив:
 [
   {
     "slideNumber": ...,
     "layoutType": "...",
-    "title": "...",
-    "subtitle": "...",
+    "title": "Краткий заголовок (3-5 слов, БЕЗ дублирования названия всей темы)",
+    "subtitle": "Краткий подзаголовок (до 75 символов)",
     "points": [
-      { "heading": "...", "description": "3-4 предложения глубокого научного анализа..." }
+      { "heading": "Краткий заголовок (3-5 слов)", "description": "1-2 емких предложения с фактами и цифрами (до 110 символов)..." }
     ],
     "metrics": [ ...если kpi_metrics, то 4 реальных показателя: [{"val": "...", "label": "...", "desc": "..."}]... ],
     "leftHeading": "...если comparison...",
     "rightHeading": "...если comparison...",
-    "highlight": "Ключевой аналитический вывод на русском языке...",
+    "highlight": "Ключевой аналитический вывод на русском языке (до 120 символов)...",
     "speakerNotes": "Полный текст речи докладчика на русском языке..."
   }
 ]`;
@@ -4915,22 +4984,22 @@ ${JSON.stringify(outlineBatch.map(s => ({
 TASK: For the slides above, write DEEP EMPIRICAL, FACTUAL, STATISTICAL analysis strictly pertaining to "${topic}".
 Include real metrics (percentages, years, institutions, formulas, benchmarks).
 GENERIC PHRASES ARE STRICTLY FORBIDDEN!
-Each point description must contain at least 3-4 full sentences of rigorous domain analysis.
+Each point description must be CONCISE AND IMPACTFUL (strictly 1-2 sentences, UNDER 110-120 CHARACTERS), containing concrete facts, data, metrics. LENGTHY ESSAY PARAGRAPHS ARE STRICTLY FORBIDDEN to ensure clean visual card alignment!
 
 JSON array to return:
 [
   {
     "slideNumber": ...,
     "layoutType": "...",
-    "title": "...",
-    "subtitle": "...",
+    "title": "Concise title (3-5 words, DO NOT prepend the overall topic)",
+    "subtitle": "Concise subtitle (max 75 characters)",
     "points": [
-      { "heading": "...", "description": "3-4 rigorous sentences of deep academic analysis..." }
+      { "heading": "Concise heading (3-5 words)", "description": "1-2 impactful sentences with metrics/facts (max 110 chars)..." }
     ],
     "metrics": [ ...if kpi_metrics, 4 empirical stats: [{"val": "...", "label": "...", "desc": "..."}]... ],
     "leftHeading": "...if comparison...",
     "rightHeading": "...if comparison...",
-    "highlight": "Key strategic takeaway in English...",
+    "highlight": "Key strategic takeaway in English (max 120 chars)...",
     "speakerNotes": "Full comprehensive speech transcript for the speaker in English..."
   }
 ]`;
@@ -4949,22 +5018,22 @@ ${JSON.stringify(outlineBatch.map(s => ({
 VAZIFA: Yuqoridagi slaydlar uchun faqat "${topic}" mavzusiga oid CHUQUR ILMIY, FAKTIK, STATISTIK matnlarni yoz.
 Har bir slaydda mavzuning haqiqiy faktlari, raqamlari (ppm, darajalar, yillar, tashkilotlar, formulalar, aniq ko'rsatkichlar) bo'lsin.
 UMUMIY SO'ZLAR ("zamonaviy yondashuv", "optimallashtirish", "1-bosqich", "qo'l mehnati", "tizimli islohotlar") QAT'IYAN TAQIQLANADI!
-Har bir point description kamida 3-4 ta to'liq jumlali chuqur ilmiy tahlil bo'lsin.
+Har bir point description LAKONIK VA ANIQ (qat'iy 1-2 jumla, 100-120 BELGIDAN OSHMAGAN), faqat aniq faktlar, raqamlar va ko'rsatkichlar bilan bo'lsin. UZUN MATNLAR VA ESSO YOZISH QAT'IYAN TAQIQLANADI, chunki ular slayd kartochkalariga sig'may xatlarni ustma-ust chiqarib yuboradi!
 
 Qaytishi kerak bo'lgan JSON massiv:
 [
   {
     "slideNumber": ...,
     "layoutType": "...",
-    "title": "...",
-    "subtitle": "...",
+    "title": "Qisqa sarlavha (3-5 so'z, butun mavzuni boshiga qo'shmasdan)",
+    "subtitle": "Qisqa sarlavha osti (maksimal 75 belgi)",
     "points": [
-      { "heading": "...", "description": "3-4 jumlali chuqur ilmiy va faktik tahlil..." }
+      { "heading": "Qisqa sarlavha (3-5 so'z)", "description": "1-2 jumlali aniq faktik va raqamli tahlil (maksimal 110 belgi)..." }
     ],
     "metrics": [ ...agar kpi_metrics bo'lsa haqiqiy 4 ta raqam: [{"val": "...", "label": "...", "desc": "..."}]... ],
     "leftHeading": "...agar comparison bo'lsa...",
     "rightHeading": "...agar comparison bo'lsa...",
-    "highlight": "Muhim xulosa...",
+    "highlight": "Muhim xulosa (maksimal 120 belgi)...",
     "speakerNotes": "Ma'ruza nutqi matni..."
   }
 ]`;

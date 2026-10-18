@@ -546,49 +546,117 @@ function applySlideBackground(slide, pres, theme) {
 }
 
 /**
- * Har bir slayd uchun standart sarlavha paneli (xatlar ramkadan chiqmaydigan qilib)
+ * Matnni so'z yoki gap chegarasida xavfsiz qisqartirish (harflar bir-birining ustiga chiqmasligi uchun)
  */
-function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalSlides, i18n = null) {
+function truncateClean(str, maxLen = 140) {
+  if (!str || typeof str !== 'string') return '';
+  const trimmed = str.trim().replace(/\s+/g, ' ');
+  if (trimmed.length <= maxLen) return trimmed;
+
+  // Gap oxiri bo'yicha qidiramiz (. ! ?)
+  const sentenceSlice = trimmed.substring(0, maxLen);
+  const lastPunct = Math.max(
+    sentenceSlice.lastIndexOf('. '),
+    sentenceSlice.lastIndexOf('! '),
+    sentenceSlice.lastIndexOf('? ')
+  );
+  if (lastPunct > maxLen * 0.55) {
+    return sentenceSlice.substring(0, lastPunct + 1).trim();
+  }
+
+  // So'z chegarasi bo'yicha qidiramiz
+  const lastSpace = sentenceSlice.lastIndexOf(' ');
+  if (lastSpace > maxLen * 0.6) {
+    return sentenceSlice.substring(0, lastSpace).trim() + '...';
+  }
+  return sentenceSlice.trim() + '...';
+}
+
+/**
+ * Slayd sarlavhasini tozalash: Mavzu nomining takrorlanishini olib tashlash va uzunlikni cheklash
+ */
+function cleanSlideTitle(title, mainTitle = '') {
+  if (!title || typeof title !== 'string') return '';
+  let t = title.trim();
+
+  // Agar sarlavha boshida umumiy mavzu nomi takrorlangan bo'lsa (masalan: "Mavzu: Bo'lim...")
+  if (mainTitle && mainTitle.length > 3) {
+    const esc = mainTitle.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    t = t.replace(new RegExp(`^${esc}\\s*[:\\-–—|]\\s*`, 'i'), '');
+    t = t.replace(new RegExp(`^[:\\-–—|]\\s*`, 'i'), '');
+  }
+
+  // Agar ortiqcha uzun prefiks bo'lsa
+  t = t.replace(/^[^:]{3,60}:\s*/, (match) => {
+    if (match.length > 25 && t.length > 60) return '';
+    return match;
+  });
+
+  return truncateClean(t, 65);
+}
+
+/**
+ * Har bir slayd uchun standart sarlavha paneli (xatlar mutlaqo ustma-ust tushmaydigan dinamik joylashuv)
+ */
+function addSlideHeader(slide, pres, theme, title, subtitle, slideNumber, totalSlides, i18n = null, mainTitle = '') {
   const slideWord = i18n?.slide || 'Slayd';
   const isMonochrome = theme.id === 'monochrome';
   const isNeon = theme.id === 'neon_abstract';
 
-  // Sarlavha (fit: 'shrink' bilan matn uzun bo'lsa avtomatik moslashadi)
-  slide.addText(title || `${slideWord} ${slideNumber}`, {
-    x: 0.8, y: 0.42, w: 9.8, h: 0.68,
-    fontFace: 'Arial', fontSize: 22, bold: true,
+  const cleanedTitle = cleanSlideTitle(title, mainTitle) || `${slideWord} ${slideNumber}`;
+  const cleanedSub = truncateClean(subtitle, 105);
+
+  // Sarlavha uzunligiga qarab shrift va balandlikni dinamik moslashtirish
+  let titleFontSize = 20;
+  let titleH = 0.44;
+  if (cleanedTitle.length > 55) {
+    titleFontSize = 15.5;
+    titleH = 0.52;
+  } else if (cleanedTitle.length > 35) {
+    titleFontSize = 17.5;
+    titleH = 0.48;
+  }
+
+  const titleY = 0.36;
+  slide.addText(cleanedTitle, {
+    x: 0.8, y: titleY, w: 9.8, h: titleH,
+    fontFace: 'Arial', fontSize: titleFontSize, bold: true,
     color: isMonochrome ? '#111111' : (isNeon ? '#FFFFFF' : theme.primary),
     valign: 'middle', wrap: true, fit: 'shrink',
   });
 
   // Slayd raqami nishoni
   slide.addShape(pres.ShapeType.roundRect, {
-    x: 10.9, y: 0.45, w: 1.63, h: 0.42,
+    x: 10.9, y: 0.38, w: 1.63, h: 0.42,
     fill: { color: isMonochrome ? '111111' : theme.cardBg },
     line: { color: isNeon ? 'F88196' : theme.border, width: 1 },
     rectRadius: isMonochrome ? 0.05 : 0.1,
   });
   slide.addText(`${slideNumber} / ${totalSlides}`, {
-    x: 10.9, y: 0.45, w: 1.63, h: 0.42,
+    x: 10.9, y: 0.38, w: 1.63, h: 0.42,
     fontFace: 'Arial', fontSize: 11, bold: true,
     color: isMonochrome ? '#FFFFFF' : theme.subtext, align: 'center', valign: 'middle', fit: 'shrink',
   });
 
-  // Kichik sarlavha (subtitle)
-  if (subtitle) {
-    slide.addText(subtitle, {
-      x: 0.8, y: 1.10, w: 11.73, h: 0.35,
-      fontFace: 'Arial', fontSize: 12, color: theme.subtext, valign: 'top', wrap: true, fit: 'shrink',
+  // Kichik sarlavha (subtitle) — sarlavhadan pastda, HECH QACHON to'qnashmaydi
+  let subY = titleY + titleH + 0.04;
+  if (cleanedSub) {
+    slide.addText(cleanedSub, {
+      x: 0.8, y: subY, w: 11.73, h: 0.30,
+      fontFace: 'Arial', fontSize: 11.5, color: theme.subtext, valign: 'middle', wrap: true, fit: 'shrink',
     });
+    subY += 0.32;
+  } else {
+    subY += 0.06;
   }
 
   // Ajratuvchi chiziq va rangli aksent
   slide.addShape(pres.ShapeType.line, {
-    x: 0.8, y: 1.48, w: 11.73, h: 0,
+    x: 0.8, y: subY, w: 11.73, h: 0,
     line: { color: theme.border, width: 1.2 },
   });
   slide.addShape(pres.ShapeType.rect, {
-    x: 0.8, y: 1.46, w: 1.4, h: 0.04,
+    x: 0.8, y: subY - 0.02, w: 1.4, h: 0.04,
     fill: { color: isNeon ? 'F88196' : theme.primary },
     line: { color: isNeon ? 'F88196' : theme.primary },
   });
@@ -601,6 +669,7 @@ function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false, i1
   if (!text) return;
 
   const prefix = i18n?.highlightPrefix || '💡 ';
+  const cleanContent = truncateClean(text, 130);
   const boxH = 0.82;
   slide.addShape(pres.ShapeType.roundRect, {
     x: 0.8, y, w: 11.73, h: boxH,
@@ -618,8 +687,8 @@ function addHighlightBox(slide, pres, theme, text, y = 5.52, isGlass = false, i1
   });
 
   slide.addText([
-    { text: prefix, options: { bold: true, fontSize: 11.5, color: theme.primary } },
-    { text: text, options: { bold: false, italic: true, fontSize: 11, color: theme.text } }
+    { text: prefix, options: { bold: true, fontSize: 11, color: theme.primary } },
+    { text: cleanContent, options: { bold: false, italic: true, fontSize: 10.5, color: theme.text } }
   ], {
     x: 1.12, y: y + 0.05, w: 11.20, h: boxH - 0.1,
     valign: 'middle', wrap: true, fit: 'shrink',
@@ -654,7 +723,7 @@ function addSlideFooter(slide, pres, theme, mainTitle, slideNumber, totalSlides,
 // ================================================================
 function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -699,7 +768,7 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, 
     fontFace: 'Arial', fontSize: 9.5, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle', fit: 'shrink',
   });
 
-  // O'ng tomon: 3 ta qulay tahlil kartochkasi
+  // O'ng tomon: 3 ta qulay tahlil kartochkasi (aniq o'lcham va xatlar sig'ishi kafolatlangan)
   const count = Math.min(points.length, 3) || 1;
   const gap = 0.18;
   const cardH = (contentH - (count - 1) * gap) / count;
@@ -715,20 +784,23 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, 
     });
 
     slide.addShape(pres.ShapeType.roundRect, {
-      x: rightX + 0.22, y: y + 0.16, w: 0.42, h: 0.42,
+      x: rightX + 0.20, y: y + (cardH - 0.42) / 2, w: 0.42, h: 0.42,
       fill: { color: theme.primary },
       rectRadius: 0.1,
     });
     slide.addText(`0${idx + 1}`, {
-      x: rightX + 0.22, y: y + 0.16, w: 0.42, h: 0.42,
+      x: rightX + 0.20, y: y + (cardH - 0.42) / 2, w: 0.42, h: 0.42,
       fontFace: 'Arial', fontSize: 11, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
     });
 
+    const headingText = truncateClean(p.heading || i18n.pointFallback(idx + 1), 38);
+    const descText = truncateClean(p.description || '', 120);
+
     slide.addText([
-      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
-      { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.text } }
+      { text: `${headingText}\n`, options: { bold: true, fontSize: 11.5, color: theme.primary } },
+      { text: descText, options: { bold: false, fontSize: 9.5, color: theme.text } }
     ], {
-      x: rightX + 0.75, y: y + 0.08, w: rightW - 0.95, h: cardH - 0.16,
+      x: rightX + 0.72, y: y + 0.06, w: rightW - 0.90, h: cardH - 0.12,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
   });
@@ -742,7 +814,7 @@ function renderSplitHeroLayout(slide, pres, theme, item, num, total, img, data, 
 // ================================================================
 function renderComparisonLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -766,15 +838,17 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data,
     fill: { color: theme.primary },
     rectRadius: 0.1,
   });
-  slide.addText(`🌟 ${item.leftHeading || i18n.leftDefault}`, {
+  slide.addText(`🌟 ${truncateClean(item.leftHeading || i18n.leftDefault, 36)}`, {
     x: leftX + 0.2, y: contentY + 0.2, w: colW - 0.4, h: 0.55,
     fontFace: 'Arial', fontSize: 12, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   const p1 = points[0] || {};
+  const h1 = truncateClean(p1.heading || i18n.leftDefault, 40);
+  const d1 = truncateClean(p1.description || '', 180);
   slide.addText([
-    { text: `${p1.heading || i18n.leftDefault}\n\n`, options: { bold: true, fontSize: 13.5, color: theme.primary } },
-    { text: p1.description || '', options: { bold: false, fontSize: 11.5, color: theme.text } }
+    { text: `${h1}\n\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
+    { text: d1, options: { bold: false, fontSize: 11, color: theme.text } }
   ], {
     x: leftX + 0.35, y: contentY + 0.95, w: colW - 0.7, h: contentH - 1.15,
     valign: 'top', wrap: true, fit: 'shrink',
@@ -807,15 +881,17 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data,
     fill: { color: theme.border },
     rectRadius: 0.1,
   });
-  slide.addText(`🚀 ${item.rightHeading || i18n.rightDefault}`, {
+  slide.addText(`🚀 ${truncateClean(item.rightHeading || i18n.rightDefault, 36)}`, {
     x: rightX + 0.2, y: contentY + 0.2, w: colW - 0.4, h: 0.55,
     fontFace: 'Arial', fontSize: 12, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
   });
 
   const p2 = points[1] || points[0] || {};
+  const h2 = truncateClean(p2.heading || i18n.rightDefault, 40);
+  const d2 = truncateClean(p2.description || '', 180);
   slide.addText([
-    { text: `${p2.heading || i18n.rightDefault}\n\n`, options: { bold: true, fontSize: 13.5, color: theme.primary } },
-    { text: p2.description || '', options: { bold: false, fontSize: 11.5, color: theme.text } }
+    { text: `${h2}\n\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
+    { text: d2, options: { bold: false, fontSize: 11, color: theme.text } }
   ], {
     x: rightX + 0.35, y: contentY + 0.95, w: colW - 0.7, h: contentH - 1.15,
     valign: 'top', wrap: true, fit: 'shrink',
@@ -830,7 +906,7 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data,
 // ================================================================
 function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const metrics = item.metrics || [
@@ -866,16 +942,16 @@ function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data,
     });
 
     // Qisqa nishon
-    slide.addText(m.label || i18n.kpiLabels[idx % 3], {
+    slide.addText(truncateClean(m.label || i18n.kpiLabels[idx % 3], 26), {
       x: x + 0.2, y: contentY + 1.20, w: cardW - 0.4, h: 0.45,
       fontFace: 'Arial', fontSize: 11.5, bold: true,
       color: theme.text, align: 'center', valign: 'middle', fit: 'shrink',
     });
 
     // Tavsif
-    slide.addText(m.desc || '', {
+    slide.addText(truncateClean(m.desc || '', 65), {
       x: x + 0.2, y: contentY + 1.70, w: cardW - 0.4, h: contentH * 0.58 - 1.80,
-      fontFace: 'Arial', fontSize: 10.5, color: theme.subtext, align: 'center', valign: 'top', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 10, color: theme.subtext, align: 'center', valign: 'top', wrap: true, fit: 'shrink',
     });
   });
 
@@ -890,9 +966,10 @@ function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data,
     rectRadius: 0.12,
   });
 
+  const summaryText = truncateClean(points[0]?.description || i18n.analysisSummaryFallback, 140);
   slide.addText([
-    { text: i18n.analysisSummary, options: { bold: true, fontSize: 12, color: theme.primary } },
-    { text: points[0]?.description || i18n.analysisSummaryFallback, options: { bold: false, fontSize: 11, color: theme.text } }
+    { text: i18n.analysisSummary, options: { bold: true, fontSize: 11.5, color: theme.primary } },
+    { text: summaryText, options: { bold: false, fontSize: 10.5, color: theme.text } }
   ], {
     x: 1.1, y: bottomY + 0.05, w: 11.13, h: bottomH - 0.1,
     valign: 'middle', wrap: true, fit: 'shrink',
@@ -907,7 +984,7 @@ function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data,
 // ================================================================
 function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -947,14 +1024,17 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
       rectRadius: 0.14,
     });
 
-    slide.addText(p.heading || i18n.stepFallback(idx + 1), {
+    const stepHeading = truncateClean(p.heading || i18n.stepFallback(idx + 1), 32);
+    const stepDesc = truncateClean(p.description || '', 130);
+
+    slide.addText(stepHeading, {
       x: x + 0.15, y: contentY + 0.95, w: cardW - 0.3, h: 0.60,
-      fontFace: 'Arial', fontSize: 13, bold: true, color: theme.primary, align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 12, bold: true, color: theme.primary, align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
     });
 
-    slide.addText(p.description || '', {
+    slide.addText(stepDesc, {
       x: x + 0.2, y: contentY + 1.60, w: cardW - 0.4, h: contentH - 1.80,
-      fontFace: 'Arial', fontSize: 11, color: theme.text, align: 'left', valign: 'top', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 10, color: theme.text, align: 'left', valign: 'top', wrap: true, fit: 'shrink',
     });
 
     // Bosqichlar orasidagi ko'rsatkich (Chevron flow arrow)
@@ -975,7 +1055,7 @@ function renderProcessTimelineLayout(slide, pres, theme, item, num, total, img, 
 // ================================================================
 function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1009,9 +1089,12 @@ function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data,
       fontFace: 'Arial', fontSize: 16, valign: 'middle',
     });
 
+    const mHeading = truncateClean(p.heading || i18n.partFallback(i + 1), 32);
+    const mDesc = truncateClean(p.description || i18n.partDesc, 110);
+
     slide.addText([
-      { text: `${p.heading || i18n.partFallback(i + 1)}\n`, options: { bold: true, fontSize: 12.5, color: theme.primary } },
-      { text: p.description || i18n.partDesc, options: { bold: false, fontSize: 10.5, color: theme.text } }
+      { text: `${mHeading}\n`, options: { bold: true, fontSize: 12, color: theme.primary } },
+      { text: mDesc, options: { bold: false, fontSize: 9.5, color: theme.text } }
     ], {
       x: x + 0.75, y: y + 0.08, w: cardW - 0.95, h: cardH - 0.16,
       valign: 'middle', wrap: true, fit: 'shrink',
@@ -1027,7 +1110,7 @@ function renderMatrixGridLayout(slide, pres, theme, item, num, total, img, data,
 // ================================================================
 function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1049,7 +1132,8 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
     fontFace: 'Georgia', fontSize: 68, bold: true, color: theme.primary,
   });
 
-  const spotlight = item.spotlightText || item.highlight || item.title || '';
+  const rawSpotlight = item.spotlightText || item.highlight || item.title || '';
+  const spotlight = truncateClean(rawSpotlight, 130);
   slide.addText([
     { text: i18n.spotlightPrefix, options: { bold: true, fontSize: 13, color: theme.primary } },
     { text: `"${spotlight}"`, options: { bold: false, italic: true, fontSize: 12, color: theme.text } }
@@ -1074,9 +1158,12 @@ function renderSpotlightCalloutLayout(slide, pres, theme, item, num, total, img,
       rectRadius: 0.12,
     });
 
+    const spHeading = truncateClean(p.heading || i18n.pointFallback(idx + 1), 38);
+    const spDesc = truncateClean(p.description || '', 140);
+
     slide.addText([
-      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
-      { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.text } }
+      { text: `${spHeading}\n\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
+      { text: spDesc, options: { bold: false, fontSize: 10.5, color: theme.text } }
     ], {
       x: x + 0.3, y: bottomY + 0.15, w: colW - 0.6, h: bottomH - 0.3,
       valign: 'top', wrap: true, fit: 'shrink',
@@ -1110,7 +1197,7 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, 
     applySlideBackground(slide, pres, theme);
   }
 
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1141,14 +1228,17 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, 
       fontFace: 'Arial', fontSize: 12, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
     });
 
-    slide.addText(p.heading || i18n.pointFallback(idx + 1), {
+    const cHeading = truncateClean(p.heading || i18n.pointFallback(idx + 1), 36);
+    const cDesc = truncateClean(p.description || '', 130);
+
+    slide.addText(cHeading, {
       x: x + 0.2, y: contentY + 0.85, w: cardW - 0.4, h: 0.60,
-      fontFace: 'Arial', fontSize: 14, bold: true, color: theme.primary, valign: 'middle', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 13, bold: true, color: theme.primary, valign: 'middle', wrap: true, fit: 'shrink',
     });
 
-    slide.addText(p.description || '', {
+    slide.addText(cDesc, {
       x: x + 0.2, y: contentY + 1.55, w: cardW - 0.4, h: contentH - 1.70,
-      fontFace: 'Arial', fontSize: 11, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 10.5, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
     });
   });
 
@@ -1161,7 +1251,7 @@ function renderCinematicLayout(slide, pres, theme, item, num, total, img, data, 
 // ================================================================
 function renderThreeCardsLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1210,22 +1300,25 @@ function renderThreeCardsLayout(slide, pres, theme, item, num, total, img, data,
       fontFace: 'Arial', fontSize: 14, bold: true, color: theme.subtext, align: 'right', valign: 'middle',
     });
 
+    const cardHeading = truncateClean(p.heading || i18n.partFallback(idx + 1), 38);
+    const cardDesc = truncateClean(p.description || i18n.partDesc, 150);
+
     // Sarlavha
-    slide.addText(p.heading || i18n.partFallback(idx + 1), {
-      x: x + 0.25, y: contentY + 1.05, w: cardW - 0.5, h: 0.65,
-      fontFace: 'Arial', fontSize: 13, bold: true, color: theme.primary, valign: 'middle', wrap: true, fit: 'shrink',
+    slide.addText(cardHeading, {
+      x: x + 0.25, y: contentY + 1.05, w: cardW - 0.5, h: 0.60,
+      fontFace: 'Arial', fontSize: 12.5, bold: true, color: theme.primary, valign: 'middle', wrap: true, fit: 'shrink',
     });
 
     // Ajratuvchi nozik chiziq
     slide.addShape(pres.ShapeType.line, {
-      x: x + 0.25, y: contentY + 1.75, w: cardW - 0.5, h: 0,
+      x: x + 0.25, y: contentY + 1.70, w: cardW - 0.5, h: 0,
       line: { color: theme.border, width: 0.8 },
     });
 
     // Mazmun / Tavsif
-    slide.addText(p.description || i18n.partDesc, {
-      x: x + 0.25, y: contentY + 1.88, w: cardW - 0.5, h: contentH - 2.05,
-      fontFace: 'Arial', fontSize: 11, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
+    slide.addText(cardDesc, {
+      x: x + 0.25, y: contentY + 1.80, w: cardW - 0.5, h: contentH - 1.95,
+      fontFace: 'Arial', fontSize: 10.5, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
     });
   }
 
@@ -1238,7 +1331,7 @@ function renderThreeCardsLayout(slide, pres, theme, item, num, total, img, data,
 // ================================================================
 function renderChartLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1272,14 +1365,19 @@ function renderChartLayout(slide, pres, theme, item, num, total, img, data, i18n
   const p1 = points[0] || {};
   const p2 = points[1] || {};
 
+  const h1 = truncateClean(p1.heading || 'Tizimli O\'sish Dinamikasi', 36);
+  const d1 = truncateClean(p1.description || '', 120);
+
   const textBlocks = [
-    { text: `${p1.heading || 'Tizimli O\'sish Dinamikasi'}\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
-    { text: `${p1.description || ''}\n\n`, options: { bold: false, fontSize: 11, color: theme.text } },
+    { text: `${h1}\n`, options: { bold: true, fontSize: 12.5, color: theme.primary } },
+    { text: `${d1}\n\n`, options: { bold: false, fontSize: 10.5, color: theme.text } },
   ];
   if (p2.heading || p2.description) {
+    const h2 = truncateClean(p2.heading || 'Prognoz Ko\'rsatkichlari', 36);
+    const d2 = truncateClean(p2.description || '', 120);
     textBlocks.push(
-      { text: `${p2.heading || 'Prognoz Ko\'rsatkichlari'}\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
-      { text: `${p2.description || ''}`, options: { bold: false, fontSize: 11, color: theme.text } }
+      { text: `${h2}\n`, options: { bold: true, fontSize: 12.5, color: theme.primary } },
+      { text: `${d2}`, options: { bold: false, fontSize: 10.5, color: theme.text } }
     );
   }
 
@@ -1400,7 +1498,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
     applySlideBackground(slide, pres, theme);
   }
 
-  addSlideHeader(slide, pres, theme, item.title || i18n.conclusionHeading, item.subtitle || '', num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title || i18n.conclusionHeading, item.subtitle || '', num, total, i18n, data?.title);
 
   const points = item.points || [];
   const contentY = 1.68;
@@ -1430,11 +1528,14 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
       fontFace: 'Arial', fontSize: 16, valign: 'middle',
     });
 
+    const recHeading = truncateClean(p.heading || i18n.recommendation(idx + 1), 36);
+    const recDesc = truncateClean(p.description || '', 120);
+
     slide.addText([
-      { text: `${p.heading || i18n.recommendation(idx + 1)}\n`, options: { bold: true, fontSize: 13, color: theme.primary } },
-      { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.text } }
+      { text: `${recHeading}\n`, options: { bold: true, fontSize: 12, color: theme.primary } },
+      { text: recDesc, options: { bold: false, fontSize: 10, color: theme.text } }
     ], {
-      x: 1.55, y: y + 0.08, w: leftW - 1.75, h: cardH - 0.16,
+      x: 1.55, y: y + 0.06, w: leftW - 1.75, h: cardH - 0.12,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
   });
@@ -1452,10 +1553,11 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
     fontFace: 'Arial', fontSize: 14, bold: true, color: theme.primary, fit: 'shrink',
   });
 
-  const mainConclusion = item.highlight || `${data.title}: ${i18n.conclusionSuccess}`;
+  const rawConclusion = item.highlight || `${data.title}: ${i18n.conclusionSuccess}`;
+  const mainConclusion = truncateClean(rawConclusion, 150);
   slide.addText(mainConclusion, {
     x: rightX + 0.35, y: contentY + 0.85, w: rightW - 0.7, h: 2.30,
-    fontFace: 'Arial', fontSize: 13, italic: true, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
+    fontFace: 'Arial', fontSize: 12.5, italic: true, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
   });
 
   // Call to action
@@ -1465,7 +1567,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
     line: { color: theme.border, width: 1 },
     rectRadius: 0.1,
   });
-  slide.addText(i18n.conclusionSuccess, {
+  slide.addText(truncateClean(i18n.conclusionSuccess, 100), {
     x: rightX + 0.45, y: contentY + 3.35, w: rightW - 0.9, h: 0.90,
     fontFace: 'Arial', fontSize: 11, bold: true, color: theme.primary, align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
   });
@@ -1478,7 +1580,7 @@ function renderConclusionLayout(slide, pres, theme, item, num, total, img, data,
 // ================================================================
 function renderAgendaNumberedLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title || i18n.agendaBadge, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title || i18n.agendaBadge, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1528,10 +1630,13 @@ function renderAgendaNumberedLayout(slide, pres, theme, item, num, total, img, d
       fontFace: 'Arial', fontSize: 11, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
     });
 
+    const agHeading = truncateClean(p.heading || i18n.pointFallback(idx + 1), 34);
+    const agDesc = truncateClean(p.description || '', 90);
+
     // Sarlavha va qisqa tushuntirish
     slide.addText([
-      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n`, options: { bold: true, fontSize: 12, color: isMonochrome ? '#111111' : theme.primary } },
-      { text: p.description || '', options: { bold: false, fontSize: 10, color: theme.text } }
+      { text: `${agHeading}\n`, options: { bold: true, fontSize: 11.5, color: isMonochrome ? '#111111' : theme.primary } },
+      { text: agDesc, options: { bold: false, fontSize: 9.5, color: theme.text } }
     ], {
       x: x + 0.82, y: y + 0.05, w: colW - 0.98, h: cardH - 0.1,
       valign: 'middle', wrap: true, fit: 'shrink',
@@ -1547,7 +1652,7 @@ function renderAgendaNumberedLayout(slide, pres, theme, item, num, total, img, d
 // ================================================================
 function renderCircularFeatureLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1623,20 +1728,23 @@ function renderCircularFeatureLayout(slide, pres, theme, item, num, total, img, 
 
     // Yirik minimalist raqam kvadrati
     slide.addShape(pres.ShapeType.roundRect, {
-      x: rightX + 0.22, y: y + 0.18, w: 0.46, h: 0.46,
+      x: rightX + 0.20, y: y + (cardH - 0.44) / 2, w: 0.44, h: 0.44,
       fill: { color: isMonochrome ? '111111' : (isNeon ? 'F88196' : theme.primary) },
       rectRadius: 0.08,
     });
     slide.addText(`0${idx + 1}`, {
-      x: rightX + 0.22, y: y + 0.18, w: 0.46, h: 0.46,
-      fontFace: 'Arial', fontSize: 12, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
+      x: rightX + 0.20, y: y + (cardH - 0.44) / 2, w: 0.44, h: 0.44,
+      fontFace: 'Arial', fontSize: 11, bold: true, color: '#FFFFFF', align: 'center', valign: 'middle',
     });
 
+    const circHeading = truncateClean(p.heading || i18n.pointFallback(idx + 1), 38);
+    const circDesc = truncateClean(p.description || '', 120);
+
     slide.addText([
-      { text: `${p.heading || i18n.pointFallback(idx + 1)}\n`, options: { bold: true, fontSize: 13, color: isMonochrome ? '#111111' : theme.primary } },
-      { text: p.description || '', options: { bold: false, fontSize: 11, color: theme.text } }
+      { text: `${circHeading}\n`, options: { bold: true, fontSize: 11.5, color: isMonochrome ? '#111111' : theme.primary } },
+      { text: circDesc, options: { bold: false, fontSize: 9.5, color: theme.text } }
     ], {
-      x: rightX + 0.82, y: y + 0.08, w: rightW - 1.02, h: cardH - 0.16,
+      x: rightX + 0.76, y: y + 0.06, w: rightW - 0.95, h: cardH - 0.12,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
   });
@@ -1650,7 +1758,7 @@ function renderCircularFeatureLayout(slide, pres, theme, item, num, total, img, 
 // ================================================================
 function renderMilestonesTableLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1688,10 +1796,10 @@ function renderMilestonesTableLayout(slide, pres, theme, item, num, total, img, 
     const isEven = (r % 2 === 0);
     const rowBg = isEven ? theme.cardBg : theme.bg;
 
-    const phaseTitle = p.phase || dPhase.period;
-    const taskDesc = `${p.heading || i18n.pointFallback(r + 1)}: ${p.description || ''}`;
-    const respDept = p.owner || dPhase.resp;
-    const targetKpi = p.kpi || dPhase.kpi;
+    const phaseTitle = truncateClean(p.phase || dPhase.period, 24);
+    const taskDesc = truncateClean(`${p.heading || i18n.pointFallback(r + 1)}: ${p.description || ''}`, 105);
+    const respDept = truncateClean(p.owner || dPhase.resp, 28);
+    const targetKpi = truncateClean(p.kpi || dPhase.kpi, 24);
 
     tableRows.push([
       { text: phaseTitle, options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'center', fontSize: 10 } },
@@ -1725,7 +1833,7 @@ function renderMilestonesTableLayout(slide, pres, theme, item, num, total, img, 
 // ================================================================
 function renderSwotAnalysisLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1769,18 +1877,19 @@ function renderSwotAnalysisLayout(slide, pres, theme, item, num, total, img, dat
     });
 
     const badgeTitle = swotBadges[i];
-    const itemHeading = p.heading ? `${p.heading}` : badgeTitle;
+    const itemHeading = truncateClean(p.heading ? `${p.heading}` : badgeTitle, 36);
     slide.addText([
       { text: `${badgeTitle}\n`, options: { bold: true, fontSize: 9.5, color: colHex } },
-      { text: `${itemHeading}`, options: { bold: true, fontSize: 12, color: theme.text } }
+      { text: `${itemHeading}`, options: { bold: true, fontSize: 11.5, color: theme.text } }
     ], {
       x: x + 1.0, y: y + 0.14, w: cardW - 1.20, h: 0.70,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
 
-    slide.addText(p.description || i18n.partDesc, {
+    const swotDesc = truncateClean(p.description || i18n.partDesc, 110);
+    slide.addText(swotDesc, {
       x: x + 0.25, y: y + 0.90, w: cardW - 0.50, h: cardH - 1.05,
-      fontFace: 'Arial', fontSize: 10.5, color: theme.subtext,
+      fontFace: 'Arial', fontSize: 10, color: theme.subtext,
       align: 'left', valign: 'top', wrap: true, fit: 'shrink',
     });
   }
@@ -1794,7 +1903,7 @@ function renderSwotAnalysisLayout(slide, pres, theme, item, num, total, img, dat
 // ================================================================
 function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1829,15 +1938,18 @@ function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, 
     align: 'center', valign: 'middle', fit: 'shrink',
   });
 
-  slide.addText(p1.heading || i18n.problemSolutionDefaults?.probHeading || 'Tizimdagi Asosiy Kamchiliklar', {
+  const p1Heading = truncateClean(p1.heading || i18n.problemSolutionDefaults?.probHeading || 'Tizimdagi Asosiy Kamchiliklar', 40);
+  const p1Desc = truncateClean(p1.description || i18n.problemSolutionDefaults?.probDesc || 'Eski an\'anaviy metodologiyalar yuqori resurs yo\'qotishlariga va past samaradorlikka olib kelmoqda.', 170);
+
+  slide.addText(p1Heading, {
     x: leftX + 0.35, y: contentY + 0.85, w: colW - 0.7, h: 0.70,
-    fontFace: 'Arial', fontSize: 14, bold: true, color: 'EF4444',
+    fontFace: 'Arial', fontSize: 13.5, bold: true, color: 'EF4444',
     valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  slide.addText(p1.description || i18n.problemSolutionDefaults?.probDesc || 'Eski an\'anaviy metodologiyalar yuqori resurs yo\'qotishlariga va past samaradorlikka olib kelmoqda.', {
+  slide.addText(p1Desc, {
     x: leftX + 0.35, y: contentY + 1.65, w: colW - 0.7, h: contentH - 1.85,
-    fontFace: 'Arial', fontSize: 11, color: theme.text,
+    fontFace: 'Arial', fontSize: 10.5, color: theme.text,
     align: 'left', valign: 'top', wrap: true, fit: 'shrink',
   });
 
@@ -1869,15 +1981,18 @@ function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, 
     align: 'center', valign: 'middle', fit: 'shrink',
   });
 
-  slide.addText(p2.heading || i18n.problemSolutionDefaults?.solHeading || 'Ilg\'or Texnologik Mexanizm', {
+  const p2Heading = truncateClean(p2.heading || i18n.problemSolutionDefaults?.solHeading || 'Ilg\'or Texnologik Mexanizm', 40);
+  const p2Desc = truncateClean(p2.description || i18n.problemSolutionDefaults?.solDesc || 'Avtomatlashtirilgan tahlil va zamonaviy mexanizmlar orqali jarayonlar to\'liq optimallashtiriladi.', 170);
+
+  slide.addText(p2Heading, {
     x: rightX + 0.35, y: contentY + 0.85, w: colW - 0.7, h: 0.70,
-    fontFace: 'Arial', fontSize: 14, bold: true, color: '10B981',
+    fontFace: 'Arial', fontSize: 13.5, bold: true, color: '10B981',
     valign: 'middle', wrap: true, fit: 'shrink',
   });
 
-  slide.addText(p2.description || i18n.problemSolutionDefaults?.solDesc || 'Avtomatlashtirilgan tahlil va zamonaviy mexanizmlar orqali jarayonlar to\'liq optimallashtiriladi.', {
+  slide.addText(p2Desc, {
     x: rightX + 0.35, y: contentY + 1.65, w: colW - 0.7, h: contentH - 1.85,
-    fontFace: 'Arial', fontSize: 11, color: theme.text,
+    fontFace: 'Arial', fontSize: 10.5, color: theme.text,
     align: 'left', valign: 'top', wrap: true, fit: 'shrink',
   });
 
@@ -1890,7 +2005,7 @@ function renderProblemSolutionLayout(slide, pres, theme, item, num, total, img, 
 // ================================================================
 function renderPyramidHierarchyLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1938,11 +2053,14 @@ function renderPyramidHierarchyLayout(slide, pres, theme, item, num, total, img,
       rectRadius: 0.12,
     });
 
+    const pyrHeading = truncateClean(p.heading || defaultHeading, 36);
+    const pyrDesc = truncateClean(p.description || i18n.partDesc, 110);
+
     slide.addText([
-      { text: `${p.heading || defaultHeading}\n`, options: { bold: true, fontSize: 12, color: theme.primary } },
-      { text: p.description || i18n.partDesc, options: { bold: false, fontSize: 10, color: theme.text } }
+      { text: `${pyrHeading}\n`, options: { bold: true, fontSize: 11.5, color: theme.primary } },
+      { text: pyrDesc, options: { bold: false, fontSize: 9.5, color: theme.text } }
     ], {
-      x: rightX + 0.30, y: ry + 0.10, w: rightW - 0.60, h: tierH - 0.20,
+      x: rightX + 0.30, y: ry + 0.08, w: rightW - 0.60, h: tierH - 0.16,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
   }
@@ -1956,7 +2074,7 @@ function renderPyramidHierarchyLayout(slide, pres, theme, item, num, total, img,
 // ================================================================
 function renderQuoteEditorialLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -1979,10 +2097,11 @@ function renderQuoteEditorialLayout(slide, pres, theme, item, num, total, img, d
     fontFace: 'Georgia', fontSize: 68, bold: true, color: theme.primary,
   });
 
-  const quoteText = item.spotlightText || item.highlight || points[0]?.description || 'Ilmiy yondashuv va aniq strategiya har qanday murakkab vazifani muvaffaqiyatga aylantiradi.';
+  const rawQuote = item.spotlightText || item.highlight || points[0]?.description || 'Ilmiy yondashuv va aniq strategiya har qanday murakkab vazifani muvaffaqiyatga aylantiradi.';
+  const quoteText = truncateClean(rawQuote, 160);
   slide.addText(quoteText, {
-    x: 1.1, y: contentY + 1.1, w: leftW - 0.6, h: contentH - 2.0,
-    fontFace: 'Georgia', italic: true, fontSize: 13.5, color: theme.text,
+    x: 1.1, y: contentY + 1.05, w: leftW - 0.6, h: contentH - 1.90,
+    fontFace: 'Georgia', italic: true, fontSize: 13, color: theme.text,
     valign: 'top', wrap: true, fit: 'shrink',
   });
 
@@ -1992,7 +2111,8 @@ function renderQuoteEditorialLayout(slide, pres, theme, item, num, total, img, d
     line: { color: theme.border, width: 1 },
     rectRadius: 0.08,
   });
-  slide.addText(`📌 ${data.title} • ${i18n.quoteLead || 'Ilmiy Asos'}`, {
+  const cleanOrg = truncateClean(data.title || '', 35);
+  slide.addText(`📌 ${cleanOrg} • ${i18n.quoteLead || 'Ilmiy Asos'}`, {
     x: 1.2, y: contentY + contentH - 0.75, w: leftW - 0.8, h: 0.45,
     fontFace: 'Arial', fontSize: 9.5, bold: true, color: theme.primary,
     valign: 'middle', fit: 'shrink',
@@ -2009,15 +2129,18 @@ function renderQuoteEditorialLayout(slide, pres, theme, item, num, total, img, d
       rectRadius: 0.12,
     });
 
-    slide.addText(p.heading || i18n.pointFallback(idx + 1), {
-      x: rightX + 0.35, y: ry + 0.20, w: rightW - 0.70, h: 0.50,
-      fontFace: 'Arial', fontSize: 13, bold: true, color: theme.primary,
+    const qHeading = truncateClean(p.heading || i18n.pointFallback(idx + 1), 38);
+    const qDesc = truncateClean(p.description || i18n.partDesc, 130);
+
+    slide.addText(qHeading, {
+      x: rightX + 0.35, y: ry + 0.18, w: rightW - 0.70, h: 0.50,
+      fontFace: 'Arial', fontSize: 12.5, bold: true, color: theme.primary,
       valign: 'middle', wrap: true, fit: 'shrink',
     });
 
-    slide.addText(p.description || i18n.partDesc, {
-      x: rightX + 0.35, y: ry + 0.75, w: rightW - 0.70, h: rightCardH - 0.95,
-      fontFace: 'Arial', fontSize: 10.5, color: theme.text,
+    slide.addText(qDesc, {
+      x: rightX + 0.35, y: ry + 0.72, w: rightW - 0.70, h: rightCardH - 0.88,
+      fontFace: 'Arial', fontSize: 10, color: theme.text,
       align: 'left', valign: 'top', wrap: true, fit: 'shrink',
     });
   });
@@ -2031,12 +2154,12 @@ function renderQuoteEditorialLayout(slide, pres, theme, item, num, total, img, d
 // ================================================================
 function renderHorizontalFlowchartLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
-  const contentY = 1.75;
-  const contentH = hasHighlight ? 3.55 : 4.45;
+  const contentY = 1.68;
+  const contentH = hasHighlight ? 3.65 : 4.60;
 
   const count = 4;
   const gap = 0.35;
@@ -2065,21 +2188,24 @@ function renderHorizontalFlowchartLayout(slide, pres, theme, item, num, total, i
     });
 
     slide.addShape(pres.ShapeType.roundRect, {
-      x, y: contentY + 0.70, w: cardW, h: contentH - 0.70,
+      x, y: contentY + 0.65, w: cardW, h: contentH - 0.65,
       fill: { color: theme.cardBg },
       line: { color: theme.border, width: 1.2 },
       rectRadius: 0.12,
     });
 
-    slide.addText(p.heading || i18n.stepFallback(idx + 1), {
-      x: x + 0.15, y: contentY + 0.85, w: cardW - 0.30, h: 0.60,
-      fontFace: 'Arial', fontSize: 12, bold: true, color: theme.primary,
+    const flowHeading = truncateClean(p.heading || i18n.stepFallback(idx + 1), 28);
+    const flowDesc = truncateClean(p.description || i18n.partDesc, 110);
+
+    slide.addText(flowHeading, {
+      x: x + 0.15, y: contentY + 0.78, w: cardW - 0.30, h: 0.58,
+      fontFace: 'Arial', fontSize: 11.5, bold: true, color: theme.primary,
       align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
     });
 
-    slide.addText(p.description || i18n.partDesc, {
-      x: x + 0.15, y: contentY + 1.50, w: cardW - 0.30, h: contentH - 2.25,
-      fontFace: 'Arial', fontSize: 10, color: theme.text,
+    slide.addText(flowDesc, {
+      x: x + 0.15, y: contentY + 1.42, w: cardW - 0.30, h: contentH - 2.15,
+      fontFace: 'Arial', fontSize: 9.5, color: theme.text,
       align: 'left', valign: 'top', wrap: true, fit: 'shrink',
     });
 
@@ -2101,7 +2227,7 @@ function renderHorizontalFlowchartLayout(slide, pres, theme, item, num, total, i
 // ================================================================
 function renderTeamStakeholdersLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
   const hasHighlight = !!item.highlight;
@@ -2147,15 +2273,18 @@ function renderTeamStakeholdersLayout(slide, pres, theme, item, num, total, img,
       align: 'center', valign: 'middle', fit: 'shrink',
     });
 
-    slide.addText(p.heading || `${i18n.stakeholderUserFallback || 'Foydalanuvchi'} ${idx + 1}`, {
+    const teamHeading = truncateClean(p.heading || `${i18n.stakeholderUserFallback || 'Foydalanuvchi'} ${idx + 1}`, 32);
+    const teamDesc = truncateClean(p.description || i18n.partDesc, 120);
+
+    slide.addText(teamHeading, {
       x: x + 0.2, y: contentY + 1.95, w: cardW - 0.4, h: 0.55,
-      fontFace: 'Arial', fontSize: 13, bold: true, color: theme.text,
+      fontFace: 'Arial', fontSize: 12.5, bold: true, color: theme.text,
       align: 'center', valign: 'middle', wrap: true, fit: 'shrink',
     });
 
-    slide.addText(p.description || i18n.partDesc, {
+    slide.addText(teamDesc, {
       x: x + 0.2, y: contentY + 2.55, w: cardW - 0.4, h: contentH - 2.70,
-      fontFace: 'Arial', fontSize: 10.5, color: theme.subtext,
+      fontFace: 'Arial', fontSize: 10, color: theme.subtext,
       align: 'left', valign: 'top', wrap: true, fit: 'shrink',
     });
   }
@@ -2169,7 +2298,7 @@ function renderTeamStakeholdersLayout(slide, pres, theme, item, num, total, img,
 // ================================================================
 function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const hasHighlight = !!item.highlight;
   const contentY = 1.68;
@@ -2186,7 +2315,7 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
 
   const tableRows = [
     columns.map((c, cIdx) => ({
-      text: c,
+      text: truncateClean(c, 24),
       options: {
         fill: headerBg,
         color: headerTextColor,
@@ -2213,7 +2342,7 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
     const rowBg = isEven ? theme.cardBg : theme.bg;
     const rowCells = [
       {
-        text: r.name || r.criterion || `${i18n.criterionFallback || 'Mezon'} 0${rIdx + 1}`,
+        text: truncateClean(r.name || r.criterion || `${i18n.criterionFallback || 'Mezon'} 0${rIdx + 1}`, 32),
         options: {
           fill: rowBg,
           color: isMonochrome ? '111111' : theme.primary,
@@ -2262,8 +2391,8 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
   }
 
   const ratingNote = item.ratingScaleNote || i18n.ratingScaleNote;
-  const highlightText = item.highlight ? `${ratingNote} • ${item.highlight}` : ratingNote;
-  if (highlightText) addHighlightBox(slide, pres, theme, highlightText, 5.52, false, i18n);
+  const highlightText = item.highlight ? `${ratingNote} • ${truncateClean(item.highlight, 90)}` : ratingNote;
+  if (highlightText) addHighlightBox(slide, pres, theme, truncateClean(highlightText, 130), 5.52, false, i18n);
   addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
@@ -2272,7 +2401,7 @@ function renderMatrixRatingLayout(slide, pres, theme, item, num, total, img, dat
 // ================================================================
 function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const hasHighlight = !!item.highlight;
   const contentY = 1.68;
@@ -2288,9 +2417,9 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
 
   const tableRows = [
     [
-      { text: headers[0], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
-      { text: headers[1], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'center', fontSize: 11 } },
-      { text: headers[2], options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
+      { text: truncateClean(headers[0], 35), options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
+      { text: truncateClean(headers[1], 28), options: { fill: headerBg, color: headerTextColor, bold: true, align: 'center', fontSize: 11 } },
+      { text: truncateClean(headers[2], 38), options: { fill: headerBg, color: headerTextColor, bold: true, align: 'left', fontSize: 11 } },
     ]
   ];
 
@@ -2315,9 +2444,9 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
     const rowBg = isEven ? theme.cardBg : theme.bg;
 
     tableRows.push([
-      { text: sc.scenario || `${i18n.taskFallback || 'Vazifa'} 0${r + 1}`, options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'left', fontSize: 10 } },
-      { text: sc.choice || (i18n.choiceBadge || 'Tanlov'), options: { fill: rowBg, color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary), bold: true, align: 'center', fontSize: 10.5 } },
-      { text: sc.reason || '', options: { fill: rowBg, color: theme.text, fontSize: 9.5 } },
+      { text: truncateClean(sc.scenario || `${i18n.taskFallback || 'Vazifa'} 0${r + 1}`, 36), options: { fill: rowBg, color: isMonochrome ? '111111' : theme.primary, bold: true, align: 'left', fontSize: 10 } },
+      { text: truncateClean(sc.choice || (i18n.choiceBadge || 'Tanlov'), 26), options: { fill: rowBg, color: isNeon ? 'F88196' : (isMonochrome ? '111111' : theme.primary), bold: true, align: 'center', fontSize: 10.5 } },
+      { text: truncateClean(sc.reason || '', 95), options: { fill: rowBg, color: theme.text, fontSize: 9.5 } },
     ]);
   }
 
@@ -2337,8 +2466,8 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
   }
 
   const ruleNote = item.rule || i18n.scenarioRule;
-  const highlightText = item.highlight ? `${ruleNote} • ${item.highlight}` : ruleNote;
-  if (highlightText) addHighlightBox(slide, pres, theme, highlightText, 5.52, false, i18n);
+  const highlightText = item.highlight ? `${ruleNote} • ${truncateClean(item.highlight, 90)}` : ruleNote;
+  if (highlightText) addHighlightBox(slide, pres, theme, truncateClean(highlightText, 130), 5.52, false, i18n);
   addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
 }
 
@@ -2347,7 +2476,7 @@ function renderScenarioMatrixLayout(slide, pres, theme, item, num, total, img, d
 // ================================================================
 function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
-  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n);
+  addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const hasHighlight = !!item.highlight;
   const contentY = 1.68;
@@ -2374,8 +2503,8 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
   passportFields.forEach((f, idx) => {
     const px = 0.8 + idx * passW;
     slide.addText([
-      { text: `${f.label}: `, options: { bold: true, fontSize: 9.5, color: theme.subtext } },
-      { text: `${f.val}`, options: { bold: true, fontSize: 10.5, color: isNeon ? '#FFFFFF' : theme.primary } },
+      { text: `${truncateClean(f.label, 18)}: `, options: { bold: true, fontSize: 9.5, color: theme.subtext } },
+      { text: `${truncateClean(f.val, 24)}`, options: { bold: true, fontSize: 10.5, color: isNeon ? '#FFFFFF' : theme.primary } },
     ], {
       x: px + 0.1, y: contentY + 0.05, w: passW - 0.2, h: passportH - 0.1,
       align: 'center', valign: 'middle', fit: 'shrink',
@@ -2425,7 +2554,10 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
   });
 
   const pros = (item.pros && item.pros.length) ? item.pros : (item.strengths && item.strengths.length ? item.strengths : (item.points ? item.points.slice(0, 3) : []));
-  const prosText = pros.map(p => `• ${typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`}`).join('\n\n');
+  const prosText = pros.map(p => {
+    const raw = typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`;
+    return `• ${truncateClean(raw, 95)}`;
+  }).join('\n\n');
   slide.addText(prosText, {
     x: leftX + 0.25, y: colY + 0.48, w: colW - 0.5, h: colH - 0.58,
     fontFace: 'Arial', fontSize: 9.5, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
@@ -2448,7 +2580,10 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
     'Yuqori apparat talablari va resurs sarfi.',
     'Maxfiylik va telemetriya parametrlarining cheklanganligi.'
   ]);
-  const consText = consList.map(p => `• ${typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`}`).join('\n\n');
+  const consText = consList.map(p => {
+    const raw = typeof p === 'string' ? p : `${p.heading ? p.heading + ': ' : ''}${p.description || ''}`;
+    return `• ${truncateClean(raw, 95)}`;
+  }).join('\n\n');
   slide.addText(consText, {
     x: rightX + 0.25, y: colY + 0.48, w: colW - 0.5, h: colH - 0.58,
     fontFace: 'Arial', fontSize: 9.5, color: theme.text, valign: 'top', wrap: true, fit: 'shrink',
@@ -2463,7 +2598,8 @@ function renderProfileCardLayout(slide, pres, theme, item, num, total, img, data
     line: { color: theme.border, width: 1 },
     rectRadius: 0.08,
   });
-  const bestForText = item.bestFor || item.targetUse || (i18n.profileBestForDefault || 'Korporativ ofis, ilmiy tadqiqotlar va keng qamrovli ekotizim.');
+  const bestForRaw = item.bestFor || item.targetUse || (i18n.profileBestForDefault || 'Korporativ ofis, ilmiy tadqiqotlar va keng qamrovli ekotizim.');
+  const bestForText = truncateClean(bestForRaw, 120);
   slide.addText([
     { text: `🎯 ${i18n.profileHeadings?.bestFor || 'ENG MOS SOHALAR'}: `, options: { bold: true, fontSize: 10, color: isNeon ? '#FFFFFF' : theme.primary } },
     { text: bestForText, options: { bold: false, fontSize: 10, color: theme.text } },
@@ -2597,16 +2733,26 @@ export async function createPptx(data) {
   const textW = coverImg2 ? 6.7 : 11.3;
   const titleColor = isLightTheme ? (theme.primary || '111111') : '#FFFFFF';
 
-  titleSlide.addText(data.title || titleData.title || '', {
+  const coverTitle = (data.title || titleData.title || '').trim();
+  const coverTitleLen = coverTitle.length;
+  let coverTitleFontSize = coverImg2 ? 30 : 36;
+  if (coverTitleLen > 80) {
+    coverTitleFontSize = coverImg2 ? 22 : 25;
+  } else if (coverTitleLen > 55) {
+    coverTitleFontSize = coverImg2 ? 25 : 29;
+  }
+
+  titleSlide.addText(coverTitle, {
     x: 1.0, y: 1.9, w: textW, h: 2.3,
-    fontFace: 'Arial', fontSize: coverImg2 ? 30 : 36, bold: true,
+    fontFace: 'Arial', fontSize: coverTitleFontSize, bold: true,
     color: titleColor, valign: 'middle', wrap: true, fit: 'shrink',
   });
 
   if (data.subtitle || titleData.subtitle) {
-    titleSlide.addText(data.subtitle || titleData.subtitle, {
+    const coverSubtitle = truncateClean(data.subtitle || titleData.subtitle, 120);
+    titleSlide.addText(coverSubtitle, {
       x: 1.0, y: 4.4, w: textW, h: 0.75,
-      fontFace: 'Arial', fontSize: 15, color: isLightTheme ? (theme.accent || '52525B') : theme.primary, valign: 'top', wrap: true, fit: 'shrink',
+      fontFace: 'Arial', fontSize: 14.5, color: isLightTheme ? (theme.accent || '52525B') : theme.primary, valign: 'top', wrap: true, fit: 'shrink',
     });
   }
 
