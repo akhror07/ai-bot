@@ -5,3 +5,5 @@ temp/
 *.json.bak
 *.pem
 *.key
+.firebase/
+

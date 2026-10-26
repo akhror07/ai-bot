@@ -81,7 +81,11 @@ async function main() {
       console.warn('[Bot] Menu button sozlashda xatolik:', menuErr.message);
     }
 
-    // 4. Bot polling boshlash
+    // 4. Telegram Webhook tozalash va Polling boshlash
+    try {
+      await bot.api.deleteWebhook({ drop_pending_updates: false });
+    } catch (_) {}
+
     bot.start({
       onStart: (info) => {
         console.log(`✅ @${info.username} bot to'liq faol!`);
@@ -102,4 +106,14 @@ process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
 
-main();
+// Firebase Cloud Functions eksporti (Lazy import orqali polling bilan to'qnashuv bo'lmaydi)
+export async function api(req, res) {
+  const mod = await import('./src/firebase.js');
+  return mod.api(req, res);
+}
+
+// Agar Firebase Cloud Functions ichida bo'lmasa, mustaqil server va polling rejimida ishga tushadi
+if (!process.env.K_SERVICE && !process.env.FUNCTION_NAME && !process.env.FIREBASE_CONFIG) {
+  main();
+}
+
