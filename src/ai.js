@@ -609,7 +609,215 @@ export function getSmartDomainMetrics(topic = '', stageIndex = 4, language = 'uz
     return data[language] || data.uz;
   }
 
-  // 5. Universal / Boshqa barcha mavzular (General)
+    // 5. Madaniyat / Tarix / Mumtoz Adabiyot / San'at / Til / Meros
+  if (t.includes('tarix') || t.includes('adabiyot') || t.includes('navoiy') || t.includes('bobur') || t.includes('temur') || t.includes('meros') || t.includes('sanat') || t.includes("san'at") || t.includes('madaniyat') || t.includes('shoir') || t.includes('yozuvchi') || t.includes('til') || t.includes('lingvist') || t.includes('muzey') || t.includes('arkheolog') || t.includes('manba') || t.includes('qolyozma') || t.includes("qo'lyozma")) {
+    if (stageIndex === 12 || stageIndex === 13) {
+      const data = {
+        uz: [
+          { val: '30+ asar', label: 'Ilmiy-Badiiy Meros', desc: 'Jahon fondlarida saqlanayotgan nodir qo\'lyozmalar va dostonlar' },
+          { val: '55 000+', label: 'Faol Lug\'at Boyligi', desc: 'Mumtoz tilda qo\'llanilgan boy so\'z boyligi va istilohlar ko\'lami' },
+          { val: '600+ yil', label: 'Tarixiy Davomiylik', desc: 'G\'oyaviy-ma\'naviy merosning bugungi kunda ham saqlangan dolzarbligi' }
+        ],
+        ru: [
+          { val: '30+ трудов', label: 'Научное и литературное наследие', desc: 'Корпус уникальных рукописей и поэм в мировых архивных фондах' },
+          { val: '55 000+', label: 'Словарное богатство', desc: 'Богатство оригинальной лексики и терминов классического языка' },
+          { val: '600+ лет', label: 'Историческая преемственность', desc: 'Непреходящая актуальность духовного наследия в современную эпоху' }
+        ],
+        en: [
+          { val: '30+ Works', label: 'Literary & Scholarly Canon', desc: 'Corpus of verified manuscripts preserved in global library archives' },
+          { val: '55,000+', label: 'Lexical Vocabulary Scope', desc: 'Unprecedented poetic lexicon and linguistic depth of classical language' },
+          { val: '600+ Yrs', label: 'Civilizational Continuity', desc: 'Timeless resonance of intellectual doctrines across generations' }
+        ],
+        tg: [
+          { val: '30+ асар', label: 'Мероси илмию адабӣ', desc: 'Сарвати дастнависҳо ва асарҳои безавол дар хазинаҳои ҷаҳонӣ' },
+          { val: '55 000+', label: 'Сарвати луғавии забон', desc: 'Шумораи калимаҳои нодир ва мафҳумҳои адабии истифодашуда' },
+          { val: '600+ сол', label: 'Давомоти таърихӣ', desc: 'Аҳамияти бебаҳои мероси маънавӣ дар тӯли қарнҳо то замони мо' }
+        ]
+      };
+      return data[language] || data.uz;
+    }
+    const data = {
+      uz: [
+        { val: '5 ta doston', label: 'Xamsa Qamrovi', desc: 'Sharq adabiyotida turkiy tildagi ilk mukammal besh doston (Xamsa)' },
+        { val: '4 ta devon', label: 'Lirik Külliyot', desc: 'Xazoyinul-maoniy: bolalikdan keksallikkacha bo\'lgan to\'rt umr fasli' },
+        { val: '26 000+ bayt', label: 'She\'riy Hukmronlik', desc: 'G\'azal, ruboiy, qit\'a va tuyuqlarning yuksak badiiy mukammalligi' }
+      ],
+      ru: [
+        { val: '5 поэм', label: 'Свод Хамса', desc: 'Первая грандиозная пятерица (Хамса) в истории тюркской литературы' },
+        { val: '4 дивана', label: 'Лирический цикл', desc: 'Хазаинул-маани: четыре периода жизни поэта от юности до зрелости' },
+        { val: '26 000+ бейтов', label: 'Поэтический корпус', desc: 'Высочайшее художественное мастерство газелей, рубаи и маснави' }
+      ],
+      en: [
+        { val: '5 Epics', label: 'Quintet (Khamsa)', desc: 'The monumental first complete epic Quintet in Turkic literary history' },
+        { val: '4 Divans', label: 'Lyrical Anthology', desc: 'Treasury of Meanings: the four distinct poetic seasons of human life' },
+        { val: '26,000+ Couplets', label: 'Poetic Mastery', desc: 'Supreme aesthetic elegance in ghazals, quatrains, and panegyrics' }
+      ],
+      tg: [
+        { val: '5 достон', label: 'Достонҳои Хамса', desc: 'Нахустин панҷгонаи бузург дар таърихи адабиёти классикӣ' },
+        { val: '4 девон', label: 'Куллиёти лирикӣ', desc: 'Хазоину-л-маонӣ: чор марҳилаи зиндагӣ ва рушди тафаккури шоир' },
+        { val: '26 000+ байт', label: 'Корпуси назмӣ', desc: 'Маҳорати баланди бадеӣ дар ғазал, рубоӣ ва маснавиҳои безавол' }
+      ]
+    };
+    return data[language] || data.uz;
+  }
+
+  // 6. Huquq / Sud / Adliya / Qonun / Konstitutsiya
+  if (t.includes('huquq') || t.includes('qonun') || t.includes('sud') || t.includes('advokat') || t.includes('adliya') || t.includes('konstituts') || t.includes('yurist') || t.includes('jinoyat') || t.includes('prokuror') || t.includes('statut')) {
+    if (stageIndex === 12 || stageIndex === 13) {
+      const data = {
+        uz: [
+          { val: '94.6%', label: 'Sud Qarorlari Ijrosi', desc: 'Qonuniy kuchga kirgan sud hujjatlarining amalda to\'liq ta\'minlanishi' },
+          { val: '-42%', label: 'Byurokratik To\'siqlar', desc: 'Sud-adliya tizimini raqamlashtirish orqali protsessual kechikishlar kamayishi' },
+          { val: '100%', label: 'Konstitutsiyaviy Kafolat', desc: 'Inson huquq va erkinliklarining oliy darajada himoyalanishi' }
+        ],
+        ru: [
+          { val: '94.6%', label: 'Исполнение решений', desc: 'Фактическая обеспеченность исполнения вступивших в силу вердиктов' },
+          { val: '-42%', label: 'Снижение волокиты', desc: 'Сокращение процессуальных сроков за счет цифровизации юстиции' },
+          { val: '100%', label: 'Конституционная гарантия', desc: 'Высшая правовая защита фундаментальных прав и свобод' }
+        ],
+        en: [
+          { val: '94.6%', label: 'Judicial Enforcement', desc: 'Verified enforcement rate of finalized legal rulings and decrees' },
+          { val: '-42%', label: 'Procedural Delay Drop', desc: 'Drastic reduction in bureaucratic friction through e-justice portals' },
+          { val: '100%', label: 'Constitutional Safeguard', desc: 'Supreme legal protection of civil rights and fundamental freedoms' }
+        ],
+        tg: [
+          { val: '94.6%', label: 'Иҷрои қарорҳои суд', desc: 'Таъмини ҳатмии иҷрои санадҳои судӣ, ки эътибори қонунӣ пайдо кардаанд' },
+          { val: '-42%', label: 'Коҳиши монеаҳо', desc: 'Кӯтоҳ гардидани мӯҳлати мурофиаҳо бо шарофати адлияи рақамӣ' },
+          { val: '100%', label: 'Кафолати конститутсионӣ', desc: 'Ҳифзи олии ҳуқуқ ва озодиҳои инсон дар назди қонун' }
+        ]
+      };
+      return data[language] || data.uz;
+    }
+    const data = {
+      uz: [
+        { val: '88%+', label: 'Raqamli Adliya Qamrovi', desc: 'Aholiga huquqiy xizmatlarning elektron shaklda ko\'rsatilishi darajasi' },
+        { val: '96.2%', label: 'Normativ Muvofiqlik', desc: 'Qonun osti hujjatlarining qat\'iy yuridik ekspertizadan o\'tish ko\'rsatkichi' },
+        { val: '3.4x', label: 'Protsessual Tezlanish', desc: 'Elektron hujjat aylanishi hisobiga ishlarni ko\'rib chiqish sur\'ati ortishi' }
+      ],
+      ru: [
+        { val: '88%+', label: 'Охват цифровой юстиции', desc: 'Доля юридических услуг, доступных гражданам в электронном виде' },
+        { val: '96.2%', label: 'Нормативное соответствие', desc: 'Показатель прохождения строгой антикоррупционной экспертизы' },
+        { val: '3.4x', label: 'Ускорение делопроизводства', desc: 'Рост скорости рассмотрения дел за счет электронных реестров' }
+      ],
+      en: [
+        { val: '88%+', label: 'Digital Justice Adoption', desc: 'Proportion of public legal services provisioned via digital workflows' },
+        { val: '96.2%', label: 'Statutory Compliance', desc: 'Rigorous legal review and anti-corruption verification rate' },
+        { val: '3.4x', label: 'Procedural Velocity', desc: 'Accelerated legal case processing through digital record automation' }
+      ],
+      tg: [
+        { val: '88%+', label: 'Фарогирии адлияи рақамӣ', desc: 'Ҳиссаи хизматрасониҳои ҳуқуқӣ ба шакли электронии дастрас' },
+        { val: '96.2%', label: 'Мутобиқати меъёрӣ', desc: 'Нишондиҳандаи гузаштани санадҳо аз ташхиси дақиқи ҳуқуқӣ' },
+        { val: '3.4x', label: 'Суръати коргузорӣ', desc: 'Афзоиши суръати баррасии парвандаҳо ба воситаи парвандаи электронӣ' }
+      ]
+    };
+    return data[language] || data.uz;
+  }
+
+  // 7. Qishloq Xo'jaligi / Agrar / Dehqonchilik / Hosil
+  if (t.includes('qishloq') || t.includes('fermer') || t.includes('hosil') || t.includes('agrar') || t.includes('agro') || t.includes('paxta') || t.includes('galla') || t.includes("g'alla") || t.includes('chorva') || t.includes('bogdorchilik') || t.includes("bog'dorchilik")) {
+    if (stageIndex === 12 || stageIndex === 13) {
+      const data = {
+        uz: [
+          { val: '48.5 ts/ga', label: 'O\'rtacha Hosildorlik', desc: 'Zamonaviy intensiv agrotexnika hisobiga hosil salmog\'ining ortishi' },
+          { val: '-35%', label: 'Suv Sarfi Tejamkorligi', desc: 'Tomchilatib sug\'orish va lazerli tekislash orqali resurslarni asrash' },
+          { val: '+28.5%', label: 'Eksport Rentabelligi', desc: 'GlobalGAP xalqaro sertifikati bo\'yicha tashqi bozorlarga yetkazib berish' }
+        ],
+        ru: [
+          { val: '48.5 ц/га', label: 'Урожайность культур', desc: 'Рост продуктивности сельхозугодий за счет интенсивного ухода' },
+          { val: '-35%', label: 'Экономия поливной воды', desc: 'Капельное орошение и точная лазерная планировка полей' },
+          { val: '+28.5%', label: 'Экспортная маржинальность', desc: 'Поставки качественной агропродукции по стандартам GlobalGAP' }
+        ],
+        en: [
+          { val: '48.5 c/ha', label: 'Average Crop Yield', desc: 'Substantial agronomic yield growth driven by precision farming' },
+          { val: '-35%', label: 'Irrigation Water Economy', desc: 'Automated drip irrigation and laser-assisted land grading savings' },
+          { val: '+28.5%', label: 'Export Margin Gain', desc: 'Global market premium through certified GlobalGAP packaging' }
+        ],
+        tg: [
+          { val: '48.5 с/га', label: 'Ҳосилнокии зироатҳо', desc: 'Афзоиши ҳосили замин ба шарофати усулҳои нави агротехникӣ' },
+          { val: '-35%', label: 'Сарфаи оби полезӣ', desc: 'Обёрии қатрагӣ ва ҳамворкунии лазерии заминҳои корам' },
+          { val: '+28.5%', label: 'Даромаднокии содирот', desc: 'Интиқоли маҳсулоти кишоварзӣ бо сертификати байналмилалӣ' }
+        ]
+      };
+      return data[language] || data.uz;
+    }
+    const data = {
+      uz: [
+        { val: '92.4%', label: 'Urug\'lik Unuvchanligi', desc: 'Sertifikatlangan sara elita urug\'lik fondining biologik faolligi' },
+        { val: '3.2x', label: 'Klaster Unumdorligi', desc: 'Yerga ishlov berishdan tayyor mahsulotgacha qo\'shilgan qiymat zanjiri' },
+        { val: '-40%', label: 'Kimyoviy Vositalar Sarfi', desc: 'Biolaboratoriyalar orqali zararkunandalarga qarshi tabiiy kurashish' }
+      ],
+      ru: [
+        { val: '92.4%', label: 'Всхожесть семян', desc: 'Биологический потенциал сертифицированного элитного посевного фонда' },
+        { val: '3.2x', label: 'Эффект агрокластера', desc: 'Цепочка добавленной стоимости от поля до готовой продукции' },
+        { val: '-40%', label: 'Снижение пестицидов', desc: 'Биологическая защита растений и минимизация химической нагрузки' }
+      ],
+      en: [
+        { val: '92.4%', label: 'Seed Germination Index', desc: 'Biological viability of certified high-grade genetic seed foundation' },
+        { val: '3.2x', label: 'Agro-Cluster Multiplier', desc: 'Integrated value chain compounding value from soil to processed good' },
+        { val: '-40%', label: 'Agrochemical Reduction', desc: 'Biological integrated pest management reducing ecological strain' }
+      ],
+      tg: [
+        { val: '92.4%', label: 'Сабзиши тухмиҳо', desc: 'Қобилияти баланди биологии фонди тухмипарварии сертификатсияшуда' },
+        { val: '3.2x', label: 'Самараи агрокластер', desc: 'Занҷири арзиши иловашуда аз киштзор то маҳсулоти ниҳоӣ' },
+        { val: '-40%', label: 'Коҳиши моддаҳои кимиёвӣ', desc: 'Ҳифзи биологии зироатҳо ва кам кардани истифодаи заҳрдоруҳо' }
+      ]
+    };
+    return data[language] || data.uz;
+  }
+
+  // 8. Sanoat / Zavod / Ishlab Chiqarish / Muhandislik
+  if (t.includes('sanoat') || t.includes('zavod') || t.includes('fabrika') || t.includes('ishlab chiqarish') || t.includes('metallurg') || t.includes('mashinasozlik') || t.includes('muhandis') || t.includes('konveyer')) {
+    if (stageIndex === 12 || stageIndex === 13) {
+      const data = {
+        uz: [
+          { val: '99.4%', label: 'Standart Sifat Nazorati', desc: 'Xalqaro ISO 9001 talablari asosida nuqsonsiz tayyor mahsulot ulushi' },
+          { val: '+32.8%', label: 'Ishlab Chiqarish Quvvati', desc: 'Avtomatlashtirilgan robotlashgan liniyalarni ishga tushirish samarasi' },
+          { val: '-28%', label: 'Energiya Sarfi / Birlik', desc: 'Energiya tejamkor zamonaviy texnologik agregatlardan foydalanish' }
+        ],
+        ru: [
+          { val: '99.4%', label: 'Контроль качества ISO', desc: 'Доля бездефектной готовой продукции по строгим регламентам' },
+          { val: '+32.8%', label: 'Рост объемов выпуска', desc: 'Эффект внедрения роботизированных сборочных конвейеров' },
+          { val: '-28%', label: 'Удельные энергозатраты', desc: 'Снижение расхода киловатт-часов на единицу готовой продукции' }
+        ],
+        en: [
+          { val: '99.4%', label: 'ISO Quality Yield', desc: 'Zero-defect manufacturing yield conforming to strict global ISO standards' },
+          { val: '+32.8%', label: 'Throughput Capacity Gain', desc: 'Immediate output acceleration driven by automated robotic line commissioning' },
+          { val: '-28%', label: 'Specific Energy Intensity', desc: 'Operational energy reduction per unit manufactured via heat recovery' }
+        ],
+        tg: [
+          { val: '99.4%', label: 'Назорати сифати ISO', desc: 'Ҳиссаи маҳсулоти бекамбудӣ мутобиқи меъёрҳои қатъии байналмилалӣ' },
+          { val: '+32.8%', label: 'Афзоиши истеҳсолот', desc: 'Самараи ҷорисозии хатҳои нави автоматикунонидашуда ва роботҳо' },
+          { val: '-28%', label: 'Сарфи неру барои воҳид', desc: 'Кам гардидани сарфи барқ ва сӯзишворӣ барои ҳар як маҳсулот' }
+        ]
+      };
+      return data[language] || data.uz;
+    }
+    const data = {
+      uz: [
+        { val: 'OEE 89%', label: 'Uskunalar Unumdorligi', desc: 'Sanoat liniyalarining uzluksiz samarali ishlash koeffitsiyenti' },
+        { val: '<0.05%', label: 'Nuqsonlilik Koeffitsiyenti', desc: 'Six Sigma metodologiyasi asosida ishlab chiqarish nazorati' },
+        { val: '2.5x', label: 'Mehnat Unumdorligi', desc: 'Raqamli dispetcherlik va avtomatik omborxona logistikasi natijadorligi' }
+      ],
+      ru: [
+        { val: 'OEE 89%', label: 'Эффективность OEE', desc: 'Общий показатель продуктивности заводского станочного парка' },
+        { val: '<0.05%', label: 'Уровень дефектности', desc: 'Контроль точности технологических процессов по методологии Six Sigma' },
+        { val: '2.5x', label: 'Производительность труда', desc: 'Эффект умного цифрового склада и предиктивного техобслуживания' }
+      ],
+      en: [
+        { val: 'OEE 89%', label: 'Overall Equipment OEE', desc: 'Aggregate availability and performance score of production assets' },
+        { val: '<0.05%', label: 'Defect Frequency Rate', desc: 'Strict statistical process control adhering to Six Sigma guidelines' },
+        { val: '2.5x', label: 'Workforce Productivity', desc: 'Compounded yield via digitized plant scheduling and automated storage' }
+      ],
+      tg: [
+        { val: 'OEE 89%', label: 'Маҳсулнокии таҷҳизот', desc: 'Нишондиҳандаи умумии кори бетаваққуфи дастгоҳҳои саноатӣ' },
+        { val: '<0.05%', label: 'Дараҷаи камбудиҳо', desc: 'Назорати дақиқи равандҳои истеҳсолӣ бар пояи усули Six Sigma' },
+        { val: '2.5x', label: 'Маҳсулнокии меҳнат', desc: 'Самараи анбори рақамӣ ва диспетчерии электронии корхона' }
+      ]
+    };
+    return data[language] || data.uz;
+  }
+
+  // 9. Universal / Boshqa barcha mavzular (General)
   if (stageIndex === 12 || stageIndex === 13) {
     const data = {
       uz: [
@@ -713,6 +921,42 @@ export function getSmartDomainCharts(topic = '', stageIndex = 6, language = 'uz'
         tg: ['Дарси анъанавӣ', 'Усули интерактивӣ', 'Лоиҳаҳои STEM', 'Меъёри PISA']
       }[language] || ['An\'anaviy dars', 'Interfaol metodika', 'STEM loyihalar', 'PISA standarti'];
       return { labels, values: [28, 56, 81, 95] };
+    }
+        if (t.includes('tarix') || t.includes('adabiyot') || t.includes('navoiy') || t.includes('bobur') || t.includes('temur') || t.includes('meros') || t.includes('madaniyat') || t.includes('til')) {
+      const labels = {
+        uz: ['1469 (Ilk devon)', '1483 (Hamsa)', '1498 (Majolis)', '1501 (Muhokama)'],
+        ru: ['1469 (Ранний диван)', '1483 (Хамса)', '1498 (Маджалис)', '1501 (Суждение)'],
+        en: ['1469 (Early Divan)', '1483 (Khamsa)', '1498 (Majalis)', '1501 (Discourse)'],
+        tg: ['1469 (Девони аввал)', '1483 (Хамса)', '1498 (Маҷолис)', '1501 (Муҳокама)']
+      }[language] || ['1469 (Ilk devon)', '1483 (Hamsa)', '1498 (Majolis)', '1501 (Muhokama)'];
+      return { labels, values: [25, 60, 85, 98] };
+    }
+    if (t.includes('huquq') || t.includes('qonun') || t.includes('sud') || t.includes('adliya') || t.includes('konstituts')) {
+      const labels = {
+        uz: ['Norma ijodkorligi', 'Huquqiy ekspertiza', 'Amaliyotga tatbiq', 'Sud monitoringi'],
+        ru: ['Нормотворчество', 'Правовая экспертиза', 'Правоприменение', 'Судебный контроль'],
+        en: ['Statutory Drafting', 'Legal Scrutiny', 'Jurisdiction Rollout', 'Judicial Review'],
+        tg: ['Татбиқи меъёрҳо', 'Ташхиси ҳуқуқӣ', 'Амалияи татбиқ', 'Назорати судӣ']
+      }[language] || ['Norma ijodkorligi', 'Huquqiy ekspertiza', 'Amaliyotga tatbiq', 'Sud monitoringi'];
+      return { labels, values: [32, 58, 82, 98] };
+    }
+    if (t.includes('qishloq') || t.includes('fermer') || t.includes('hosil') || t.includes('agrar') || t.includes('agro') || t.includes('paxta')) {
+      const labels = {
+        uz: ['An\'anaviy ekin', 'Intensiv agrotexnika', 'Tomchilatib sug\'orish', 'Klaster hosili'],
+        ru: ['Традиционный сев', 'Интенсивный уход', 'Капельный полив', 'Агрокластер'],
+        en: ['Conventional Seeding', 'Intensive Care', 'Drip Precision', 'Cluster Harvest'],
+        tg: ['Кишти анъанавӣ', 'Нигоҳубини интенсивӣ', 'Обёрии қатрагӣ', 'Ҳосили кластер']
+      }[language] || ['An\'anaviy ekin', 'Intensiv agrotexnika', 'Tomchilatib sug\'orish', 'Klaster hosili'];
+      return { labels, values: [26, 48, 75, 96] };
+    }
+    if (t.includes('sanoat') || t.includes('zavod') || t.includes('fabrika') || t.includes('ishlab chiqarish') || t.includes('mashinasozlik')) {
+      const labels = {
+        uz: ['Qo\'l mehnat ulushi', 'Yarim avtomatika', 'Robotlashgan liniya', 'Industry 4.0'],
+        ru: ['Доля ручного труда', 'Полуавтоматика', 'Роботизация', 'Industry 4.0'],
+        en: ['Manual Labor Share', 'Semi-Automation', 'Robotic Assembly', 'Industry 4.0'],
+        tg: ['Ҳиссаи меҳнати дастӣ', 'Ним-автоматӣ', 'Хатти роботӣ', 'Industry 4.0']
+      }[language] || ['Qo\'l mehnat ulushi', 'Yarim avtomatika', 'Robotlashgan liniya', 'Industry 4.0'];
+      return { labels, values: [18, 46, 78, 98] };
     }
     const labels = {
       uz: ['Boshlang\'ich holat', 'Diagnostika davri', 'Joriy natijadorlik', 'Maqsadli marra'],
@@ -3700,8 +3944,13 @@ export function ensureUniqueAndCompleteSlides(data, topic, language = 'uz', targ
     if (s.layoutType === 'data_chart' && !s.chart) {
       s.chart = getSmartDomainCharts(effectiveTopic, idx + 1, language);
     }
-    if (s.layoutType === 'kpi_metrics' && (!s.metrics || s.metrics.length === 0)) {
-      s.metrics = getSmartDomainMetrics(effectiveTopic, idx + 1, language);
+    if (s.layoutType === 'kpi_metrics') {
+      if (!s.metrics || s.metrics.length === 0) {
+        s.metrics = getSmartDomainMetrics(effectiveTopic, idx + 1, language);
+      }
+      if (!s.chart) {
+        s.chart = getSmartDomainCharts(effectiveTopic, idx + 1, language);
+      }
     }
   });
 
@@ -4555,6 +4804,41 @@ function sanitizePresentationData(data, language = 'uz') {
       }
     });
 
+    
+      // Metrics tozalash va formatlash
+      if (Array.isArray(slide.metrics)) {
+        slide.metrics = slide.metrics.map(m => {
+          if (!m || typeof m !== 'object') return null;
+          let val = cleanText(m.val || m.value, '');
+          let label = cleanText(m.label, '');
+          let desc = cleanText(m.desc || m.description, '');
+          if (isNonUzbek) {
+            label = cleanUzbekWordsFromText(label, language);
+            desc = cleanUzbekWordsFromText(desc, language);
+          }
+          return {
+            val: val || '100%',
+            label: label || 'Ko\'rsatkich',
+            desc: desc || ''
+          };
+        }).filter(Boolean);
+      }
+
+      // Chart tozalash va formatlash
+      if (slide.chart && typeof slide.chart === 'object') {
+        if (slide.chart.title) {
+          slide.chart.title = cleanText(slide.chart.title, '');
+          if (isNonUzbek) slide.chart.title = cleanUzbekWordsFromText(slide.chart.title, language);
+        }
+        if (Array.isArray(slide.chart.labels)) {
+          slide.chart.labels = slide.chart.labels.map(lbl => {
+            let cl = cleanText(lbl, '');
+            if (isNonUzbek) cl = cleanUzbekWordsFromText(cl, language);
+            return cl;
+          });
+        }
+      }
+
     // Butun taqdimot bo'yicha gaplar takrorlanishini 100% bartaraf etish (Hech qachon 2 ta slaydda bir xil gap bo'lmasin!)
     const globalSentences = new Set();
     data.slides.forEach((slide, sIdx) => {
@@ -4926,7 +5210,8 @@ ${JSON.stringify(outlineBatch.map(s => ({
     "points": [
       { "heading": "Сарлавҳаи кӯтоҳ (3-5 калима)", "description": "1-2 ҷумлаи дақиқ бо далел ва рақам (то 110 аломат)..." }
     ],
-    "metrics": [ ...агар kpi_metrics бошад 4 рақами воқеӣ: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "metrics": [ ...агар kpi_metrics бошад 3-4 нишондиҳандаи воқеӣ бо ченакҳо (фоиз, млрд $, асар, тонна, хол): [{"val": "...", "label": "...", "desc": "..."}]... РАҚАМҲОИ БЕМАЪНИИ УМУМИИ "+85%", "3.5x", "TOP 1" ҚАТЪИЯН МАНЪ АСТ! ],
+    "chart": ...агар kpi_metrics ё data_chart бошад объекти диаграмма: {"title": "Сарлавҳаи диаграмма", "type": "bar", "labels": ["...", "...", "...", "..."], "values": [..., ..., ..., ...]}...,
     "leftHeading": "...агар comparison бошад...",
     "rightHeading": "...агар comparison бошад...",
     "highlight": "Хулосаи муҳимми таҳлилӣ ба забони тоҷикӣ (то 120 аломат)...",
@@ -4961,7 +5246,8 @@ JSON массив:
     "points": [
       { "heading": "Краткий заголовок (3-5 слов)", "description": "1-2 емких предложения с фактами и цифрами (до 110 символов)..." }
     ],
-    "metrics": [ ...если kpi_metrics, то 4 реальных показателя: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "metrics": [ ...если kpi_metrics, 3-4 показателя строго по теме с реальными единицами измерения (млрд $, %, ц/га, произведений, мс, балл): [{"val": "...", "label": "...", "desc": "..."}]... ОБЩИЕ БЕССМЫСЛЕННЫЕ "+85%", "3.5x", "TOP 1" КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНЫ! ],
+    "chart": ...если kpi_metrics или data_chart, то объект диаграммы: {"title": "Заголовок диаграммы", "type": "bar", "labels": ["...", "...", "...", "..."], "values": [..., ..., ..., ...]}...,
     "leftHeading": "...если comparison...",
     "rightHeading": "...если comparison...",
     "highlight": "Ключевой аналитический вывод на русском языке (до 120 символов)...",
@@ -4996,7 +5282,8 @@ JSON array to return:
     "points": [
       { "heading": "Concise heading (3-5 words)", "description": "1-2 impactful sentences with metrics/facts (max 110 chars)..." }
     ],
-    "metrics": [ ...if kpi_metrics, 4 empirical stats: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "metrics": [ ...if kpi_metrics, 3-4 topic-specific empirical stats with real units (e.g. $B, %, tons/ha, works, ms, score): [{"val": "...", "label": "...", "desc": "..."}]... GENERIC MEANINGLESS "+85%", "3.5x", "TOP 1" ARE STRICTLY FORBIDDEN! ],
+    "chart": ...if kpi_metrics or data_chart, chart object: {"title": "Concise Chart Title", "type": "bar", "labels": ["...", "...", "...", "..."], "values": [..., ..., ..., ...]}...,
     "leftHeading": "...if comparison...",
     "rightHeading": "...if comparison...",
     "highlight": "Key strategic takeaway in English (max 120 chars)...",
@@ -5030,7 +5317,8 @@ Qaytishi kerak bo'lgan JSON massiv:
     "points": [
       { "heading": "Qisqa sarlavha (3-5 so'z)", "description": "1-2 jumlali aniq faktik va raqamli tahlil (maksimal 110 belgi)..." }
     ],
-    "metrics": [ ...agar kpi_metrics bo'lsa haqiqiy 4 ta raqam: [{"val": "...", "label": "...", "desc": "..."}]... ],
+    "metrics": [ ...agar kpi_metrics bo'lsa 3-4 ta MAVZUGA 100% MOS, ANIQ BIRLIKLI (masalan: mlrd $, mln tonna, ts/ga, %, ta asar, bayt, ms, ball) statistik ko'rsatkich: [{"val": "...", "label": "...", "desc": "..."}]... UMUMIY "+85%", "3.5x", "TOP 1" DEGAN MANOSIZ RAQAMLAR QAT'IYAN TAQIQLANADI! ],
+    "chart": ...agar kpi_metrics yoki data_chart bo'lsa mavzuga oid diagramma ma'lumotlari: {"title": "Qisqa diagramma sarlavhasi", "type": "bar", "labels": ["...", "...", "...", "..."], "values": [..., ..., ..., ...]}...,
     "leftHeading": "...agar comparison bo'lsa...",
     "rightHeading": "...agar comparison bo'lsa...",
     "highlight": "Muhim xulosa (maksimal 120 belgi)...",
@@ -5136,6 +5424,7 @@ export async function generatePresentationData({ topic, slideCount = 6, language
             if (aiSlide.subtitle && aiSlide.subtitle.length > 3) s.subtitle = aiSlide.subtitle;
             if (Array.isArray(aiSlide.points) && aiSlide.points.length > 0) s.points = aiSlide.points;
             if (Array.isArray(aiSlide.metrics) && aiSlide.metrics.length > 0) s.metrics = aiSlide.metrics;
+            if (aiSlide.chart && Array.isArray(aiSlide.chart.labels) && Array.isArray(aiSlide.chart.values)) s.chart = aiSlide.chart;
             if (aiSlide.leftHeading) s.leftHeading = aiSlide.leftHeading;
             if (aiSlide.rightHeading) s.rightHeading = aiSlide.rightHeading;
             if (aiSlide.highlight && aiSlide.highlight.length > 15) s.highlight = aiSlide.highlight;

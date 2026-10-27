@@ -490,6 +490,353 @@ export const DOMAINS = {
     }
   },
 
+  culture: {
+    names: {
+      uz: "Madaniyat, Tarix va Mumtoz Adabiyot",
+      ru: "Культура, история и классическая литература",
+      en: "Culture, History & Classical Literature",
+      tg: "Фарҳанг, таърих ва адабиёти классикӣ"
+    },
+    subtitles: {
+      uz: {
+        hero: "Tarixiy manbalar, adabiy meros va madaniy qadriyatlar tahlili",
+        comparison: "Mumtoz an'analar va zamonaviy ma'naviy qarashlar qiyosi",
+        pillars: "Nodir qo'lyozmalar, badiiy tafakkur va adabiy maktablar",
+        hub: "Madaniy meros markazi, kutubxona fondi va manbashunoslik",
+        kpi: "Adabiy asarlar salmog'i, lug'at boyligi va tarixiy davomiylik",
+        roadmap: "Manbalarni o'rganish, filologik tahlil va nashrga tayyorlash",
+        milestones: "Yillar bo'yicha merosni tadqiq etish va ommalashtirish jadvali",
+        spotlight: "Ma'naviy merosning milliy o'zlikni anglashdagi o'rni",
+        conclusion: "Buyuk allomalar merosining boqiy ahamiyati va ehtiromi"
+      },
+      ru: {
+        hero: "Исторические источники, литературное наследие и духовные ценности",
+        comparison: "Классические традиции и современные культурологические взгляды",
+        pillars: "Древние рукописи, поэтическое мышление и литературные школы",
+        hub: "Центр рукописей, источниковедение и академический архив",
+        kpi: "Корпус произведений, богатство лексикона и историческая глубина",
+        roadmap: "Текстологический анализ, архивация и комментированное издание",
+        milestones: "Этапы академического исследования и культурной популяризации",
+        spotlight: "Роль классического наследия в сохранении национальной идентичности",
+        conclusion: "Вечная ценность и мировое признание бессмертных трудов"
+      },
+      en: {
+        hero: "Historical chronicles, literary heritage, and enduring cultural assets",
+        comparison: "Classical artistic doctrines vs. contemporary cultural perspectives",
+        pillars: "Manuscript preservation, poetic philosophy, and literary schools",
+        hub: "Heritage preservation archive, philological center, and canon repository",
+        kpi: "Literary corpus volume, lexical depth, and historical continuity",
+        roadmap: "Textual critique, philological analysis, and critical publication",
+        milestones: "Scholarly research roadmap and global heritage outreach",
+        spotlight: "The foundational role of classical canon in civilizational identity",
+        conclusion: "Timeless universal significance and global scholarly acclaim"
+      },
+      tg: {
+        hero: "Сарчашмаҳои таърихӣ, мероси адабӣ ва арзишҳои фарҳангӣ",
+        comparison: "Муқоисаи анъанаҳои классикӣ ва дидгоҳҳои муосир",
+        pillars: "Дастнависҳои нодир, тафаккури бадеӣ ва мактабҳои адабӣ",
+        hub: "Маркази мероси фарҳангӣ, хазинаи дастхатҳо ва сарчашмашиносӣ",
+        kpi: "Ҳаҷми асарҳои бадеӣ, сарвати луғавӣ ва давомоти таърихӣ",
+        roadmap: "Омӯзиши сарчашмаҳо, таҳлили филологӣ ва омодасозии нашр",
+        milestones: "Марҳилаҳои таҳқиқи илмӣ ва тарғиби осори классикон",
+        spotlight: "Нақши мероси адабӣ дар худшиносии миллӣ",
+        conclusion: "Аҳамияти абадии мероси бузургони илму адаб"
+      }
+    },
+    metrics: {
+      uz: [
+        { value: "30+ asar", label: "Mumtoz Meros", desc: "Nodir qo'lyozmalar va ilmiy-badiiy asarlar salmog'i" },
+        { value: "55 000+", label: "Lug'at Boyligi", desc: "Asarlarda qo'llanilgan noyob so'zlar va iboralar" },
+        { value: "4 ta devon", label: "Lirik Külliyot", desc: "Badiiy uslub va lirik janrlar boyligi" },
+        { value: "600+ yil", label: "Tarixiy Davomiylik", desc: "Avlodlar merosining bugungi kungacha ahamiyati" }
+      ],
+      ru: [
+        { value: "30+ трудов", label: "Классическое наследие", desc: "Масштабный корпус уникальных трактатов и поэм" },
+        { value: "55 000+", label: "Словарный запас", desc: "Богатство оригинальной лексики и терминологии" },
+        { value: "4 дивана", label: "Лирический свод", desc: "Жанровое разнообразие поэтического канона" },
+        { value: "600+ лет", label: "Преемственность", desc: "Непреходящее цивилизационное признание" }
+      ],
+      en: [
+        { value: "30+ Works", label: "Classical Canon", desc: "Major preserved manuscripts and literary treatises" },
+        { value: "55,000+", label: "Lexical Vocabulary", desc: "Unique poetic lexicon and linguistic breadth" },
+        { value: "4 Divans", label: "Lyrical Anthology", desc: "Rich genre diversity across poetic styles" },
+        { value: "600+ Yrs", label: "Historical Continuity", desc: "Enduring relevance across generations" }
+      ],
+      tg: [
+        { value: "30+ асар", label: "Мероси классикӣ", desc: "Сарвати дастнависҳо ва асарҳои безаволи бадеӣ" },
+        { value: "55 000+", label: "Сарвати луғавӣ", desc: "Шумораи калимаҳои нодир ва мафҳумҳои адабӣ" },
+        { value: "4 девон", label: "Куллиёти лирикӣ", desc: "Ғановати жанрӣ ва услубҳои гуногуни бадеӣ" },
+        { value: "600+ сол", label: "Давомоти таърихӣ", desc: "Аҳамияти мерос дар тӯли асрҳо то имрӯз" }
+      ]
+    },
+    charts: {
+      uz: { labels: ["1469 (Ilk devon)", "1483 (Hamsa)", "1498 (Majolis)", "1501 (Muhokama)"], values: [25, 60, 85, 98] },
+      ru: { labels: ["1469 (Ранний диван)", "1483 (Хамса)", "1498 (Маджалис)", "1501 (Суждение)"], values: [25, 60, 85, 98] },
+      en: { labels: ["1469 (Early Divan)", "1483 (Khamsa)", "1498 (Majalis)", "1501 (Discourse)"], values: [25, 60, 85, 98] },
+      tg: { labels: ["1469 (Девони аввал)", "1483 (Хамса)", "1498 (Маҷолис)", "1501 (Муҳокама)"], values: [25, 60, 85, 98] }
+    }
+  },
+
+  law: {
+    names: {
+      uz: "Huquqshunoslik va Sud-Adliya Tizimi",
+      ru: "Юриспруденция и судебно-правовая система",
+      en: "Jurisprudence & Legal Systems",
+      tg: "Ҳуқуқшиносӣ ва низоми адлия"
+    },
+    subtitles: {
+      uz: {
+        hero: "Qonun ustuvorligi, konstitutsiyaviy kafolatlar va odil sudlov",
+        comparison: "Eski byurokratik tartib va shaffof raqamli odil sudlov qiyosi",
+        pillars: "Inson qadr-qimmati, qonuniylik va huquqiy himoya kafolati",
+        hub: "Yagona elektron sudlov, adliya portali va qonunchilik bazasi",
+        kpi: "Sud qarorlari ijrosi, shaffoflik indeksi va murojaatlar ijobiy yechimi",
+        roadmap: "Qonun loyihasi ekspertizasi, jamoatchilik muhokamasi va qabul qilish",
+        milestones: "Sud-huquq islohotlarining bosqichma-bosqich bajarilish jadvali",
+        spotlight: "Korrupsiyaga qarshi murosasizlik va ochiq sud majlislari",
+        conclusion: "Huquqiy davlat va adolatli jamiyat qurishning mustahkam zamini"
+      },
+      ru: {
+        hero: "Верховенство закона, конституционные гарантии и правосудие",
+        comparison: "Инерционные бюрократические процедуры и открытое цифровое судопроизводство",
+        pillars: "Защита прав человека, законность и состязательность сторон",
+        hub: "Электронное правосудие, юридическая база и публичный реестр",
+        kpi: "Исполнение решений, индекс прозрачности и правовая защита",
+        roadmap: "Правовая экспертиза, общественное обсуждение и имплементация",
+        milestones: "План реформирования судебно-правовой системы",
+        spotlight: "Непримиримость к коррупции и публичность судебных заседаний",
+        conclusion: "Фундамент правового государства и справедливого общества"
+      },
+      en: {
+        hero: "Rule of law, constitutional safeguards, and fair judicial systems",
+        comparison: "Legacy administrative friction vs. transparent digital jurisprudence",
+        pillars: "Human rights protection, due process, and statutory compliance",
+        hub: "Unified e-court platform, legislative corpus, and legal registry",
+        kpi: "Judicial enforcement rate, procedural transparency, and resolution speed",
+        roadmap: "Statutory drafting, peer review, and regulatory enactment",
+        milestones: "Judicial modernization milestones and compliance matrix",
+        spotlight: "Zero tolerance for corruption and guaranteed open trials",
+        conclusion: "Securing the institutional bedrock of a just society"
+      },
+      tg: {
+        hero: "Бартарии қонун, кафолатҳои конститутсионӣ ва адолати судӣ",
+        comparison: "Тартиби куҳнаи бюрократӣ ва мурофиаи судии шаффофи рақамӣ",
+        pillars: "Ҳифзи ҳуқуқи инсон, қонуният ва баробарии тарафҳо",
+        hub: "Суди электронӣ, пойгоҳи қонунгузорӣ ва портали адлия",
+        kpi: "Иҷрои қарорҳои суд, шохиси шаффофият ва суръати баррасии парвандаҳо",
+        roadmap: "Ташхиси ҳуқуқӣ, муҳокимаи ҷамъиятӣ ва қабули қонунҳо",
+        milestones: "Нақшаи ислоҳоти низоми судию ҳуқуқӣ",
+        spotlight: "Муборизаи оштинопазир бо фасод ва мурофиаҳои кушоди судӣ",
+        conclusion: "Пойдории давлати ҳуқуқбунёд ва ҷомеаи одилона"
+      }
+    },
+    metrics: {
+      uz: [
+        { value: "100%", label: "Konstitutsiyaviy Qonuniylik", desc: "Barcha normativ hujjatlarning oliy qonunga muvofiqligi" },
+        { value: "94.6%", label: "Sud Qarorlari Ijrosi", desc: "Qonuniy kuchga kirgan sud hujjatlarining to'liq ijrosi" },
+        { value: "88%+", label: "Elektron Sudlov Qamrovi", desc: "Murojaatlarni masofadan ko'rib chiqish darajasi" },
+        { value: "-42%", label: "Byurokratik To'siqlar", desc: "Ishlarni ko'rib chiqish muddatlarining qisqarishi" }
+      ],
+      ru: [
+        { value: "100%", label: "Конституционность", desc: "Полное соответствие нормативов Основному закону" },
+        { value: "94.6%", label: "Исполнение решений", desc: "Обеспечение неотвратимости судебных вердиктов" },
+        { value: "88%+", label: "Цифровое правосудие", desc: "Удаленное рассмотрение заявлений через портал" },
+        { value: "-42%", label: "Процессуальные сроки", desc: "Сокращение времени рассмотрения судебных дел" }
+      ],
+      en: [
+        { value: "100%", label: "Constitutional Legality", desc: "Full compliance of statutory acts with Supreme Law" },
+        { value: "94.6%", label: "Enforcement Rate", desc: "Complete execution of finalized judicial rulings" },
+        { value: "88%+", label: "Digital Court Adoption", desc: "Automated remote filing and paperless review" },
+        { value: "-42%", label: "Procedural Latency", desc: "Direct reduction in case resolution cycle time" }
+      ],
+      tg: [
+        { value: "100%", label: "Қонунияти конститутсионӣ", desc: "Мутобиқати комили санадҳо ба Қонуни асосӣ" },
+        { value: "94.6%", label: "Иҷрои қарорҳои суд", desc: "Таъмини ҳатмии иҷрои санадҳои судӣ" },
+        { value: "88%+", label: "Суди рақамӣ", desc: "Баррасии фосилавии муроҷиатҳо тавассути портал" },
+        { value: "-42%", label: "Мӯҳлати мурофиаҳо", desc: "Кӯтоҳ гардидани вақти баррасии баҳсҳо" }
+      ]
+    },
+    charts: {
+      uz: { labels: ["Norma ijodkorligi", "Huquqiy ekspertiza", "Amaliyotga tatbiq", "Sud monitoringi"], values: [32, 58, 82, 98] },
+      ru: { labels: ["Нормотворчество", "Правовая экспертиза", "Правоприменение", "Судебный контроль"], values: [32, 58, 82, 98] },
+      en: { labels: ["Statutory Drafting", "Legal Scrutiny", "Jurisdiction Rollout", "Judicial Review"], values: [32, 58, 82, 98] },
+      tg: { labels: ["Татбиқи меъёрҳо", "Ташхиси ҳуқуқӣ", "Амалияи татбиқ", "Назорати судӣ"], values: [32, 58, 82, 98] }
+    }
+  },
+
+  agriculture: {
+    names: {
+      uz: "Qishloq Xo'jaligi va Agrar Texnologiyalar",
+      ru: "Сельское хозяйство и агротехнологии",
+      en: "Agriculture & Agronomic Technologies",
+      tg: "Хоҷагии қишлоқ ва агротехнологияҳо"
+    },
+    subtitles: {
+      uz: {
+        hero: "Agroinnovatsiyalar, hosildorlik tahlili va suvni tejash texnologiyalari",
+        comparison: "An'anaviy ekstensiv dehqonchilik va intensiv aqlli agroklaster qiyosi",
+        pillars: "Tuproq unumdorligi, sifatli urug'chilik va zamonaviy agrotexnika",
+        hub: "Aqlli ferma boshqaruvi, meteorologik monitoring va agrokimyo",
+        kpi: "Gektariga o'rtacha hosil, suv sarfi iqtisodi va rentabellik",
+        roadmap: "Ekinlarni ekish, vegetatsiya nazorati va hosilni yig'ib olish",
+        milestones: "Agro-mavsumlar bo'yicha hosildorlik va eksport rejasi",
+        spotlight: "Oziq-ovqat xavfsizligi va ekologik toza mahsulot yetishtirish",
+        conclusion: "Agrar sohani modernizatsiya qilish orqali barqaror daromad"
+      },
+      ru: {
+        hero: "Агроинновации, мониторинг урожайности и водосберегающие системы",
+        comparison: "Экстенсивное земледелие и прецизионный цифровой агрокластер",
+        pillars: "Плодородие почв, селекция семян и технологический уход",
+        hub: "Умная ферма, спутниковый метеоконтроль и агрохимия",
+        kpi: "Урожайность с гектара, экономия воды и экспортный потенциал",
+        roadmap: "Посевная кампания, вегетационный цикл и сбор урожая",
+        milestones: "Сезонный календарь агрономических работ и план отгрузок",
+        spotlight: "Продовольственная безопасность и экологичность продукции",
+        conclusion: "Устойчивая рентабельность на основе современных агротехнологий"
+      },
+      en: {
+        hero: "Agrotechnology, crop yield diagnostics, and precision irrigation",
+        comparison: "Extensive legacy farming vs. precision IoT agronomy clusters",
+        pillars: "Soil fertility preservation, certified seed breeding, and smart machinery",
+        hub: "Smart farm command center, satellite crop telemetry, and agronomy",
+        kpi: "Crop yield per hectare, water conservation efficiency, and export volume",
+        roadmap: "Precision seeding, automated vegetation tracking, and automated harvest",
+        milestones: "Seasonal crop cultivation cadence and yield targets",
+        spotlight: "National food security and sustainable organic production",
+        conclusion: "Delivering resilient agrarian profitability and global competitiveness"
+      },
+      tg: {
+        hero: "Агроинноватсияҳо, ҳосилнокӣ ва технологияҳои сарфаи об",
+        comparison: "Деҳқонии анъанавӣ ва агрокластери муосири интеллектуалӣ",
+        pillars: "Ҳосилхезии хок, тухмипарварӣ ва техникаи муосири кишоварзӣ",
+        hub: "Фермаи интеллектуалӣ, назорати обу ҳаво ва агрокимиё",
+        kpi: "Ҳосилнокӣ аз як гектар, сарфаи об ва иқтидори содиротӣ",
+        roadmap: "Кишти зироатҳо, назорати рушд ва ғундоштани ҳосил",
+        milestones: "Тақвими мавсимии кишоварзӣ ва нақшаи ҷамъоварии ҳосил",
+        spotlight: "Амнияти озуқаворӣ ва парвариши маҳсулоти аз ҷиҳати экологӣ тоза",
+        conclusion: "Таъмини даромади устувор тавассути навсозии соҳаи кишоварзӣ"
+      }
+    },
+    metrics: {
+      uz: [
+        { value: "48.5 ts/ga", label: "O'rtacha Hosildorlik", desc: "Zamonaviy intensiv agrotexnika hisobiga hosil ortishi" },
+        { value: "-35%", label: "Suv Sarfi Tejamkorligi", desc: "Tomchilatib sug'orish va lazerli tekislash samarasi" },
+        { value: "92.4%", label: "Urug'lik Unuvchanligi", desc: "Sertifikatlangan sara elita navlarining bioturfa sifati" },
+        { value: "+28.5%", label: "Eksport Salohiyati", desc: "Xalqaro GlobalGAP standartlari bo'yicha ta'minot" }
+      ],
+      ru: [
+        { value: "48.5 ц/га", label: "Урожайность культур", desc: "Рост продуктивности за счет интенсивных технологий" },
+        { value: "-35%", label: "Экономия водных ресурсов", desc: "Капельное орошение и точная лазерная планировка" },
+        { value: "92.4%", label: "Всхожесть семян", desc: "Использование сертифицированного сортового фонда" },
+        { value: "+28.5%", label: "Экспортный потенциал", desc: "Соответствие стандартам сертификации GlobalGAP" }
+      ],
+      en: [
+        { value: "48.5 c/ha", label: "Average Crop Yield", desc: "Yield expansion via high-efficiency precision farming" },
+        { value: "-35%", label: "Water Usage Economy", desc: "Drip irrigation and precision laser land grading" },
+        { value: "92.4%", label: "Germination Rate", desc: "Certified elite seed varieties and vigor metrics" },
+        { value: "+28.5%", label: "Export Capacity", desc: "Compliance with international GlobalGAP standards" }
+      ],
+      tg: [
+        { value: "48.5 с/га", label: "Ҳосилнокии зироатҳо", desc: "Афзоиши ҳосил ба шарофати технологияҳои нав" },
+        { value: "-35%", label: "Сарфаи захираҳои об", desc: "Обёрии қатрагӣ ва ҳамворкунии лазерии замин" },
+        { value: "92.4%", label: "Сабзиши тухмиҳо", desc: "Истифодаи тухмиҳои баландсифати сертификатсияшуда" },
+        { value: "+28.5%", label: "Иқтидори содиротӣ", desc: "Мутобиқат ба меъёрҳои стандарти GlobalGAP" }
+      ]
+    },
+    charts: {
+      uz: { labels: ["An'anaviy ekin", "Intensiv agrotexnika", "Tomchilatib sug'orish", "Klaster hosili"], values: [26, 48, 75, 96] },
+      ru: { labels: ["Традиционный сев", "Интенсивный уход", "Капельный полив", "Агрокластер"], values: [26, 48, 75, 96] },
+      en: { labels: ["Conventional Seeding", "Intensive Care", "Drip Precision", "Cluster Harvest"], values: [26, 48, 75, 96] },
+      tg: { labels: ["Кишти анъанавӣ", "Нигоҳубини интенсивӣ", "Обёрии қатрагӣ", "Ҳосили кластер"], values: [26, 48, 75, 96] }
+    }
+  },
+
+  industry: {
+    names: {
+      uz: "Sanoat, Ishlab Chiqarish va Muhandislik",
+      ru: "Промышленность, производство и инженерия",
+      en: "Industry, Manufacturing & Engineering",
+      tg: "Саноат, истеҳсолот ва муҳандисӣ"
+    },
+    subtitles: {
+      uz: {
+        hero: "Ishlab chiqarish quvvati, sanoat avtomatizatsiyasi va sifat nazorati",
+        comparison: "Qo'l mehnatiga asoslangan sexlar va robotlashgan zamonaviy zavod qiyosi",
+        pillars: "Texnologik xavfsizlik, xomashyo ta'minoti va konveyer aniqligi",
+        hub: "Markaziy dispetcherlik, SCADA monitoringi va ombor logistikasi",
+        kpi: "Kunlik ishlab chiqarish hajmi, nuqsonsiz mahsulot va energiya sarfi",
+        roadmap: "Liniyani modernizatsiya qilish, xodimlarni o'qitish va to'liq quvvatga chiqish",
+        milestones: "Sanoat korxonasining bosqichma-bosqich quvvat oshirish jadvali",
+        spotlight: "Mehnat muhofazasi, ekologik mezonlar va xalqaro sertifikatlash",
+        conclusion: "Yuqori qo'shilgan qiymatli raqobatbardosh mahsulotlar yaratish"
+      },
+      ru: {
+        hero: "Производственные мощности, автоматизация и контроль стандартов качества",
+        comparison: "Ручные сборочные цеха и роботизированное интеллектуальное производство",
+        pillars: "Промышленная безопасность, логистика сырья и точность конвейера",
+        hub: "Центральный диспетчерский пункт, SCADA-мониторинг и логистика",
+        kpi: "Суточный выпуск продукции, коэффициент годности и энергозатраты",
+        roadmap: "Модернизация линий, сертификация персонала и запуск на полную мощность",
+        milestones: "График наращивания заводских мощностей и план аудитов",
+        spotlight: "Охрана труда, экостандарты и международная сертификация",
+        conclusion: "Выпуск конкурентоспособной продукции с высокой добавленной стоимостью"
+      },
+      en: {
+        hero: "Industrial throughput, automated robotics, and stringent quality control",
+        comparison: "Manual fabrication shops vs. automated Industry 4.0 production lines",
+        pillars: "Operational safety compliance, supply chain continuity, and precision tooling",
+        hub: "Industrial SCADA command hub, PLC automation, and inventory telemetry",
+        kpi: "Daily production yield, zero-defect index, and specific energy efficiency",
+        roadmap: "Tooling upgrades, workforce technical qualification, and full-scale commissioning",
+        milestones: "Factory scale-up timeline and quality verification milestones",
+        spotlight: "Occupational safety standards, zero emissions, and ISO compliance",
+        conclusion: "Manufacturing high-margin, globally competitive export goods"
+      },
+      tg: {
+        hero: "Иқтидори истеҳсолӣ, автоматикунонии саноат ва назорати сифат",
+        comparison: "Корхонаҳои дастии куҳна ва хатҳои истеҳсолии роботикунонидашуда",
+        pillars: "Бехатарии саноатӣ, таъминоти ашёи хом ва дақиқии коркард",
+        hub: "Маркази идоракунии диспетчерӣ, низоми SCADA ва логистикаи анбор",
+        kpi: "Ҳаҷми истеҳсоли шабонарӯзӣ, маҳсулоти бекамбудӣ ва сарфи неру",
+        roadmap: "Навсозии таҷҳизот, таълими мутахассисон ва баромадан ба иқтидори пурра",
+        milestones: "Ҷадвали афзоиши иқтидори корхона ва нақшаи санҷиши сифат",
+        spotlight: "Ҳифзи меҳнат, меъёрҳои экологӣ ва сертификатсияи байналмилалӣ",
+        conclusion: "Истеҳсоли маҳсулоти рақобатпазир бо арзиши баланди иловашуда"
+      }
+    },
+    metrics: {
+      uz: [
+        { value: "99.4%", label: "Standart Sifat Nazorati", desc: "Xalqaro ISO talablari asosida nuqsonsiz ishlab chiqarish" },
+        { value: "+32.8%", label: "Ishlab Chiqarish Quvvati", desc: "Avtomatlashtirilgan liniyalarni joriy etish samarasi" },
+        { value: "-28%", label: "Energiya Sarfi / Birlik", desc: "Resurslarni tejovchi zamonaviy texnologik agregatlar" },
+        { value: "OEE 89%", label: "Uskunalar Unumdorligi", desc: "Liniyalarning to'xtovsiz samarali ishlash koeffitsiyenti" }
+      ],
+      ru: [
+        { value: "99.4%", label: "Контроль качества", desc: "Бездефектное производство согласно нормативам ISO" },
+        { value: "+32.8%", label: "Рост объемов выпуска", desc: "Эффект запуска автоматизированных конвейеров" },
+        { value: "-28%", label: "Удельные энергозатраты", desc: "Внедрение энергосберегающих промышленных систем" },
+        { value: "OEE 89%", label: "Эффективность оборудования", desc: "Коэффициент непрерывной загрузки заводских линий" }
+      ],
+      en: [
+        { value: "99.4%", label: "Quality Pass Rate", desc: "Zero-defect manufacturing conforming to ISO standards" },
+        { value: "+32.8%", label: "Output Capacity Gain", desc: "Production uplift from automated assembly lines" },
+        { value: "-28%", label: "Specific Energy Usage", desc: "Energy recovery and high-efficiency machinery savings" },
+        { value: "OEE 89%", label: "Overall Equipment Metric", desc: "High asset availability and operational performance" }
+      ],
+      tg: [
+        { value: "99.4%", label: "Назорати сифат", desc: "Истеҳсоли бекамбудӣ мутобиқи стандартҳои байналмилалии ISO" },
+        { value: "+32.8%", label: "Афзоиши ҳаҷми истеҳсол", desc: "Самараи ҷорисозии хатҳои нави автоматикунонидашуда" },
+        { value: "-28%", label: "Сарфи неру барои як воҳид", desc: "Истифодаи таҷҳизоти саноатии каммасраф ва муосир" },
+        { value: "OEE 89%", label: "Маҳсулнокии таҷҳизот", desc: "Нишондиҳандаи фаъолияти муттасили хатҳои корхона" }
+      ]
+    },
+    charts: {
+      uz: { labels: ["Qo'l mehnat ulushi", "Yarim avtomatika", "Robotlashgan liniya", "Industry 4.0"], values: [18, 46, 78, 98] },
+      ru: { labels: ["Доля ручного труда", "Полуавтоматика", "Роботизация", "Industry 4.0"], values: [18, 46, 78, 98] },
+      en: { labels: ["Manual Labor Share", "Semi-Automation", "Robotic Assembly", "Industry 4.0"], values: [18, 46, 78, 98] },
+      tg: { labels: ["Ҳиссаи меҳнати дастӣ", "Ним-автоматӣ", "Хатти роботӣ", "Industry 4.0"], values: [18, 46, 78, 98] }
+    }
+  },
   general: {
     names: {
       uz: 'Strategik Rivojlanish va Boshqaruv',
@@ -545,29 +892,35 @@ export const DOMAINS = {
     },
     metrics: {
       uz: [
-        { value: '+45%', label: 'Jarayonlar Unumdorligi', desc: 'Optimallashtirish hisobiga o\'sish' },
-        { value: '90%', label: 'Maqsadlarga Erishish', desc: 'Belgilangan KPI ko\'rsatkichlari' },
-        { value: '-35%', label: 'Vaqt Yo\'qotishlari Kamayishi', desc: 'Operatsion tezlanish samarasi' },
-        { value: '95%', label: 'Sifat Standartlari', desc: 'Barcha talablarga to\'liq muvofiqlik' }
+        { value: "98.5%", label: "Strategik Maqsadlar", desc: "Tasdiqlangan mezon va rejalarning bajarilish darajasi" },
+        { value: "2.8x", label: "Resurs Samaradorligi", desc: "Asosiy vositalar va sarmoyalar rentabelligining ortishi" },
+        { value: "-40%", label: "Operatsion Xatarlar", desc: "Oldindan ogohlantirish tizimi orqali zararlarni qisqartirish" },
+        { value: "95.2%", label: "Sifat va Muvofiqlik", desc: "Xalqaro talab va standartlarga to'liq javob berish" }
       ],
       ru: [
-        { value: '+45%', label: 'Рост производительности', desc: 'Эффект оптимизации процессов' },
-        { value: '90%', label: 'Достижение целей (KPI)', desc: 'Выполнение плановых ориентиров' },
-        { value: '-35%', label: 'Сокращение задержек', desc: 'Ускорение операционных циклов' },
-        { value: '95%', label: 'Соответствие стандартам', desc: 'Полное соблюдение регламентов' }
+        { value: "98.5%", label: "Достижение целей (KPI)", desc: "Степень выполнения утвержденного стратегического плана" },
+        { value: "2.8x", label: "Эффективность ресурсов", desc: "Рост отдачи от задействованных активов и инвестиций" },
+        { value: "-40%", label: "Операционные риски", desc: "Снижение вероятности сбоев за счет системного мониторинга" },
+        { value: "95.2%", label: "Стандарты качества", desc: "Полное соответствие международным нормам и регламентам" }
       ],
       en: [
-        { value: '+45%', label: 'Operational Output Growth', desc: 'Direct workflow optimization gain' },
-        { value: '90%', label: 'Milestone Attainment Rate', desc: 'Assessed KPI goal completion' },
-        { value: '-35%', label: 'Cycle Latency Reduction', desc: 'Streamlined process velocity' },
-        { value: '95%', label: 'Standard Compliance Rate', desc: 'Audit quality verification' }
+        { value: "98.5%", label: "Strategic Objectives", desc: "Target milestone delivery against verified KPI benchmarks" },
+        { value: "2.8x", label: "Capital Efficiency", desc: "Optimized asset return and accelerated resource yield" },
+        { value: "-40%", label: "Operational Risk Exposure", desc: "Proactive mitigation of points of failure" },
+        { value: "95.2%", label: "Quality Compliance", desc: "Full adherence to international quality specifications" }
       ],
       tg: [
-        { value: '+45%', label: 'Афзоиши маҳсулнокӣ', desc: 'Самараи соддасозии равандҳо' },
-        { value: '90%', label: 'Расидан ба ҳадафҳо', desc: 'Иҷрои нақшаҳои стратегӣ' },
-        { value: '-35%', label: 'Коҳиши талафоти вақт', desc: 'Тезонидани фаъолияти корӣ' },
-        { value: '95%', label: 'Риояи стандартҳои сифат', desc: 'Мутобиқати комил ба меъёрҳо' }
+        { value: "98.5%", label: "Ҳадафҳои стратегӣ", desc: "Дараҷаи иҷрои нақшаҳои тасдиқшудаи стратегӣ" },
+        { value: "2.8x", label: "Самаранокии захираҳо", desc: "Афзоиши даромаднокӣ аз истифодаи сармоя ва воситаҳо" },
+        { value: "-40%", label: "Хатарҳои амалиётӣ", desc: "Пешгирии хатогиҳо ба воситаи мониторинги низомманд" },
+        { value: "95.2%", label: "Стандартҳои сифат", desc: "Мутобиқати комил ба меъёрҳои байналмилалӣ" }
       ]
+    },
+    charts: {
+      uz: { labels: ["Boshlang'ich holat", "Diagnostika davri", "Joriy natijadorlik", "Maqsadli marra"], values: [32, 58, 81, 97] },
+      ru: { labels: ["Исходное состояние", "Этап диагностики", "Текущий результат", "Целевой рубеж"], values: [32, 58, 81, 97] },
+      en: { labels: ["Baseline Status", "Diagnostic Period", "Current Output", "Strategic Target"], values: [32, 58, 81, 97] },
+      tg: { labels: ["Ҳолати ибтидоӣ", "Давраи ташхис", "Натиҷаи ҷорӣ", "Ҳадафи асосӣ"], values: [32, 58, 81, 97] }
     }
   }
 };
@@ -577,6 +930,7 @@ export const DOMAINS = {
  */
 export function detectDomain(topic) {
   const t = (topic || '').toLowerCase();
+  if (/(tarix|adabiyot|navoiy|bobur|temur|meros|madaniyat|san'at|sanat|shoir|yozuvchi|asar|til|lingvist|folklor|muzey|tarixiy|архитектур|истори|литератур|культур|искусств|навои|темур|писател|поэт|памятник|history|literature|culture|art|heritage)/i.test(t)) return 'culture';
   if (/(ta'lim|maktab|universitet|pedagog|o'qituvchi|talaba|o'quvchi|metodika|dars|tarbiya|образован|педагог|учител|школ|студент|обучени|методик|вуз|маориф|омӯзгор|донишҷӯ|education|school|university|teacher|student|pedagogy)/i.test(t)) return 'education';
   if (/(turizm|sayyoh|ziyorat|mehmonxona|hotel|sayohat|ekoturizm|gastronomik|gid|туро|туризм|путешеств|гостиниц|отел|экскурси|сайёҳ|сайёҳӣ|меҳмонхона|tourism|tourist|travel|hotel|hospitality)/i.test(t)) return 'tourism';
   if (/(tibbiyot|shifo|salomat|klinika|vrach|doktor|dori|farmatsevt|kasallik|jarroh|genom|mrt|covid|meditsin|здравоохран|медицин|врач|клиник|болезн|диагностик|тиб|тандуруст|бемор|табиб|medicine|health|medical|clinic|doctor)/i.test(t)) return 'med';
@@ -1184,6 +1538,9 @@ export function expandSemanticContent({ outline, language = 'uz', organization =
 
     if (base.layoutType === 'kpi_metrics') {
       base.metrics = metricsList;
+      if (bp.charts) {
+        base.chart = bp.charts[lang] || bp.charts.uz;
+      }
       base.points = [
         {
           heading: (lang === 'uz') ? 'Empirik dalillar va o\'sish dinamikasi' : (lang === 'ru') ? 'Эмпирические данные и динамика' : (lang === 'en') ? 'Empirical Benchmarks & Growth Dynamics' : 'Далелҳои амалӣ ва рушд',
@@ -1363,10 +1720,14 @@ export function expandSemanticContent({ outline, language = 'uz', organization =
     }
 
     if (base.layoutType === 'data_chart') {
-      base.chart = {
-        labels: (lang === 'ru') ? ['База', 'Оптимизация', 'Пилот', 'Масштаб'] : (lang === 'en') ? ['Baseline', 'Optimized', 'Piloted', 'Scaled'] : (lang === 'tg') ? ['Асос', 'Танзим', 'Озмоиш', 'Миқёс'] : ['Boshlang\'ich', 'Optimizatsiya', 'Pilot natija', 'To\'liq miqyos'],
-        values: [28, 52, 79, 96]
-      };
+      if (bp.charts) {
+        base.chart = bp.charts[lang] || bp.charts.uz;
+      } else {
+        base.chart = {
+          labels: (lang === 'ru') ? ['База', 'Оптимизация', 'Пилот', 'Масштаб'] : (lang === 'en') ? ['Baseline', 'Optimized', 'Piloted', 'Scaled'] : (lang === 'tg') ? ['Асос', 'Танзим', 'Озмоиш', 'Миқёс'] : ['Boshlang\'ich', 'Optimizatsiya', 'Pilot natija', 'To\'liq miqyos'],
+          values: [28, 52, 79, 96]
+        };
+      }
       base.points = [
         { heading: (lang === 'ru') ? 'Позитивная динамика внедрения' : (lang === 'en') ? 'Measurable Progress Velocity' : (lang === 'tg') ? 'Рушди мусбати нишондиҳандаҳо' : 'Izchil o\'sish va samaradorlik sur\'ati', description: (lang === 'ru') ? `Эмпирический график подтверждает стабильное увеличение показателей на каждом этапе реализации стратегии по теме "${topic}".` : (lang === 'en') ? `Quantitative trendlines confirm consistent metric acceleration across every milestone phase for "${topic}".` : (lang === 'tg') ? `Диаграмма нишон медиҳад, ки дар ҳар як марҳила нишондиҳандаҳои "${topic}" боло мераванд.` : `Diagramma "${topic}" bo'yicha belgilangan har bir bosqichda ko'rsatkichlarning barqaror o'sish dinamikasini tasdiqlaydi.` },
         { heading: (lang === 'ru') ? 'Прогнозируемый целевой результат' : (lang === 'en') ? 'Target Achievement Confidence' : (lang === 'tg') ? 'Натиҷаи пешбинишуда' : 'Kutilayotgan marraga erishish kafolati', description: (lang === 'ru') ? `Статистическая модель гарантирует выход на запланированные параметры качества с минимальным отклонением.` : (lang === 'en') ? `Statistical modeling indicates robust trajectory integrity toward long-term benchmarks with minimal variance.` : (lang === 'tg') ? 'Модели оморӣ ноил шудан ба ҳадафҳои асосиро бо камтарин хатогӣ таъмин менамояд.' : 'Statistik tahlillar belgilangan strategik natijalarga to\'liq va o\'z vaqtida erishilishini ko\'rsatadi.' }

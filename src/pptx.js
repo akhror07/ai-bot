@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import { getTheme } from './themes.js';
 import { fetchContextualImage } from './images.js';
+import { getSmartDomainCharts } from './ai.js';
 
 const TEMP_DIR = path.resolve('temp');
 if (!fs.existsSync(TEMP_DIR)) {
@@ -84,6 +85,7 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Jami: ${n} ta slayd • 16:9 Full HD • Professional Dizayn`,
       chartBadge: '📊 EMPIRIK TAHLIL & ASOSIY OMILLAR',
       chartTitle: '📈 NATIJALAR & DINAMIKA (POWERPOINT CHART)',
+      kpiChartTitle: '📊 STATISTIK TAHLIL VA STRUKTURAVIY DINAMIKA',
       agendaBadge: '📋 MUNDARIJA & REJA',
       focusBadge: '🎯 ASOSIY FOKUS',
       tableHeaders: ['Bosqich / Davr', 'Asosiy Vazifa & Strategiya', 'Mas\'ul Bo\'lim & Resurs', 'Kutilayotgan KPI'],
@@ -178,6 +180,7 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Всего: ${n} слайдов • 16:9 Full HD • Премиум Дизайн`,
       chartBadge: '📊 ЭМПИРИЧЕСКИЙ АНАЛИЗ & ФАКТОРЫ',
       chartTitle: '📈 ПОКАЗАТЕЛИ & ДИНАМИКА (POWERPOINT CHART)',
+      kpiChartTitle: '📊 СТАТИСТИЧЕСКИЙ АНАЛИЗ И СТРУКТУРНАЯ ДИНАМИКА',
       agendaBadge: '📋 СОДЕРЖАНИЕ & ПЛАН',
       focusBadge: '🎯 КЛЮЧЕВОЙ ФОКУС',
       tableHeaders: ['Этап / Период', 'Ключевые Задачи & Стратегия', 'Ответственные & Ресурсы', 'Ожидаемый KPI'],
@@ -272,6 +275,7 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Total: ${n} slides • 16:9 Full HD • Executive Design`,
       chartBadge: '📊 EMPIRICAL ANALYSIS & KEY DRIVERS',
       chartTitle: '📈 PERFORMANCE & METRICS (POWERPOINT CHART)',
+      kpiChartTitle: '📊 STATISTICAL ANALYSIS & STRUCTURAL DYNAMICS',
       agendaBadge: '📋 AGENDA & OUTLINE',
       focusBadge: '🎯 STRATEGIC FOCUS',
       tableHeaders: ['Phase / Timeline', 'Core Strategic Deliverable', 'Ownership & Resources', 'Target KPI / Benchmark'],
@@ -366,6 +370,7 @@ function getI18n(lang = 'uz') {
       totalInfo: (n) => `Ҳамагӣ: ${n} слайд • 16:9 Full HD • Тарҳи Касбӣ`,
       chartBadge: '📊 ТАҲЛИЛИ ЭМПИРИКӢ & ОМИЛҲО',
       chartTitle: '📈 НАТИҶАҲО & ДИНАМИКА (POWERPOINT CHART)',
+      kpiChartTitle: '📊 ТАҲЛИЛИ ОМОРӢ ВА ДИНАМИКАИ СОХТОРӢ',
       agendaBadge: '📋 МУНДАРИҶА & НАҚША',
       focusBadge: '🎯 ФОКУСИ АСОСӢ',
       tableHeaders: ['Марҳила / Мӯҳлат', 'Вазифаҳои Асосӣ & Стратегия', 'Масъулият & Захираҳо', 'Натиҷаи Ниҳоӣ (KPI)'],
@@ -902,78 +907,160 @@ function renderComparisonLayout(slide, pres, theme, item, num, total, img, data,
 }
 
 // ================================================================
-// 3-LAYOUT: DYNAMIC KPI & STATS (Ulkan raqamlar va ko'rsatkichlar)
+// 3-LAYOUT: DYNAMIC KPI & STATS (Split-Screen: Real Metrics + Native PowerPoint Chart)
 // ================================================================
 function renderKpiMetricsLayout(slide, pres, theme, item, num, total, img, data, i18n) {
   applySlideBackground(slide, pres, theme);
   addSlideHeader(slide, pres, theme, item.title, item.subtitle, num, total, i18n, data?.title);
 
   const points = item.points || [];
-  const metrics = item.metrics || [
-    { val: '+85%', label: i18n.kpiLabels[0], desc: points[0]?.heading || i18n.kpiDescs[0] },
-    { val: '3.5x', label: i18n.kpiLabels[1], desc: points[1]?.heading || i18n.kpiDescs[1] },
-    { val: 'TOP 1', label: i18n.kpiLabels[2], desc: points[2]?.heading || i18n.kpiDescs[2] }
-  ];
+  const metrics = (Array.isArray(item.metrics) && item.metrics.length > 0)
+    ? item.metrics
+    : [
+        { val: '98.5%', label: i18n.kpiLabels[0], desc: points[0]?.heading || i18n.kpiDescs[0] },
+        { val: '2.8x', label: i18n.kpiLabels[1], desc: points[1]?.heading || i18n.kpiDescs[1] },
+        { val: '-40%', label: i18n.kpiLabels[2], desc: points[2]?.heading || i18n.kpiDescs[2] }
+      ];
 
   const hasHighlight = !!item.highlight;
   const contentY = 1.68;
-  const contentH = hasHighlight ? 3.65 : 4.60;
+  const contentH = hasHighlight ? 3.75 : 4.60;
 
-  // 3 ta ulkan statistika kartochkasi
-  const cardW = 3.65;
-  const gap = 0.39;
+  // Split-Screen o'lchamlari: Chapda 3 ta KPI kartochkasi, O'ngda PowerPoint Diagrammasi
+  const leftX = 0.8;
+  const leftW = 5.20;
+  const rightX = 6.25;
+  const rightW = 6.28;
+
+  // 1. CHAP TOMON: 3 ta vertikal statistik kartochka
+  const gapY = 0.16;
+  const cardH = (contentH - 2 * gapY) / 3;
 
   metrics.slice(0, 3).forEach((m, idx) => {
-    const x = 0.8 + idx * (cardW + gap);
+    const cardY = contentY + idx * (cardH + gapY);
 
+    // Kartochka foni
     slide.addShape(pres.ShapeType.roundRect, {
-      x, y: contentY, w: cardW, h: contentH * 0.58,
+      x: leftX, y: cardY, w: leftW, h: cardH,
       fill: { color: theme.cardBg },
       line: { color: idx === 0 ? theme.primary : theme.border, width: idx === 0 ? 1.5 : 1.2 },
-      rectRadius: 0.14,
+      rectRadius: 0.12,
     });
 
-    // Katta raqam
+    // Raqam maydoni (chap blok)
+    const numW = 1.85;
+    slide.addShape(pres.ShapeType.roundRect, {
+      x: leftX + 0.12, y: cardY + 0.12, w: numW, h: cardH - 0.24,
+      fill: { color: theme.border },
+      rectRadius: 0.08,
+    });
+
     slide.addText(m.val, {
-      x: x + 0.2, y: contentY + 0.15, w: cardW - 0.4, h: 0.95,
-      fontFace: 'Arial', fontSize: 34, bold: true,
-      color: theme.primary,
+      x: leftX + 0.14, y: cardY + 0.12, w: numW - 0.04, h: cardH - 0.24,
+      fontFace: 'Arial', fontSize: cardH > 1.25 ? 22 : 18, bold: true,
+      color: idx === 0 ? theme.primary : theme.accent,
       align: 'center', valign: 'middle', fit: 'shrink',
     });
 
-    // Qisqa nishon
-    slide.addText(truncateClean(m.label || i18n.kpiLabels[idx % 3], 26), {
-      x: x + 0.2, y: contentY + 1.20, w: cardW - 0.4, h: 0.45,
-      fontFace: 'Arial', fontSize: 11.5, bold: true,
-      color: theme.text, align: 'center', valign: 'middle', fit: 'shrink',
-    });
+    // Tavsif maydoni (o'ng blok)
+    const textX = leftX + numW + 0.25;
+    const textW = leftW - numW - 0.38;
+    const labelText = truncateClean(m.label || i18n.kpiLabels[idx % 3], 32);
+    const descText = truncateClean(m.desc || points[idx]?.description || points[0]?.description || '', cardH > 1.25 ? 90 : 65);
 
-    // Tavsif
-    slide.addText(truncateClean(m.desc || '', 65), {
-      x: x + 0.2, y: contentY + 1.70, w: cardW - 0.4, h: contentH * 0.58 - 1.80,
-      fontFace: 'Arial', fontSize: 10, color: theme.subtext, align: 'center', valign: 'top', wrap: true, fit: 'shrink',
+    slide.addText([
+      { text: `${labelText}\n`, options: { bold: true, fontSize: cardH > 1.25 ? 11.5 : 10.5, color: theme.text } },
+      { text: descText, options: { bold: false, fontSize: cardH > 1.25 ? 9.5 : 8.5, color: theme.subtext } }
+    ], {
+      x: textX, y: cardY + 0.10, w: textW, h: cardH - 0.20,
+      valign: 'middle', wrap: true, fit: 'shrink',
     });
   });
 
-  // Pastki qator: Rasm yoki keng tahlil kartochkasi
-  const bottomY = contentY + contentH * 0.58 + 0.22;
-  const bottomH = contentH - (contentH * 0.58 + 0.22);
-
+  // 2. O'NG TOMON: PowerPoint Native Chart (Diagramma)
   slide.addShape(pres.ShapeType.roundRect, {
-    x: 0.8, y: bottomY, w: 11.73, h: bottomH,
+    x: rightX, y: contentY, w: rightW, h: contentH,
     fill: { color: theme.cardBg },
-    line: { color: theme.primary, width: 1.2 },
-    rectRadius: 0.12,
+    line: { color: theme.primary, width: 1.4 },
+    rectRadius: 0.14,
   });
 
-  const summaryText = truncateClean(points[0]?.description || i18n.analysisSummaryFallback, 140);
-  slide.addText([
-    { text: i18n.analysisSummary, options: { bold: true, fontSize: 11.5, color: theme.primary } },
-    { text: summaryText, options: { bold: false, fontSize: 10.5, color: theme.text } }
-  ], {
-    x: 1.1, y: bottomY + 0.05, w: 11.13, h: bottomH - 0.1,
-    valign: 'middle', wrap: true, fit: 'shrink',
+  // Diagramma sarlavhasi / badge
+  slide.addShape(pres.ShapeType.roundRect, {
+    x: rightX + 0.3, y: contentY + 0.18, w: rightW - 0.6, h: 0.40,
+    fill: { color: theme.border },
+    rectRadius: 0.08,
   });
+
+  const chartBadgeText = truncateClean(item.chart?.title || i18n.kpiChartTitle || '📊 STATISTIK TAHLIL VA STRUKTURAVIY DINAMIKA', 45);
+  slide.addText(chartBadgeText, {
+    x: rightX + 0.3, y: contentY + 0.18, w: rightW - 0.6, h: 0.40,
+    fontFace: 'Arial', fontSize: 10.5, bold: true, color: theme.primary, align: 'center', valign: 'middle', fit: 'shrink',
+  });
+
+  // Diagramma ma'lumotlarini aniqlash
+  let chartType = pres.ChartType.bar;
+  let chartLabels = [];
+  let chartValues = [];
+
+  if (item.chart && Array.isArray(item.chart.labels) && Array.isArray(item.chart.values) && item.chart.labels.length >= 2) {
+    chartLabels = item.chart.labels.slice(0, 5);
+    chartValues = item.chart.values.slice(0, 5);
+    if (item.chart.type === 'doughnut' || item.chart.type === 'pie') {
+      chartType = pres.ChartType.doughnut;
+    }
+  } else if (item.metrics && item.metrics.length >= 2) {
+    chartLabels = item.metrics.slice(0, 4).map(m => truncateClean(m.label, 16) || i18n.keyMetricFallback || 'Omil');
+    chartValues = item.metrics.slice(0, 4).map(m => {
+      const rawVal = String(m.val || '');
+      const parsed = parseFloat(rawVal.replace(/[^\d.-]/g, ''));
+      return isNaN(parsed) || parsed === 0 ? 50 : Math.abs(parsed);
+    });
+  } else {
+    const smartChart = getSmartDomainCharts(data?.title || item.title || '', 6, data?.language || 'uz');
+    chartLabels = smartChart.labels;
+    chartValues = smartChart.values;
+  }
+
+  const chartData = [
+    {
+      name: item.title ? item.title.substring(0, 24) : (i18n.indicatorFallback || 'Ko\'rsatkich'),
+      labels: chartLabels,
+      values: chartValues,
+    }
+  ];
+
+  const chartColors = [theme.primary, theme.accent, '38BDF8', '818CF8', '34D399'];
+
+  const chartOpts = {
+    x: rightX + 0.25,
+    y: contentY + 0.68,
+    w: rightW - 0.5,
+    h: contentH - 0.82,
+    showTitle: false,
+    chartColors: chartColors,
+    chartColorsOpacity: 90,
+    barDir: 'col',
+    barGapWidthPct: 45,
+    showValue: true,
+    dataLabelColor: theme.text,
+    dataLabelPosition: 'outEnd',
+    dataLabelFontSize: 10,
+    valAxisLabelColor: theme.subtext,
+    valAxisLineColor: theme.border,
+    valAxisFontSize: 9,
+    catAxisLabelColor: theme.text,
+    catAxisLineColor: theme.border,
+    catAxisFontSize: 9.5,
+    catAxisLabelFrequency: 1,
+    showLegend: false,
+  };
+
+  try {
+    slide.addChart(chartType, chartData, chartOpts);
+  } catch (chartErr) {
+    console.warn('[PPTX KPI] Chart chizishda xatolik:', chartErr.message);
+  }
 
   if (hasHighlight) addHighlightBox(slide, pres, theme, item.highlight, 5.52, false, i18n);
   addSlideFooter(slide, pres, theme, data.title, num, total, item.source, i18n);
